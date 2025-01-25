@@ -1,9 +1,12 @@
 const User = require("../models/user");
 const asynHandler = require("express-async-handler");
+const { ObjectId } = require("mongodb");
 const {
   generateAccessToken,
   generateRefreshToken,
 } = require("../middlewares/jwToken");
+const jwt = require("jsonwebtoken");
+
 const register = asynHandler(async (req, res) => {
   const { email, password, firstname, lastname } = req.body;
   if (!email || !password || !firstname || !lastname)
@@ -44,29 +47,87 @@ const login = asynHandler(async (req, res) => {
     // lưu refresh token vào cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true, // chỉ cho phép đầu http truy cập vào
-      maxAge: 7 * 24 * 60 * 60 * 1000, // time hết hạn của refresh tokentoken
+      maxAge: 7 * 24 * 60 * 60 * 1000, // time hết hạn của refresh token
     });
     return res.status(200).json({
       success: true,
       accessToken,
+      // refreshToken,
       userData,
     });
   } else {
     throw new Error("Invalid credentials"); //login fail
   }
+  
 });
 
+
 const getCurrent = asynHandler(async (req, res) => {
-  const { _id } = req.user;
-  const user = await User.findById(_id).select('-refreshToken -password -role');
+  const { _id } = new ObjectId(req.user); // Lấy id từ req.user
+  const user = await User.findById(_id).select("-refreshToken -password -role");
   return res.status(200).json({
-    success: false,
+    success: user ? true : false,
     result: user ? user : "User not found!",
   });
+});
+
+const refreshAccessToken = asynHandler(async (req, res) => {
+  // lấy token từ cookie
+  const cookie = req.cookies;
+  // check xem token có tồn tại không
+  if (!cookie || !cookie.refreshToken) {
+    return res.status(400).json({
+      success: false,
+      mes: "No refresh token in cookies",
+    });
+  }
+  // check xem token có hợp lệ không
+  const result = await jwt.verify(cookie.refreshToken, process.env.JWT_SECRET)
+  // check xem token có khớp với token dã lưu trong db
+  const response = await User.findOne({
+    _id: result.id, 
+    refreshToken: cookie.refreshToken,
+  });
+  if (!response) {
+    return res.status(404).json({
+      success: false,
+      mes: "Refresh token not matched!",
+    });
+  }
+  // Tạo access token mới
+  const newAccessToken = generateAccessToken(response._id, response.role);
+  // trả về kết quả dựa vào response
+  return res.status(200).json({
+    success: true,
+    newAccessToken,
+  });
+});
+
+const logout = asynHandler(async (req, res) => {
+  const cookie = req.cookies;
+  if (!cookie || !cookie.refreshToken)
+    throw new Error("No refresh token in cookies");
+  // xóa refresh token ở db
+  await User.findOneAndUpdate(
+    { refreshToken: cookie.refreshToken },
+    { refreshToken: "" },
+    { new: true }
+  );
+  // xóa refresh token ở cookie
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: true,
+  });
+  return res.status(200).json({
+    success: true,
+    mes: 'Logout is complete.'
+  })
 });
 
 module.exports = {
   register,
   login,
   getCurrent,
+  refreshAccessToken,
+  logout,
 };

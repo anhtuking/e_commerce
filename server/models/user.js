@@ -80,7 +80,7 @@ userSchema.pre('save', async function (next) {
 
 userSchema.methods = {
   isCorrectPassword: async function (password) {
-    return await bcrypt.compare(password, this.password) // truyền vào đối số password và trả về true or falsefalse
+    return await bcrypt.compare(password, this.password) // truyền vào đối số password và trả về true or false
   }
 }
 //Export the model

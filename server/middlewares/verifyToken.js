@@ -10,7 +10,7 @@ const verifyAccessToken = asynHandler((req, res, next) => {
           success: false,
           mes: "Invalid Access token",
         });
-    //   console.log(decode);
+      // console.log("Decoded token:", decode);
       req.user = decode;
       next();
     });
