@@ -28,7 +28,7 @@ var userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      required: true,
+      default: 'User',
     },
     cart: {
       type: Array,
@@ -78,5 +78,10 @@ userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, salt)
 });
 
+userSchema.methods = {
+  isCorrectPassword: async function (password) {
+    return await bcrypt.compare(password, this.password) // truyền vào đối số password và trả về true or falsefalse
+  }
+}
 //Export the model
 module.exports = mongoose.model("User", userSchema);
