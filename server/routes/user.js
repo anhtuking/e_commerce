@@ -1,14 +1,21 @@
 const router = require("express").Router();
 const ctrls = require("../controllers/user");
-const { verifyAccessToken } = require("../middlewares/verifyToken");
+const { verifyAccessToken, isAdmin } = require("../middlewares/verifyToken");
 
 router.post("/register", ctrls.register);
 router.post("/login", ctrls.login);
 router.get("/current", verifyAccessToken, ctrls.getCurrent);
 router.post("/refreshToken", ctrls.refreshAccessToken);
-router.get("/logout", verifyAccessToken, ctrls.logout);
-
+router.get("/logout", ctrls.logout);
+router.get("/forgotPassword", ctrls.forgotPassword);
+router.put("/resetPassword", ctrls.resetPassword);
+router.get("/", [verifyAccessToken, isAdmin], ctrls.getUsers);
+router.delete("/", [verifyAccessToken, isAdmin], ctrls.deleteUser);
+router.put("/update", [verifyAccessToken], ctrls.updateUser);
+router.put('/:uid', [verifyAccessToken, isAdmin], ctrls.updateUserByAdmin)
 
 module.exports = router;
 //   CRUD | Create - Read - Update - Delete
 // Method | POST - GET - PUT - DELETE
+// Create(POST) + PUT : body
+// GET + DELETE : query

@@ -6,7 +6,8 @@ const verifyAccessToken = asynHandler((req, res, next) => {
     // Bearer + chuỗi token
     const token = req.headers.authorization.split(" ")[1]; // headers: { authorization: Bearer + chuỗi token }
     jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
-      if (err) return res.status(401).json({
+      if (err)
+        return res.status(401).json({
           success: false,
           mes: "Invalid Access token",
         });
@@ -22,6 +23,18 @@ const verifyAccessToken = asynHandler((req, res, next) => {
   }
 });
 
+// role admin
+const isAdmin = asynHandler((req, res, next) => {
+  const { role } = req.user;
+  if (role !== "Admin")
+    return res.status(401).json({
+      success: false,
+      mes: "Requires admin role",
+    });
+  next();
+});
+
 module.exports = {
-  verifyAccessToken
+  verifyAccessToken,
+  isAdmin
 };
