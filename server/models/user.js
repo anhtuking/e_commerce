@@ -1,5 +1,6 @@
-const mongoose = require('mongoose'); // Erase if already required
-const bcrypt = require('bcryptjs');
+const mongoose = require("mongoose"); // Erase if already required
+const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 
 // Declare the Schema of the Mongo model
 var userSchema = new mongoose.Schema(
@@ -28,7 +29,7 @@ var userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      default: 'User',
+      default: "User",
     },
     cart: {
       type: Array,
@@ -54,7 +55,7 @@ var userSchema = new mongoose.Schema(
       type: String,
     },
     passwordChangedAt: {
-      type: String,
+      type: Date,
     },
     passwordResetToken: {
       type: String,
@@ -68,20 +69,29 @@ var userSchema = new mongoose.Schema(
   }
 );
 
-// Method pre để Hash password before khi save 
-userSchema.pre('save', async function (next) {
+// Method pre để Hash password before khi save
+userSchema.pre("save", async function (next) {
   // Only hash the password khi nó đã Modified (or is new)
-  if (!this.isModified('password')){
+  if (!this.isModified("password")) {
     return next();
   }
-  const salt = bcrypt.genSaltSync(10)
-  this.password = await bcrypt.hash(this.password, salt)
+  const salt = bcrypt.genSaltSync(10);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 userSchema.methods = {
   isCorrectPassword: async function (password) {
-    return await bcrypt.compare(password, this.password) // truyền vào đối số password và trả về true or false
-  }
-}
+    return await bcrypt.compare(password, this.password); // truyền vào đối số password và trả về true or false
+  },
+  createPasswordChangedToken: function () {
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    this.passwordResetToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+    return resetToken;
+  },
+};
 //Export the model
 module.exports = mongoose.model("User", userSchema);
