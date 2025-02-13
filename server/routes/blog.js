@@ -1,10 +1,10 @@
-const router = require("express").Router();
-const ctrls = require("../controllers/blogCategory");
+const router = require('express').Router()
+const ctrls = require("../controllers/blog");
 const { verifyAccessToken, isAdmin } = require("../middlewares/verifyToken");
 
-router.post("/", [verifyAccessToken, isAdmin], ctrls.createBlogCategory);
-router.get("/", ctrls.getAllBlogCategories);
-router.put("/:bcid", [verifyAccessToken, isAdmin], ctrls.updateBlogCategory);
-router.delete("/:bcid", [verifyAccessToken, isAdmin], ctrls.deleteBlogCategory);
+router.post('/', [verifyAccessToken, isAdmin], ctrls.createNewBlog)
+router.get('/', ctrls.getAllBlogs)
 
-module.exports = router;
+router.put('/:bid', [verifyAccessToken, isAdmin], ctrls.updateBlog)
+
+module.exports = router
