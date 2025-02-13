@@ -3,7 +3,8 @@ const ctrls = require("../controllers/blog");
 const { verifyAccessToken, isAdmin } = require("../middlewares/verifyToken");
 
 router.post('/', [verifyAccessToken, isAdmin], ctrls.createNewBlog)
-router.get('/', ctrls.getAllBlogs)
+router.get('/all', ctrls.getAllBlogs)
+router.get('/one/:bid', ctrls.getBlog)
 router.delete('/delete/:bid', [verifyAccessToken, isAdmin], ctrls.deleteBlog)
 router.put('/update/:bid', [verifyAccessToken, isAdmin], ctrls.updateBlog)
 router.put('/like/:bid', [verifyAccessToken], ctrls.likeBlog)

@@ -100,6 +100,18 @@ const dislikeBlog = asyncHandler(async (req, res) => {
         })
     }
 })
+// lọai bỏ những trường không muốn lấy ra
+const excludeFields = '-refreshToken -password -role -createdAt -updatedAt -cart -wishlist -__v'
+const getBlog = asyncHandler(async (req, res) => {
+    const {bid} = req.params
+    const blog = await Blog.findByIdAndUpdate(bid, {$inc: {numberViews: 1}}, {new: true})   // numberViews++
+    .populate('likes', excludeFields)
+    .populate('dislikes', excludeFields)
+    return res.status(200).json({
+        success: blog ? true : false,
+        result: blog
+    })
+})
 
 module.exports = {
     createNewBlog,
@@ -107,5 +119,6 @@ module.exports = {
     updateBlog,
     deleteBlog,
     likeBlog,
-    dislikeBlog
+    dislikeBlog,
+    getBlog
 }
