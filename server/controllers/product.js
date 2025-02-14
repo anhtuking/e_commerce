@@ -145,6 +145,12 @@ const ratingProduct = asyncHandler(async (req, res) => {
   });
 });
 
+// upload ảnh sản phẩm lên Cloudinary 
+const uploadImagesProduct = asyncHandler(async(req, res) => {
+  console.log(req.file);
+  return res.json('Done!')
+})
+
 module.exports = {
   createProduct,
   getProduct,
@@ -152,4 +158,5 @@ module.exports = {
   updateProduct,
   deleteProduct,
   ratingProduct,
+  uploadImagesProduct,
 };
