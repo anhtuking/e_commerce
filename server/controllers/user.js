@@ -216,10 +216,20 @@ const updateUser = asyncHandler(async (req, res) => {
 })
 
 const updateUserByAdmin = asyncHandler(async (req, res) => {
-  console.log(req.user);
+  // console.log(req.user);
   const { uid } = req.params
   if (Object.keys(req.body).length === 0) throw new Error('Missing value')
   const response = await User.findByIdAndUpdate(uid, req.body, { new: true }).select('-password -role -refreshToken')
+  return res.status(200).json({
+      success: response ? true : false,
+      updatedUser: response ? response : 'Some thing went wrong'
+  })
+})
+
+const updateUserAddress = asyncHandler(async (req, res) => {
+  const { id } = req.user
+  if (!req.body.address) throw new Error('Missing value')
+  const response = await User.findByIdAndUpdate(id, {$push: {address: req.body.address}}, { new: true }).select('-password -role -refreshToken')
   return res.status(200).json({
       success: response ? true : false,
       updatedUser: response ? response : 'Some thing went wrong'
@@ -237,5 +247,6 @@ module.exports = {
   getUsers,
   deleteUser,
   updateUser,
-  updateUserByAdmin
+  updateUserByAdmin,
+  updateUserAddress
 };
