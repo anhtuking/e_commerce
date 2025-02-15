@@ -11,6 +11,6 @@ router.put('/:pid', [verifyAccessToken, isAdmin], ctrls.updateProduct)
 router.delete('/:pid', [verifyAccessToken, isAdmin], ctrls.deleteProduct)
 router.get("/:pid", ctrls.getProduct);
 
-router.put('/uploadImage/:pid', [verifyAccessToken, isAdmin], uploader.single('images'), ctrls.uploadImagesProduct)
+router.put('/uploadImage/:pid', [verifyAccessToken, isAdmin], uploader.array('images', 10), ctrls.uploadImagesProduct)
 
 module.exports = router;

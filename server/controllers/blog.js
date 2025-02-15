@@ -113,6 +113,17 @@ const getBlog = asyncHandler(async (req, res) => {
     })
 })
 
+// upload ảnh blog 
+const uploadImagesBlog = asyncHandler(async(req, res) => {
+  const {bid} = req.params
+  if (!req.file) throw new Error('Missing value')
+  const response = await Blog.findByIdAndUpdate(bid, {image: req.file.path}, {new: true})
+  return res.status(200).json({
+    status: response ? true : false,
+    uploadedImagesBlog: response ? response : 'Cannot upload images blog'
+  });
+})
+
 module.exports = {
     createNewBlog,
     getAllBlogs,
@@ -120,5 +131,6 @@ module.exports = {
     deleteBlog,
     likeBlog,
     dislikeBlog,
-    getBlog
+    getBlog,
+    uploadImagesBlog,
 }
