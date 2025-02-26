@@ -1,64 +1,67 @@
-const mongoose = require('mongoose'); // Erase if already required
+const mongoose = require("mongoose"); // Erase if already required
 
 // Declare the Schema of the Mongo model
-var productSchema = new mongoose.Schema({
-    title:{
-        type:String,
-        required:true,
-        trim: true,   // auto delete space 
+var productSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true, // auto delete space
     },
-    // Điện thoại Ịphone => dien-thoai-iphone 
+    // Điện thoại Ịphone => dien-thoai-iphone
     slug: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true
+      type: String,
+      required: true,
+    //   unique: true,
+      lowercase: true,
     },
-    description:{
-        type:String,
-        required:true,
+    description: {
+      type: Array,
+      required: true,
     },
-    brand:{
-        type:String,
-        required:true,
+    brand: {
+      type: String,
+      required: true,
     },
-    price:{
-        type:Number,
-        required:true,
+    price: {
+      type: Number,
+      required: true,
     },
-    category:{
-        type:mongoose.Types.ObjectId,
-        ref: 'Category'
+    category: {
+      type: String,
+      required: true,
     },
-    quantity:{
-        type:Number,
-        default: 0
+    quantity: {
+      type: Number,
+      default: 0,
     },
-    sold:{
-        type:Number,
-        default: 0
+    sold: {
+      type: Number,
+      default: 0,
     },
-    images:{
-        type:Array,
+    images: {
+      type: Array,
     },
-    color:{
-        type:String,
-        enum: ['Red', 'Black']
+    color: {
+      type: String,
+      require: true,
     },
-    ratings:[
-        {
-            star: Number,
-            comment: String,
-            postedBy: { type: mongoose.Types.ObjectId, ref: "User" }
-        }
+    ratings: [
+      {
+        star: Number,
+        comment: String,
+        postedBy: { type: mongoose.Types.ObjectId, ref: "User" },
+      },
     ],
-    totalRatings:{
-        type: Number,
-        default: 0
-    }
-}, {
-    timestamps: true
-});
+    totalRatings: {
+      type: Number,
+      default: 0,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 //Export the model
-module.exports = mongoose.model('Product', productSchema);
+module.exports = mongoose.model("Product", productSchema);
