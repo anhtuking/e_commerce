@@ -8,17 +8,19 @@ const ProductCategory = require('../models/productCategory')
 const fn = async (product) => {
     await Product.create({
         title: product?.name,
-        slug: slugify(product?.name) + Math.round(Math.random() * 100) + '',
-        description: product?.description,
+        slug: slugify(product?.name) + "-" + Math.round(Math.random() * 100),
+        description: product?.description?.join(", "), 
         brand: product?.brand,
-        price: Math.round(Number(product?.price?.match(/\d/g).join('')) / 100),
-        category: product?.category[1],
-        quantity: Math.round(Math.random() * 1000),
-        sold: Math.round(Math.random() * 100),
+        price: parseFloat(product?.price.replace(/[^\d,]/g, '').replace(',', '.')), 
+        category: product?.category.join(" > "),
+        quantity: Math.floor(Math.random() * 1000) + 1, 
+        sold: Math.floor(Math.random() * 100), 
         images: product?.images,
-        color: product?.variants?.find(el => el.label === 'Color')?.variants[0]
-    })
-}
+        color: product?.variants?.find(el => el.label.toLowerCase() === 'color')?.variants[0] || "No Color",
+        thumb: product?.thumb
+    });
+};
+
 
 const insertProduct = asyncHandler(async (req, res) => {
     const promises = []
@@ -29,11 +31,23 @@ const insertProduct = asyncHandler(async (req, res) => {
 
 const fn2 = async (cate) => {
     await ProductCategory.updateOne(
-        { title: cate.cate }, // Điều kiện tìm kiếm
-        { $set: { title: cate.cate, brand: cate.brand } }, // Dữ liệu cập nhật
-        { upsert: true } // Tùy chọn upsert
+        { title: cate.cate }, 
+        { $set: { title: cate.cate, brand: cate.brand } }, 
+        { upsert: true } 
     );
 }
+// const fn2 = async (cate) => {
+//     const existingCategory = await ProductCategory.findOne({ title: cate.cate });
+//     if (existingCategory) {
+//         const updatedBrands = [...new Set([...existingCategory.brand, ...cate.brand])]; 
+//         await ProductCategory.updateOne(
+//             { title: cate.cate }, 
+//             { $set: { brand: updatedBrands } }
+//         );
+//     } else {
+//         await ProductCategory.create({ title: cate.cate, brand: cate.brand });
+//     }
+// }
 
 const insertCaterory = asyncHandler(async (req, res) => {
     const promises = []
