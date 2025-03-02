@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 // import { apiGetCategories } from "../api/app";
 import { NavLink } from "react-router-dom";
 import { createSlug } from "../utils/helpers";
@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 
 const Sidebar = () => {
   const categories = useSelector((state) => state.app?.categories);
-  console.log("Redux State:", categories);
+  // console.log("Redux State:", categories);
   return (
     <div className="flex flex-col border">
       {categories?.map((el) => (
