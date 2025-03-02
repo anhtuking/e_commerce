@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^2.6.0",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "axios": "^1.8.1",
     "cra-template-redux": "2.0.0",
     "moment": "^2.30.1",

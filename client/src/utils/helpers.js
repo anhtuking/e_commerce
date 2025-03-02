@@ -7,3 +7,5 @@ export const createSlug = (string) => {
         .split(" ") //chuyển thành mảng có khoảng cáchcách
         .join("-"); //join mảng lại theo dấu -
 };
+
+export const formatPrice = number => Number(number.toFixed(1)).toLocaleString()
