@@ -11,7 +11,8 @@ export const createSlug = (string) => {
     .join("-"); //join mảng lại theo dấu -
 };
 
-export const formatPrice = number => Number(number?.toFixed(1)).toLocaleString()
+export const formatPrice = (number) =>
+  Number(number?.toFixed(1)).toLocaleString();
 
 export const renderStarFromNumber = (number, size) => {
   // 4 => [1,1,1,1,0]
@@ -20,9 +21,17 @@ export const renderStarFromNumber = (number, size) => {
 
   const stars = [];
   for (let i = 0; i < +number; i++)
-    stars.push(<MdOutlineStar color="orange" size={size || 16}/>);
+    stars.push(<MdOutlineStar color="orange" size={size || 16} />);
   for (let i = 5; i > +number; i--)
-    stars.push(<MdOutlineStarBorder color="orange" size={size || 16}/>);
+    stars.push(<MdOutlineStarBorder color="orange" size={size || 16} />);
 
   return stars;
 };
+
+export function secondsToHms(d) {
+  d = Number(d) / 1000;   // d đang là mili seconds nên sẽ chia cho 1000 để ra secondsseconds
+  const h = Math.floor(d / 3600);
+  const m = Math.floor((d % 3600) / 60);
+  const s = Math.floor((d % 3600) % 60);
+  return { h, m, s };
+}
