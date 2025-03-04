@@ -1,14 +1,19 @@
 import React from "react";
-// import { apiGetCategories } from "../api/app";
 import { NavLink } from "react-router-dom";
 import { createSlug } from "../utils/helpers";
 import { useSelector } from "react-redux";
+import { FaList } from "react-icons/fa"; 
 
 const Sidebar = () => {
   const categories = useSelector((state) => state.app?.categories);
   // console.log("Redux State:", categories);
   return (
+    
     <div className="flex flex-col border">
+      <div className="flex items-center bg-red-500 text-white font-bold text-lg px-4 py-3 uppercase">
+        <FaList className="mr-2" /> 
+        ALL COLLECTIONS
+      </div>
       {categories?.map((el) => (
         <NavLink
           key={createSlug(el.title)}

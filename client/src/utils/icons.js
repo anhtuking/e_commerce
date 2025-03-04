@@ -1,13 +1,9 @@
-import { FaPhoneAlt } from "react-icons/fa";
-import { MdEmail } from "react-icons/md";
+import { FaPhoneAlt, FaUserAlt, FaFacebook, FaFacebookMessenger, FaTwitter, FaInstagramSquare, FaGoogle, FaEye } from "react-icons/fa";
+import { MdEmail, MdOutlineStar, MdOutlineStarBorder } from "react-icons/md";
 import { IoBagHandle } from "react-icons/io5";
-import { FaUserAlt } from "react-icons/fa";
 import { AiFillHome } from "react-icons/ai";
-import { FaFacebook } from "react-icons/fa";
-import { FaFacebookMessenger } from "react-icons/fa";
-import { FaTwitter } from "react-icons/fa";
-import { FaInstagramSquare } from "react-icons/fa";
-import { FaGoogle } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa6";
+import { TiThMenuOutline } from "react-icons/ti";
 const icons = {
     FaPhoneAlt,
     MdEmail,
@@ -18,7 +14,12 @@ const icons = {
     FaFacebookMessenger,
     FaTwitter,
     FaInstagramSquare,
-    FaGoogle
+    FaGoogle,
+    MdOutlineStar, 
+    MdOutlineStarBorder,
+    FaEye,
+    FaHeart,
+    TiThMenuOutline
 }
 
 export default icons

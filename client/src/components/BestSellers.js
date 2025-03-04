@@ -4,15 +4,15 @@ import Product from "./Product";
 import Slider from "react-slick";
 
 const tabs = [
-  { id: 1, name: "best sellers" },
-  { id: 2, name: "new arrivals" },
+  { id: 1, name: "BEST SELLERS" },
+  { id: 2, name: "NEW ARRIVALS" },
 ];
 
 var settings = {
   dots: true,
   infinite: true,
   speed: 500,
-  slidesToShow: 3,
+  slidesToShow: 4,
   slidesToScroll: 1,
 };
 
@@ -26,7 +26,7 @@ const BestSellers = () => {
       apiGetProducts({ sort: "-sold" }),
       apiGetProducts({ sort: "-createdAt" }),
     ]);
-    console.log("Fetched Products:", response);
+    // console.log("Fetched Products:", response);
     if (response[0]?.success) {
       setBestSellers(response[0].dataProducts);
       setProducts(response[0].dataProducts);
@@ -40,7 +40,7 @@ const BestSellers = () => {
   useEffect(() => {
     if (activeTab === 1) setProducts(bestSellers);
     if (activeTab === 2) setProducts(newProducts);
-  }, [activeTab]);
+  }, [activeTab, bestSellers, newProducts]);
   return (
     <div>
       <div className="flex text-[20px] gap-8 pb-4 border-b-2 relative">
@@ -56,23 +56,36 @@ const BestSellers = () => {
             {activeTab === el.id && (
               <div
                 className={`absolute bottom-[-8px] left-0 w-full h-[3px] ${
-                  activeTab === 1 ? "bg-red-500" : "bg-blue-500"
+                  activeTab === 1 ? "bg-blue-500" : "bg-yellow-400"
                 }`}
               ></div>
             )}
           </span>
         ))}
       </div>
-      <div className="mt-4 mx-[-10px]">
+      <div className="mt-4 mx-[-10px] pt-2">
         <Slider {...settings}>
           {products?.map((el) => (
             <Product
               key={el.id}
+              pid={el.id}
               productData={el}
               isNew={activeTab === 1 ? false : true}
             />
           ))}
         </Slider>
+      </div>
+      <div className="w-full flex gap-4 mt-8 ">
+        <img 
+          src="https://digital-world-2.myshopify.com/cdn/shop/files/banner2-home2_2000x_crop_center.png?v=1613166657"
+          alt="banner"
+          className="flex-1 object-cover transition-transform duration-300 hover:scale-110"
+        />
+        <img 
+          src="https://digital-world-2.myshopify.com/cdn/shop/files/banner1-home2_2000x_crop_center.png?v=1613166657"
+          alt="banner"
+          className="flex-1 object-cover transition-transform duration-300 hover:scale-110"
+        />
       </div>
     </div>
   );
