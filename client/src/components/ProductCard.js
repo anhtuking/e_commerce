@@ -23,8 +23,10 @@ const ProductCard = ({ image, title, totalRatings, price }) => {
             className="w-[90px] object-contain transition-transform duration-300 hover:scale-105 hover:brightness-110"
           />
           <div className="flex flex-col text-sm">
-          <span className="flex h-4">{renderStarFromNumber(totalRatings)}</span>
-          <span className="capitalize font-semibold">{title}</span>
+          <span className="flex h-4">{renderStarFromNumber(totalRatings, 14)?.map((el, index) => (
+            <span key={index}>{el}</span>
+          ))}</span>
+          <span className="capitalize font-semibold">{title?.toLowerCase()}</span>
           <span className="text-red-500 font-bold">{`${formatPrice(price)} VND`}</span>
         </div>
         </div>

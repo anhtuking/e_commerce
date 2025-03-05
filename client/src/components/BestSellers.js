@@ -4,8 +4,8 @@ import Product from "./Product";
 import Slider from "react-slick";
 
 const tabs = [
-  { id: 1, name: "BEST SELLERS" },
-  { id: 2, name: "NEW ARRIVALS" },
+  { id: 1, name: "best sellers" },
+  { id: 2, name: "new arrivals" },
 ];
 
 var settings = {

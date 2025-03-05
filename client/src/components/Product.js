@@ -12,7 +12,7 @@ const Product = ({ productData, isNew }) => {
   return (
     <div className="w-full text-base px-[10px]">
       <div 
-        className="w-full product-item p-[15px] flex flex-col items-center" 
+        className="w-full border p-[15px] flex flex-col items-center" 
         onMouseEnter={e => {e.stopPropagation() 
           setIsShowOption(true)}} 
         onMouseLeave={e => {e.stopPropagation() 
@@ -33,11 +33,13 @@ const Product = ({ productData, isNew }) => {
           <img
             src={isNew ? tagnew : trending}
             alt=""
-            className="absolute top-[-5px] right-[-5px] w-[70px] h-[25px] object-cover"
+            className="absolute top-[-15px] right-[-15px] w-[70px] h-[25px] object-cover"
           ></img> 
         </div>
         <div className="flex flex-col gap-2 mt-[15px] items-center gap-1 w-full">
-          <span className="flex h-4">{renderStarFromNumber(productData?.totalRatings)}</span>
+          <span className="flex h-4">{renderStarFromNumber(productData?.totalRatings)?.map((el, index) => (
+                      <span key={index}>{el}</span>
+                    ))}</span>
           <span className="line-clamp-1">{productData?.title}</span>
           <span>{`${formatPrice(productData?.price)} VND`}</span>
         </div>
