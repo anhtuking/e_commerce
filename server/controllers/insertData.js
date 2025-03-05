@@ -17,7 +17,8 @@ const fn = async (product) => {
         sold: Math.floor(Math.random() * 100), 
         images: product?.images,
         color: product?.variants?.find(el => el.label.toLowerCase() === 'color')?.variants[0] || "No Color",
-        thumb: product?.thumb
+        thumb: product?.thumb,
+        totalRatings: Math.round(Math.random() * 5)
     });
 };
 
@@ -32,7 +33,7 @@ const insertProduct = asyncHandler(async (req, res) => {
 const fn2 = async (cate) => {
     await ProductCategory.updateOne(
         { title: cate.cate }, 
-        { $set: { title: cate.cate, brand: cate.brand } }, 
+        { $set: { title: cate.cate, brand: cate.brand, image: cate.image } }, 
         { upsert: true } 
     );
 }
