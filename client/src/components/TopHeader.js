@@ -12,7 +12,7 @@ const TopHeader = () => {
         <span>ORDER ONLINE OR CALL US (+84) 000 8386 008</span>
         <div className="flex items-center gap-3">
           <Link className='hover:text-gray-600 hover:underline' to={`/${path.LOGIN}`}>
-            Sign In or Sign Up
+            Login or Register
           </Link>
           <a href="https://www.facebook.com/duongvan.anhtu.7">
             <FaFacebook />
