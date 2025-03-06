@@ -3,14 +3,12 @@ import logo from "../assets/logo.png";
 import icons from "../utils/icons";
 import { Link } from "react-router-dom";
 import path from "../utils/path";
-import TopHeader from "./TopHeader";
 
 const Header = () => {
   const { FaPhoneAlt, MdEmail, IoBagHandle, FaUserAlt } = icons;
   
   return (
     <div>
-      <TopHeader /> 
       <div className="border w-main flex justify-between h-[120px] py-[35px]">
         <Link to={`/${path.HOME}`}>
           <img src={logo} alt="logo" className="w-[220px] object-contain " />

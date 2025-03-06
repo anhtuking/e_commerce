@@ -10,7 +10,7 @@ const Sidebar = () => {
   return (
     
     <div className="flex flex-col border">
-      <div className="flex items-center bg-red-500 text-white font-bold text-lg px-4 py-3 uppercase">
+      <div className="flex items-center bg-main text-white font-bold text-lg px-4 py-3 uppercase">
         <FaList className="mr-2" /> 
         ALL COLLECTIONS
       </div>

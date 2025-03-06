@@ -105,7 +105,7 @@ const DealDaily = () => {
         <span className="line-clamp-1 text-center pt-4">{dealDaily?.title}</span>
         <span className="pt-4">{`${formatPrice(dealDaily?.price)} VND`}</span>
       </div>
-      <div className="px-4 mt-4 mb-8">
+      <div className="px-4 mt-4 mb-8 pt-10">
         <div className="flex justify-center items-center gap-2 mb-4">
           <Countdown unit={"Hours"} number={hour} />
           <Countdown unit={"Minutes"} number={minute} />

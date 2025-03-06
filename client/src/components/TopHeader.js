@@ -1,31 +1,29 @@
 import React, { memo } from "react";
 import icons from "../utils/icons";
+import { Link } from "react-router-dom";
+import path from "../utils/path";
 
 const { FaFacebook, FaFacebookMessenger, FaTwitter, FaInstagramSquare, FaGoogle } = icons;
 
 const TopHeader = () => {
   return (
-    <div className="bg-red-500 text-white text-sm py-2 flex justify-between px-10">
-      <div className="flex items-center gap-4">
+    <div className="bg-main text-white text-sm h-[40px] flex items-center justify-center w-full">
+      <div className="flex items-center justify-between w-main">
         <span>ORDER ONLINE OR CALL US (+84) 000 8386 008</span>
-        <div className="relative">
-          <select className="bg-red-600 text-white border-none cursor-pointer">
-            <option value="en">English</option>
-            <option value="vi">Vietnamese</option>
-            <option value="fr">France</option>
-          </select>
+        <div className="flex items-center gap-3">
+          <Link className='hover:text-gray-600 hover:underline' to={`/${path.LOGIN}`}>
+            Sign In or Sign Up
+          </Link>
+          <a href="https://www.facebook.com/duongvan.anhtu.7">
+            <FaFacebook />
+          </a>
+          <FaFacebookMessenger />
+          <a href="https://x.com/marcuslouiss012">
+            <FaTwitter />
+          </a>
+          <FaInstagramSquare />
+          <FaGoogle />
         </div>
-      </div>
-      <div className="flex items-center gap-3">
-        <a href="https://www.facebook.com/duongvan.anhtu.7">
-          <FaFacebook/>
-        </a>
-        <FaFacebookMessenger/>
-        <a href="https://x.com/marcuslouiss012">
-          <FaTwitter/>
-        </a>
-        <FaInstagramSquare/>
-        <FaGoogle/>
       </div>
     </div>
   );
