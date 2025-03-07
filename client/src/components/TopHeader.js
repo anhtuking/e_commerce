@@ -7,7 +7,7 @@ const { FaFacebook, FaFacebookMessenger, FaTwitter, FaInstagramSquare, FaGoogle 
 
 const TopHeader = () => {
   return (
-    <div className="bg-main text-white text-sm h-[40px] flex items-center justify-center w-full">
+    <div className="bg-main2 text-white text-sm h-[40px] flex items-center justify-center w-full">
       <div className="flex items-center justify-between w-main">
         <span>ORDER ONLINE OR CALL US (+84) 000 8386 008</span>
         <div className="flex items-center gap-3">

@@ -14,31 +14,31 @@ const {
 const Footer = () => {
   return (
     <div className="w-full ">
-      <div className="h-[103px] bg-main w-full flex items-center justify-center">
+      <div className="h-[103px] bg-black w-full flex items-center justify-center">
         <div className="w-main flex items-center justify-between">
           <div className="flex flex-col flex-1">
-            <span className="text-[22px] text-gray-100">
+            <span className="text-[22px] text-white">
               SIGN UP TO NEWSLETTER
             </span>
-            <small className="text-[15px] text-gray-400">
+            <small className="text-[15px] text-gray-300">
               Subscribe now and receive weekly newsletter
             </small>
           </div>
           <input
-            className="p-4 pr-0 rounded-l-full w-full flex-1 bg-[#f04646] outline-none text-gray-100 h-[55px]
-          placeholder:text-sm placeholder:text-gray-200 placeholder:italic placeholder:opacity-50"
+            className="p-4 pr-0 rounded-l-full w-full flex-1 bg-gray-200 outline-none text-gray-800 h-[55px]
+          placeholder:text-sm placeholder:text-gray-800 placeholder:italic placeholder:opacity-50"
             type="text"
             placeholder="Email address"
           />
-          <div className="h-[55px] w-[55px] bg-[#f04646] rounded-r-full flex items-center justify-center text-white">
+          <div className="h-[55px] w-[55px] bg-gray-200 rounded-r-full flex items-center justify-center text--gray-800 cursor-pointer">
             <MdEmail size={16} />
           </div>
         </div>
       </div>
-      <div className="h-[407px] w-full bg-[#161616] flex items-center justify-center text-white text-[13pX]">
+      <div className="h-[330px] w-full bg-[#363636] flex items-center justify-center text-white text-[13pX] font-main2 font-bold">
         <div className="w-main flex items-center gap-x-16">
           <div className="flex-22 flex flex-col gap-2">
-            <h3 className="mb-[20px] text-[15px] font-medium border-l-2 border-main pl-[15px]">
+            <h3 className="mb-[20px] text-[15px] font-medium border-l-2 border-main pl-[15px] ">
               ABOUT US
             </h3>
             <p className="flex items-center gap-2">
@@ -58,22 +58,40 @@ const Footer = () => {
             </p>
             {/* Social Icons */}
             <div className="flex items-center mt-4 space-x-3">
-              <a href="/" className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition">
+              <a
+                href="/"
+                className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition"
+              >
                 <FaFacebook className="text-white text-lg" />
               </a>
-              <a href="/" className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition">
+              <a
+                href="/"
+                className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition"
+              >
                 <FaTwitter className="text-white text-lg" />
               </a>
-              <a href="/" className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition">
+              <a
+                href="/"
+                className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition"
+              >
                 <FaFacebookMessenger className="text-white text-lg" />
               </a>
-              <a href="/" className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition">
+              <a
+                href="/"
+                className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition"
+              >
                 <FaInstagramSquare className="text-white text-lg" />
               </a>
-              <a href="/" className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition">
+              <a
+                href="/"
+                className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition"
+              >
                 <FaGoogle className="text-white text-lg" />
               </a>
-              <a href="/" className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition">
+              <a
+                href="/"
+                className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition"
+              >
                 <FaDiscord className="text-white text-lg" />
               </a>
             </div>
@@ -111,16 +129,16 @@ const Footer = () => {
             <span className="opacity-50">Warranty policy</span>
           </div>
         </div>
+      </div>
+      <div className="bg-[#363636]">
+        <div className="text-white font-main2 flex flex-col items-center justify-center">
+          <img
+            src="https://xstore.b-cdn.net/elementor2/marseille04/wp-content/uploads/sites/2/elementor/thumbs/Icons-123-pzks3go5g30b2zz95xno9hgdw0h3o8xu97fbaqhtb6.png"
+            alt=""
+          />
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: "1200px", margin: "0 auto", padding: "0 20px" }}>
-            <p style={{ margin: 0 }}>© 2025, Digital World 2 Powered by Shopify</p>
-            <div style={{ display: "flex", gap: "15px" }}>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" alt="Visa" style={{ height: "24px" }} />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="MasterCard" style={{ height: "24px" }} />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo_%282018%29.svg" alt="American Express" style={{ height: "24px" }} />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style={{ height: "24px" }} />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Discover_Card_logo.svg" alt="Discover" style={{ height: "24px" }} />
-
+        <div className="text-white font-main2 flex items-center justify-center pt-4 pb-4 font-bold">
+          Copyright © 2025 ATKING theme. Created by ATKING
         </div>
       </div>
     </div>

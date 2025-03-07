@@ -4,6 +4,7 @@ module.exports = {
   theme: {
     fontFamily: {
       main: ["Poppins", "sans-serif"],
+      main2: ["Roboto Mono", "monospace"],
     },
     extend: {
       width: {
@@ -11,6 +12,7 @@ module.exports = {
       },
       colors: {
         main: "#ee3131",
+        main2: '#363636'
       },
       flex: {
         '2': '2 2 0%',

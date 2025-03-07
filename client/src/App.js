@@ -5,6 +5,7 @@ import path from "./utils/path";
 import { getCategories } from "./store/app/asyncAction";
 import {useDispatch} from 'react-redux'
 
+
 function App() {
   const dispatch = useDispatch()
   useEffect (() => {

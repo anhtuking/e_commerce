@@ -14,8 +14,11 @@ const { IoMdArrowDropright } = icons;
 
 const Home = () => {
   // const {newProducts} = useSelector(state => state.products);
+  // console.log(newProducts);
   const { categories } = useSelector((state) => state.app);
-  console.log(categories);
+  // console.log(categories);
+  const { isLoggedIn, current } = useSelector((state) => state.user);
+  console.log({isLoggedIn, current});
 
   return (
     <>
@@ -65,7 +68,6 @@ const Home = () => {
           BLOG POSTS
         </h3>
       </div>
-      {/* <div className="w-full h-[500px] bg-main">FOOTER</div>   */}
     </>
   );
 };

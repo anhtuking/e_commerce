@@ -1,17 +1,73 @@
 import React, { useState, useCallback } from "react";
 import { InputField, Button } from "../../components";
+import { apiRegister, apiLogin } from "../../api/user";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import path from "../../utils/path";
+import { register } from "../../store/user/userSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [payload, setPayload] = useState({
-    name: "",
+    firstname: "",
+    lastname: "",
     email: "",
     password: "",
-    confirmPassword: ''
+    phone: "",
   });
   const [isRegister, setIsRegister] = useState(false);
-  const handleSubmit = useCallback(() => {
-    console.log(payload);
-  }, [payload]);
+  const resetPayload = () => {
+    setPayload({
+      firstname: "",
+      lastname: "",
+      email: "",
+      password: "",
+      mobile: "",
+    });
+  };
+  const handleSubmit = useCallback(async () => {
+    const { firstname, lastname, mobile, ...data } = payload;
+    if (isRegister) {
+      const response = await apiRegister(payload);
+      if (response.success) {
+        Swal.fire({
+          title: "Congratulations",
+          text: response?.mes,
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() => {
+          setIsRegister(false);
+          resetPayload();
+        });
+      } else {
+        Swal.fire({
+          title: "Oops!",
+          text: response?.mes,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    } else {
+      const result = await apiLogin(data);
+      if (result.success) {
+        dispatch(register({
+          isLoggedIn: true,
+          token: result.accessToken,
+          userData: result.userData
+        }))
+        navigate(`/${path.HOME}`)
+      } else {
+        Swal.fire({
+          title: "Oops!",
+          text: result?.mes,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    }
+  }, [payload, isRegister, navigate, dispatch]);
   return (
     <div className="w-screen h-screen relative">
       <img
@@ -25,11 +81,18 @@ const Login = () => {
             {isRegister ? "Register" : "Login"}
           </h1>
           {isRegister && (
-            <InputField
-              value={payload.name}
-              setValue={setPayload}
-              nameKey="name"
-            />
+            <div className="flex items-center gap-2">
+              <InputField
+                value={payload.firstname}
+                setValue={setPayload}
+                nameKey="firstname"
+              />
+              <InputField
+                value={payload.lastname}
+                setValue={setPayload}
+                nameKey="lastname"
+              />
+            </div>
           )}
           <InputField
             value={payload.email}
@@ -44,9 +107,9 @@ const Login = () => {
           />
           {isRegister && (
             <InputField
-              value={payload.confirmPassword}
+              value={payload.mobile}
               setValue={setPayload}
-              nameKey="confirmPassword"
+              nameKey="mobile"
             />
           )}
           <Button
@@ -55,7 +118,11 @@ const Login = () => {
             fw
           />
           <div className="flex items-center justify-between my-2 w-full text-sm cursor-pointer">
-            {!isRegister && <span className="text-blue-500 hover:underline">Forgot password?</span>}
+            {!isRegister && (
+              <span className="text-blue-500 hover:underline">
+                Forgot password?
+              </span>
+            )}
             {!isRegister && (
               <span
                 className="text-blue-500 hover:underline"

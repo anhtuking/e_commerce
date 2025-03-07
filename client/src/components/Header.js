@@ -9,26 +9,26 @@ const Header = () => {
   
   return (
     <div>
-      <div className="border w-main flex justify-between h-[120px] py-[35px]">
+      <div className="w-main flex justify-between h-[120px] py-[35px]">
         <Link to={`/${path.HOME}`}>
           <img src={logo} alt="logo" className="w-[220px] object-contain " />
         </Link>
         <div className="flex text-[13px]">
-          <div className="flex flex-col px-8 border-r items-center">
+          <div className="flex flex-col px-8 items-center">
             <span className="flex gap-4 items-center">
               <FaPhoneAlt color="red" />
               <span className="font-semibold">(+84) 000 8386 008</span>
             </span>
             <span>Mon-Sun 8:00AM - 10:00PM</span>
           </div>
-          <div className="flex flex-col px-8 border-r items-center">
+          <div className="flex flex-col px-8 items-center">
             <span className="flex gap-4 items-center">
               <MdEmail size={15} color="red" />
               <span className="font-semibold">support@digishop.com</span>
             </span>
             <span>Online Support 24/7</span>
           </div>
-          <div className="flex items-center justify-center gap-2 px-8 border-r">
+          <div className="flex items-center justify-center gap-2 px-8">
             <IoBagHandle size={25} color="red" />
             <span> 0 item(s)</span>
           </div>

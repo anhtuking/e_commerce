@@ -11,7 +11,7 @@ const InputField = ({
   return (
     <div className="w-full relative">
       {
-        value.trim() !== "" && <label
+        value?.trim() !== "" && <label
         className="text-[12px] animate-slide-top-sm absolute top-0 left-[10px] block bg-white px-1"
         htmlFor={nameKey}
       >
