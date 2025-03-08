@@ -1,3 +1,4 @@
+/* eslint-disable react/style-prop-object */
 import React, { useState, useCallback } from "react";
 import { InputField, Button } from "../../components";
 import { apiRegister, apiLogin, apiForgotPassword } from "../../api/user";
@@ -6,10 +7,14 @@ import { useNavigate } from "react-router-dom";
 import path from "../../utils/path";
 import { register } from "../../store/user/userSlice";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import icons from "../../utils/icons";
+
+const { FaEye, FaEyeSlash } = icons;
 
 const Login = () => {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   // const location = useLocation()
   const [payload, setPayload] = useState({
     firstname: "",
@@ -20,6 +25,7 @@ const Login = () => {
   });
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const resetPayload = () => {
     setPayload({
       firstname: "",
@@ -29,11 +35,16 @@ const Login = () => {
       mobile: "",
     });
   };
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const handleForgotPassword = async () => {
-    const response = await apiForgotPassword({email})
-    console.log(response);
-  }
+    const response = await apiForgotPassword({ email });
+    // console.log(response);
+    if (response.success) {
+      toast.success(response.mes);
+    } else {
+      toast.info(response.mes);
+    }
+  };
   const handleSubmit = useCallback(async () => {
     const { firstname, lastname, mobile, ...data } = payload;
     if (isRegister) {
@@ -59,12 +70,14 @@ const Login = () => {
     } else {
       const result = await apiLogin(data);
       if (result.success) {
-        dispatch(register({
-          isLoggedIn: true,
-          token: result.accessToken,
-          userData: result.userData
-        }))
-        navigate(`/${path.HOME}`)
+        dispatch(
+          register({
+            isLoggedIn: true,
+            token: result.accessToken,
+            userData: result.userData,
+          })
+        );
+        navigate(`/${path.HOME}`);
       } else {
         Swal.fire({
           title: "Oops!",
@@ -77,31 +90,49 @@ const Login = () => {
   }, [payload, isRegister, navigate, dispatch]);
   return (
     <div className="w-screen h-screen relative">
-      <div className='absolute top-0 left-0 bottom-0 right-0 bg-white flex flex-col items-center py-8 z-50'>
-    <div className='flex flex-col gap-4'>
-        <label htmlFor="email">Enter your email:</label>
-        <input
-            type="text"
-            id="email"
-            className='w-[800px] pb-2 border-b outline-none placeholder:text-sm'
-            placeholder='Exp: email@gmail.com'
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-        />
-        <div className='flex items-center justify-end w-full'>
-            <Button
-                name='Submit'
+      {isForgotPassword && (
+        <div className="absolute animate-slide-right top-0 left-0 bottom-0 right-0 bg-white flex flex-col items-center py-8 z-50">
+          <div className="flex flex-col gap-4 font-main2">
+            <label htmlFor="email">Enter your email:</label>
+            <div className="relative w-[800px]">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="email"
+                className="w-[800px] pb-2 border-b outline-none placeholder:text-sm font-main2 bg-[#c5c5c5] rounded-[10px] pt-2"
+                placeholder=" Exp: email@gmail.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <button
+                type="button"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash size={25} /> : <FaEye size={25} />}
+              </button>
+            </div>
+            <div className="flex items-center justify-end w-full gap-4 font-main2">
+              <Button
+                name="Submit"
                 handleOnClick={handleForgotPassword}
-            />
+                style="px-4 py-2 rounded-md text-white bg-blue-500 my-2"
+              />
+              <Button
+                className="animate-slide-left"
+                name="Back"
+                handleOnClick={() => setIsForgotPassword(false)}
+                style="px-4 py-2 rounded-md text-white bg-main my-2"
+              />
+            </div>
+          </div>
         </div>
-    </div>
-</div>
+      )}
       <img
         src="https://vietnguyenco.vn/wp-content/uploads/2018/08/bg-login2.jpg"
         alt=""
         className="w-full h-full object-cover"
       />
-      <div className="absolute top-0 bottom-0 left-0 right-1/2 flex items-center justify-center">
+      <div className="absolute top-0 bottom-0 left-0 right-1/2 flex items-center justify-center font-main2">
         <div className="p-8 bg-white flex flex-col items-center rounded-md min-w-[500px]">
           <h1 className="text-[28px] font-semibold text-main mb-8">
             {isRegister ? "Register" : "Login"}
@@ -125,12 +156,21 @@ const Login = () => {
             setValue={setPayload}
             nameKey="email"
           />
-          <InputField
-            value={payload.password}
-            setValue={setPayload}
-            nameKey="password"
-            type="password"
-          />
+          <div className="relative w-full">
+            <InputField
+              value={payload.password}
+              setValue={setPayload}
+              nameKey="password"
+              type={showPassword ? "text" : "password"}
+            />
+            <button
+              type="button"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FaEyeSlash size={20}/> : <FaEye size={20}/>}
+            </button>
+          </div>
           {isRegister && (
             <InputField
               value={payload.mobile}
@@ -145,7 +185,10 @@ const Login = () => {
           />
           <div className="flex items-center justify-between my-2 w-full text-sm cursor-pointer">
             {!isRegister && (
-              <span className="text-blue-500 hover:underline">
+              <span
+                onClick={() => setIsForgotPassword(true)}
+                className="text-blue-500 hover:underline"
+              >
                 Forgot password?
               </span>
             )}

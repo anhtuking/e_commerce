@@ -1,4 +1,4 @@
-import { FaPhoneAlt, FaUserAlt, FaFacebook, FaFacebookMessenger, FaTwitter, FaInstagramSquare, FaGoogle, FaDiscord, FaEye } from "react-icons/fa";
+import { FaPhoneAlt, FaUserAlt, FaFacebook, FaFacebookMessenger, FaTwitter, FaInstagramSquare, FaGoogle, FaDiscord, FaEye, FaEyeSlash  } from "react-icons/fa";
 import { MdEmail, MdOutlineStar, MdOutlineStarBorder } from "react-icons/md";
 import { IoBagHandle } from "react-icons/io5";
 import { IoMdArrowDropright } from "react-icons/io";
@@ -21,6 +21,7 @@ const icons = {
     MdOutlineStar, 
     MdOutlineStarBorder,
     FaEye,
+    FaEyeSlash,
     FaHeart,
     TiThMenuOutline,
     IoMdArrowDropright,
