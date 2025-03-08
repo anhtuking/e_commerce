@@ -12,7 +12,8 @@ module.exports = {
       },
       colors: {
         main: "#ee3131",
-        main2: '#363636'
+        main2: '#363636',
+        overlay: 'rgba(0,0,0,0.3)'
       },
       flex: {
         '2': '2 2 0%',
