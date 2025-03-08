@@ -8,25 +8,84 @@ const {
 const jwt = require("jsonwebtoken");
 const sendMail = require("../ultils/sendMail");
 const crypto = require("crypto");
+const makeToken = require("uniqid");
+
+// const register = asyncHandler(async (req, res) => {
+//   const { email, password, firstname, lastname } = req.body;
+//   if (!email || !password || !firstname || !lastname)
+//     return res.status(400).json({
+//       success: false,
+//       mes: "Missing inputs",
+//     });
+
+//   const user = await User.findOne({ email });
+//   if (user) throw new Error("User has existed!");
+//   else {
+//     const newUser = await User.create(req.body);
+//     return res.status(200).json({
+//       success: newUser ? true : false,
+//       mes: newUser
+//         ? "Register is successfully. Login now!"
+//         : "Something went wrong",
+//     });
+//   }
+// });
 
 const register = asyncHandler(async (req, res) => {
-  const { email, password, firstname, lastname } = req.body;
-  if (!email || !password || !firstname || !lastname)
+  const { email, password, firstname, lastname, mobile } = req.body;
+  if (!email || !password || !lastname || !firstname || !mobile) {
     return res.status(400).json({
       success: false,
       mes: "Missing inputs",
     });
+  }
 
   const user = await User.findOne({ email });
-  if (user) throw new Error("User has existed!");
+  if (user) throw new Error("User has existed");
   else {
-    const newUser = await User.create(req.body);
-    return res.status(200).json({
-      success: newUser ? true : false,
-      mes: newUser
-        ? "Register is successfully. Login now!"
-        : "Something went wrong",
+    const token = makeToken();
+    res.cookie(
+      "dataregister",
+      { ...req.body, token },
+      { httpOnly: true, maxAge: 15 * 60 * 1000 }
+    );
+
+    const html = `Please click the link below to complete the registration process. 
+  <a href="${process.env.URL_SERVER}/api/user/finalregister/${token}">Click here</a><br>This link will expire in 15 minutes...`;
+    await sendMail({
+      email,
+      html,
+      subject:
+        "Thank you for registering in Marseille. Please continue to the next step to complete your registration!",
     });
+    return res.json({
+      success: true,
+      mes: "Please check your email to activate account",
+    });
+  }
+});
+
+const finalRegister = asyncHandler(async (req, res) => {
+  const cookie = req.cookies;
+  const { token } = req.params;
+
+  if (!cookie || cookie?.dataregister?.token !== token) {
+    res.clearCookie('dataregister')
+    return res.redirect(`${process.env.CLIENT_URL}/finalregister/failed`);
+  }
+
+  const newUser = await User.create({
+      email: cookie?.dataregister?.email,
+      password: cookie?.dataregister?.password,
+      mobile: cookie?.dataregister?.mobile,
+      firstname: cookie?.dataregister?.firstname,
+      lastname: cookie?.dataregister?.lastname,
+  });
+  res.clearCookie('dataregister')
+  if (newUser) {
+      return res.redirect(`${process.env.CLIENT_URL}/finalregister/success`);
+  } else {
+      return res.redirect(`${process.env.CLIENT_URL}/finalregister/failed`);
   }
 });
 
@@ -136,7 +195,7 @@ const logout = asyncHandler(async (req, res) => {
 // Server check token xem có khớp với token mà server đã gửi trước đó không
 // Change password
 const forgotPassword = asyncHandler(async (req, res) => {
-  const { email } = req.query;
+  const { email } = req.body;
   if (!email) throw new Error("Missing email");
   const user = await User.findOne({ email });
   if (!user) throw new Error("User not found!");
@@ -145,12 +204,13 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
   // Điều kiện để gửi được mail là phải có gmail được bảo mật 2 lớp = phone
   // Sử dụng App Password
-  const html = `Please click the link below to change your password. This link will expire in 10 minutes. 
-  <a href = ${process.env.URL_SERVER}/api/user/reset-password/${resetToken}>Click here</a>`;
+  const html = `Please click the link below to change your password. This link will expire in 15 minutes. 
+  <a href = ${process.env.CLIENT_URL}/reset-password/${resetToken}>Click here</a>`;
 
   const data = {
     email,
     html,
+    subject: "Forgot password",
   };
   const result = await sendMail(data);
   return res.status(200).json({
@@ -255,13 +315,21 @@ const updateCart = asyncHandler(async (req, res) => {
   );
   if (alreadyProduct) {
     if (alreadyProduct.color === color) {
-      const response = await User.updateOne({cart: {$elemMatch: alreadyProduct}}, {$set: {"cart.$.quantity": quantity}}, {new: true})
+      const response = await User.updateOne(
+        { cart: { $elemMatch: alreadyProduct } },
+        { $set: { "cart.$.quantity": quantity } },
+        { new: true }
+      );
       return res.status(200).json({
         success: response ? true : false,
         updatedUser: response ? response : "Some thing went wrong",
       });
     } else {
-      const response = await User.findByIdAndUpdate( id, { $push: { cart: { product: pid, quantity, color } } }, { new: true });
+      const response = await User.findByIdAndUpdate(
+        id,
+        { $push: { cart: { product: pid, quantity, color } } },
+        { new: true }
+      );
       return res.status(200).json({
         success: response ? true : false,
         updatedUser: response ? response : "Some thing went wrong",
@@ -282,6 +350,7 @@ const updateCart = asyncHandler(async (req, res) => {
 
 module.exports = {
   register,
+  finalRegister,
   login,
   getCurrent,
   refreshAccessToken,
