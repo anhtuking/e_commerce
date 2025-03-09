@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken");
 const sendMail = require("../ultils/sendMail");
 const crypto = require("crypto");
 const makeToken = require("uniqid");
+const { response } = require("express");
 
 // const register = asyncHandler(async (req, res) => {
 //   const { email, password, firstname, lastname } = req.body;
@@ -44,49 +45,41 @@ const register = asyncHandler(async (req, res) => {
   if (user) throw new Error("User has existed");
   else {
     const token = makeToken();
-    res.cookie(
-      "dataregister",
-      { ...req.body, token },
-      { httpOnly: true, maxAge: 15 * 60 * 1000 }
-    );
-
-    const html = `Please click the link below to complete the registration process. 
-  <a href="${process.env.URL_SERVER}/api/user/finalregister/${token}">Click here</a><br>This link will expire in 15 minutes...`;
-    await sendMail({
+    const emailEdited = btoa(email) + '@' + token
+    const newUser = await User.create({
+      email: emailEdited, password, firstname, lastname, mobile
+    })
+    if (newUser){
+      const html = `<h2>Register code: </h2><br/><blockquote>${ token }</blockquote>`;
+      await sendMail({
       email,
       html,
       subject:
         "Thank you for registering in Marseille. Please continue to the next step to complete your registration!",
     });
+    }
+    setTimeout(async() => {
+      await User.deleteOne({email: emailEdited})
+    }, [900000])
     return res.json({
-      success: true,
-      mes: "Please check your email to activate account",
+      success: newUser ? true : false,
+      mes: newUser ? "Please check your email to activate account" : 'Something went wrong! Please try again later',
     });
   }
 });
 
 const finalRegister = asyncHandler(async (req, res) => {
-  const cookie = req.cookies;
+  // const cookie = req.cookies;
   const { token } = req.params;
-
-  if (!cookie || cookie?.dataregister?.token !== token) {
-    res.clearCookie('dataregister')
-    return res.redirect(`${process.env.CLIENT_URL}/finalregister/failed`);
+  const notActiveEmail = await User.findOne({email: new RegExp(`${token}$`)})
+  if(notActiveEmail){
+    notActiveEmail.email = atob(notActiveEmail?.email.split('@')[0])
+    notActiveEmail.save()
   }
-
-  const newUser = await User.create({
-      email: cookie?.dataregister?.email,
-      password: cookie?.dataregister?.password,
-      mobile: cookie?.dataregister?.mobile,
-      firstname: cookie?.dataregister?.firstname,
-      lastname: cookie?.dataregister?.lastname,
+  return res.json({
+    success: notActiveEmail ? true : false,
+    response: notActiveEmail ? 'Register is successfully. Login now!' : 'Something went wrong! Please try again later.',
   });
-  res.clearCookie('dataregister')
-  if (newUser) {
-      return res.redirect(`${process.env.CLIENT_URL}/finalregister/success`);
-  } else {
-      return res.redirect(`${process.env.CLIENT_URL}/finalregister/failed`);
-  }
 });
 
 const login = asyncHandler(async (req, res) => {
@@ -214,8 +207,10 @@ const forgotPassword = asyncHandler(async (req, res) => {
   };
   const result = await sendMail(data);
   return res.status(200).json({
-    success: true,
-    result,
+    success: result.response?.includes("OK") ? true : false,
+    mes: result.response?.includes("OK")
+      ? "Check your email now!"
+      : "Error! Please try again later.",
   });
 });
 
@@ -235,7 +230,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   user.password = password;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
-  user.passwordChangedAt = new Date(Date.now());
+  user.passwordChangedAt = Date.now();
   await user.save();
 
   return res.status(200).json({
