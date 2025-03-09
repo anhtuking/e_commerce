@@ -1,7 +1,7 @@
 /* eslint-disable react/style-prop-object */
 import React, { useState, useCallback, useEffect } from "react";
 import { InputField, Button } from "../../components";
-import { apiRegister, apiLogin, apiForgotPassword } from "../../api/user";
+import { apiRegister, apiLogin, apiForgotPassword, apiFinalRegister } from "../../api/user";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import path from "../../utils/path";
@@ -24,6 +24,7 @@ const Login = () => {
     password: "",
     mobile: "",
   });
+  const [isVerifiedEmail, setIsVerifiedEmail] = useState(false)
   const [invalidFields, setInvalidFields] = useState([]);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
@@ -37,6 +38,7 @@ const Login = () => {
       mobile: "",
     });
   };
+  const [token, setToken] = useState('')
   const [email, setEmail] = useState("");
   const handleForgotPassword = async () => {
     const response = await apiForgotPassword({ email });
@@ -58,15 +60,7 @@ const Login = () => {
       if (isRegister) {
         const response = await apiRegister(payload);
         if (response.success) {
-          Swal.fire({
-            title: "Congratulations",
-            text: response?.mes,
-            icon: "success",
-            confirmButtonText: "OK",
-          }).then(() => {
-            setIsRegister(false);
-            resetPayload();
-          });
+          setIsVerifiedEmail(true)
         } else {
           Swal.fire({
             title: "Oops!",
@@ -97,10 +91,43 @@ const Login = () => {
       }
     }
   }, [payload, isRegister, navigate, dispatch]);
-  return (
-    <div className="w-screen h-screen relative">
+
+  const finalRegister = async () => {
+    const response = await apiFinalRegister(token)
+    if (response.success){
+      Swal.fire({
+        title: "Congratulations",
+        text: response?.mes,
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+        setIsRegister(false);
+        resetPayload();
+      });
+    } else {
+      Swal.fire({
+        title: "Oops!",
+        text: response?.mes,
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+    setIsVerifiedEmail(false)
+    setToken('')
+  }
+
+  return (          
+    <div className="w-screen h-screen relative font-main2">
+      {isVerifiedEmail && <div className="absolute top-0 left-0 right-0 bottom-0 bg-overlay z-50 flex flex-col items-center justify-center">
+        <div className="bg-white w-[500px] rounded-md p-8 text-justify">
+          <h4>We have sent your registration code to your email. Please check your email and enter your code.</h4>
+          <input type="text" value={token} onChange={e => setToken(e.target.value)} className="p-2 w-[310px] border rounded-md outline-none mt-4" placeholder="Enter code"/>
+          <button type="button" className="px-4 py-2 bg-blue-500 font-semibold text-white rounded-md ml-10" onClick={finalRegister}>Submit</button>
+        </div>
+      </div>
+      }
       {isForgotPassword && (
-        <div className="absolute animate-slide-right top-0 left-0 bottom-0 right-0 bg-white flex flex-col items-center py-8 z-50">
+        <div className="absolute animate-slide-right top-0 left-0 bottom-0 right-0 bg-white flex flex-col items-center py-6 z-50">
           <div className="flex flex-col gap-4 font-main2">
             <label htmlFor="email">Enter your email:</label>
             <div className="relative w-[800px]">
