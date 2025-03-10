@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import icons from "../../utils/icons";
 import { validate } from "../../utils/helpers";
+import { Link } from "react-router-dom";
 
 const { FaEye, FaEyeSlash } = icons;
 
@@ -255,6 +256,7 @@ const Login = () => {
               </span>
             )}
           </div>
+          <Link className= 'text-blue-500 text-semibold font-main2 hover:uppercase hover:underline cursor-pointer' to = {`/${path.HOME}`}>our shop</Link>
         </div>
       </div>
     </div>

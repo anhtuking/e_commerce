@@ -14,14 +14,14 @@ const appSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getCategories.pending, (state) => {
-        state.loading = true;
+        state.isLoadings = true;
       })
       .addCase(getCategories.fulfilled, (state, action) => {
-        state.loading = false;
+        state.isLoadings = false;
         state.categories = action.payload; 
       })
       .addCase(getCategories.rejected, (state, action) => {
-        state.loading = false;
+        state.isLoadings = false;
         state.error = action.payload;
       });
   },

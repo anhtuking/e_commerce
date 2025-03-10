@@ -28,12 +28,13 @@ const Header = () => {
             </span>
             <span>Online Support 24/7</span>
           </div>
-          <div className="flex items-center justify-center gap-2 px-8">
+          <div className="flex items-center justify-center gap-2 px-8 cursor-pointer">
             <IoBagHandle size={25} color="red" />
             <span> 0 item(s)</span>
           </div>
-          <div className="flex items-center justify-center px-8">
+          <div className="flex items-center justify-center px-8 gap-2 cursor-pointer">
             <FaUserAlt size={24} color="red"/>
+            <span>Profile</span>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { FaPhoneAlt, FaUserAlt, FaFacebook, FaFacebookMessenger, FaTwitter, FaInstagramSquare, FaGoogle, FaDiscord, FaEye, FaEyeSlash  } from "react-icons/fa";
 import { MdEmail, MdOutlineStar, MdOutlineStarBorder } from "react-icons/md";
-import { IoBagHandle } from "react-icons/io5";
+import { IoBagHandle, IoLogOutOutline  } from "react-icons/io5";
 import { IoMdArrowDropright } from "react-icons/io";
 import { AiFillHome } from "react-icons/ai";
 import { FaHeart } from "react-icons/fa6";
@@ -26,6 +26,7 @@ const icons = {
     TiThMenuOutline,
     IoMdArrowDropright,
     GiPositionMarker,
+    IoLogOutOutline ,
 }
 
 export default icons

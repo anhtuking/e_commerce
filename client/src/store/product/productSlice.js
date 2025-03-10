@@ -13,15 +13,15 @@ const productSlice = createSlice({
     builder
       .addCase(getProducts.pending, (state) => {
         console.log(state)
-        state.loading = true;
+        state.isLoadings = true;
       })
       .addCase(getProducts.fulfilled, (state, action) => {
-        state.loading = false;
+        state.isLoadings = false;
         state.newProducts = action.payload; 
-        console.log(action.payload)
+        // console.log(action.payload)
       })
       .addCase(getProducts.rejected, (state, action) => {
-        state.loading = false;
+        state.isLoadings = false;
         state.errorMessage = action.payload.message;
       });
   },
