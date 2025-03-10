@@ -11,6 +11,8 @@ import { toast } from "react-toastify";
 import icons from "../../utils/icons";
 import { validate } from "../../utils/helpers";
 import { Link } from "react-router-dom";
+import banner_login from "../../assets/banner_login.png";
+import logo from "../../assets/logo.png";
 
 const { FaEye, FaEyeSlash } = icons;
 
@@ -164,12 +166,13 @@ const Login = () => {
           </div>
         </div>
       )}
+      {/* <div><img src={logo} alt="logo" className="w-[155px] h-[55px] flex flex-col items-center justify-center"/></div> */}
       <img
-        src="https://vietnguyenco.vn/wp-content/uploads/2018/08/bg-login2.jpg"
+        src={banner_login}
         alt=""
-        className="w-full h-full object-cover"
+        className="w-full h-full object-contain"
       />
-      <div className="absolute top-0 bottom-0 left-0 right-1/2 flex items-center justify-center font-main2">
+      <div className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center font-main2">
         <div className="p-8 bg-white flex flex-col items-center rounded-md min-w-[500px]">
           <h1 className="text-[28px] font-semibold text-main mb-8">
             {isRegister ? "Register" : "Login"}
@@ -256,7 +259,7 @@ const Login = () => {
               </span>
             )}
           </div>
-          <Link className= 'text-blue-500 text-semibold font-main2 hover:uppercase hover:underline cursor-pointer' to = {`/${path.HOME}`}>our shop</Link>
+          <Link className= 'text-main text-semibold font-main2 hover:uppercase hover:underline cursor-pointer' to = {`/${path.HOME}`}>our shop</Link>
         </div>
       </div>
     </div>
