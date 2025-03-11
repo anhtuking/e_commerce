@@ -1,6 +1,6 @@
 [
   {
-    "category": ["Home", "Smartphone"],
+    "category": ["Smartphone"],
     "name": "Xiaomi Redmi Note 14 Pro Plus 5G",
     "brand": "XIAOMI",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/d/i/dien-thoai-xiaomi-redmi-note-14-pro-plus-den.png",
@@ -36,7 +36,7 @@
     }
   },
   {
-    "category": ["Home", "Smartphone"],
+    "category": ["Smartphone"],
     "name": "Xiaomi 14T Pro",
     "brand": "XIAOMI",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/2/3/234_10__2.png",
@@ -72,7 +72,7 @@
     }
   },
   {
-    "category": ["Home", "Smartphone"],
+    "category": ["Smartphone"],
     "name": "vivo V30E",
     "brand": "VIVO",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/d/i/dien-thoai-vivo-v30e_2_.png",
@@ -104,7 +104,7 @@
     }
   },
   {
-    "category": ["Home", "Smartphone"],
+    "category": ["Smartphone"],
     "name": "iPhone 15 Pro Max",
     "brand": "APPLE",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/i/p/iphone-15-pro-max_3.png",
@@ -142,7 +142,7 @@
     }
   },
   {
-    "category": ["Home", "Smartphone"],
+    "category": ["Smartphone"],
     "name": "Samsung Galaxy S25 Ultra",
     "brand": "SAMSUNG",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/d/i/dien-thoai-samsung-galaxy-s25-ultra_3__4.png",
@@ -174,7 +174,7 @@
     }
   },
   {
-    "category": ["Home", "Smartphone"],
+    "category": ["Smartphone"],
     "name": "Samsung Galaxy Z Fold6",
     "brand": "SAMSUNG",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/i/m/image_1172_3.png",
@@ -209,7 +209,7 @@
     }
   },
   {
-    "category": ["Home", "Smartphone"],
+    "category": ["Smartphone"],
     "name": "OPPO Find X8",
     "brand": "OPPO",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/d/i/dien-thoai-oppo-find-x8-den_7__1.png",
@@ -242,7 +242,7 @@
     }
   },
   {
-    "category": ["Home", "Smartphone"],
+    "category": ["Smartphone"],
     "name": "iPhone 16 Pro Max",
     "brand": "Apple",
     "thumb": "https://cdn2.cellphones.com.vn/insecure/rs:fill:300:0/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-16-pro-max-titan-tu-nhien_2.png",
@@ -276,7 +276,7 @@
     }
   },
   {
-    "category": ["Home", "Smartphone"],
+    "category": ["Smartphone"],
     "name": "realme 13+ 5G",
     "brand": "Realme",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/r/e/realme-13-plus-5g_4_.jpg",
@@ -317,7 +317,7 @@
     }
   },
   {
-    "category": ["Home", "Smartphone"],
+    "category": ["Smartphone"],
     "name": "Samsung Galaxy S24 Ultra",
     "brand": "Samsung",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/s/s/ss-s24-timultra-22_1.png",
@@ -358,7 +358,7 @@
     }
   },
   {
-    "category": ["Home", "Tablet"],
+    "category": ["Tablet"],
     "name": "Xiaomi Pad 6S Pro Wifi 8GB 256GB",
     "brand": "XIAOMI",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/d/i/dien-thoai-itel-p55_96_.png",
@@ -395,7 +395,7 @@
     }
   },
   {
-    "category": ["Home", "Tablet"],
+    "category": ["Tablet"],
     "name": "iPad Pro M4",
     "brand": "iPad",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/f/r/frame_100_1_2__2_1_1_1_1_1_1_1.png",
@@ -428,7 +428,7 @@
     }
   },
   {
-    "category": ["Home", "Tablet"],
+    "category": ["Tablet"],
     "name": "Samsung Galaxy Tab S10 Ultra 5G",
     "brand": "SAMSUNG",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/m/a/may-tinh-bang-samsung-galaxy-tab-s10-plus-5g_3.png",
@@ -462,7 +462,7 @@
     }
   },
   {
-    "category": ["Home", "Tablet"],
+    "category": ["Tablet"],
     "name": "Huawei MatePad Pro",
     "brand": "Huawei",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/m/a/matepad_pro_18_.png",
@@ -494,7 +494,7 @@
     }
   },
   {
-    "category": ["Home", "Tablet"],
+    "category": ["Tablet"],
     "name": "Lenovo Tab M11 8GB 128GB ZADB0162VN",
     "brand": "LENOVO",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/m/a/may-tinh-bang-lenovo-tab-m11-8gb-128gb.png",
@@ -525,7 +525,7 @@
     }
   },
   {
-    "category": ["Home", "Tablet"],
+    "category": ["Tablet"],
     "name": "Huawei Matepad 11.5''S",
     "brand": "HUAWEI",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/m/a/may-tinh-bang-huawei-matepad-11-5-s_42_.png",
@@ -557,7 +557,7 @@
     }
   },
   {
-    "category": ["Home", "Tablet"],
+    "category": ["Tablet"],
     "name": "Samsung Galaxy Tab S10 Plus 5G",
     "brand": "Samsung",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/m/a/may-tinh-bang-samsung-galaxy-tab-s10-plus_4__1.png",
@@ -588,7 +588,7 @@
     }
   },
   {
-    "category": ["Home", "Tablet"],
+    "category": ["Tablet"],
     "name": "iPad Air 6 M2",
     "brand": "iPad",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/i/p/ipad-air-6-m2-13-inch-256gb-5g.jpg",
@@ -624,7 +624,7 @@
     }
   },
   {
-    "category": ["Home", "Tablet"],
+    "category": ["Tablet"],
     "name": "iPad Pro M4",
     "brand": "iPad",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/f/r/frame_100_1_2__3_1_1_1_1_1_1.png",
@@ -659,7 +659,7 @@
     }
   },
   {
-    "category": ["Home", "Laptop"],
+    "category": ["Laptop"],
     "name": "Lenovo Legion 7 16IRX9 83FD004MVN",
     "brand": "LENOVO",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/t/e/text_ng_n_-_2024-04-21t212610.523.png",
@@ -690,7 +690,7 @@
     }
   },
   {
-    "category": ["Home", "Laptop"],
+    "category": ["Laptop"],
     "name": "HP Envy X360 2IN1 14-FC0086TU A19BWPA",
     "brand": "HP",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/t/e/text_ng_n_18__6_34.png",
@@ -721,7 +721,7 @@
     }
   },
   {
-    "category": ["Home", "Laptop"],
+    "category": ["Laptop"],
     "name": "HP Pavilion 15-EG3112TU 8U6L9PA",
     "brand": "HP",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/t/e/text_ng_n_1__3_7.png",
@@ -752,7 +752,7 @@
     }
   },
   {
-    "category": ["Home", "Laptop"],
+    "category": ["Laptop"],
     "name": "Dell Latitude 5550 71047019",
     "brand": "DELL",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/t/e/text_ng_n_23__3_15.png",
@@ -784,7 +784,7 @@
     }
   },
   {
-    "category": ["Home", "Laptop"],
+    "category": ["Laptop"],
     "name": "ASUS ROG Zephyrus G16 GA605WV-QR146WS",
     "brand": "ASUS",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/t/e/text_ng_n_8__4_175_1_1.png",
@@ -815,7 +815,7 @@
     }
   },
   {
-    "category": ["Home", "Laptop"],
+    "category": ["Laptop"],
     "name": "MacBook Pro 16 M4 Max 16CPU 40GPU",
     "brand": "Mac",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/t/e/text_ng_n_1__6_142_1_1.png",
@@ -846,7 +846,7 @@
     }
   },
   {
-    "category": ["Home", "Laptop"],
+    "category": ["Laptop"],
     "name": "MacBook Pro 14 M4 Max 14CPU 32GPU",
     "brand": "Mac",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/t/e/text_ng_n_1__6_140_1.png",
@@ -877,7 +877,7 @@
     }
   },
   {
-    "category": ["Home", "Laptop"],
+    "category": ["Laptop"],
     "name": "Acer Swift 14 AI SF14-51-75VP",
     "brand": "ACER",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/t/e/text_ng_n_1__7_20_1.png",
@@ -908,7 +908,7 @@
     }
   },
   {
-    "category": ["Home", "Camera"],
+    "category": ["Camera"],
     "name": "USB SANDISK",
     "brand": "USB",
     "thumb": "https://digital-world-2.myshopify.com/cdn/shop/products/z4_1b6e3a93-aa84-4a15-8324-deab9b1d4711_1024x1024.jpg?v=1491404811",
@@ -936,7 +936,7 @@
     }
   },
   {
-    "category": ["Home", "Camera"],
+    "category": ["Camera"],
     "name": "SENNHEISER EZX 80",
     "brand": "SENNHEISER",
     "thumb": "https://digital-world-2.myshopify.com/cdn/shop/products/z1_2_1024x1024.jpg?v=1491404910",
@@ -964,7 +964,7 @@
     }
   },
   {
-    "category": ["Home", "Camera"],
+    "category": ["Camera"],
     "name": "SAMSUNG GEAR VR",
     "brand": "SAMSUNG",
     "thumb": "https://digital-world-2.myshopify.com/cdn/shop/products/z1_1_1024x1024.jpg?v=1491404913",
@@ -994,7 +994,7 @@
     }
   },
   {
-    "category": ["Home", "Camera"],
+    "category": ["Camera"],
     "name": "MOTOROLA MOTO 360 (2ND GEN)",
     "brand": "MOTOROLA",
     "thumb": "https://digital-world-2.myshopify.com/cdn/shop/products/Untitled-189_1024x1024.jpg?v=1491404918",
@@ -1033,7 +1033,7 @@
     }
   },
   {
-    "category": ["Home", "Camera"],
+    "category": ["Camera"],
     "name": "LOGITECH WIRELESS KEYBOARD MK240 NANO",
     "brand": "LOGITECH",
     "thumb": "https://digital-world-2.myshopify.com/cdn/shop/products/z6_1024x1024.jpg?v=1491404809",
@@ -1058,7 +1058,7 @@
     }
   },
   {
-    "category": ["Home", "Camera"],
+    "category": ["Camera"],
     "name": "LOGITECH MX ANYWHERE 2",
     "brand": "LOGITECH",
     "thumb": "https://digital-world-2.myshopify.com/cdn/shop/products/z1_377a4aa6-df39-466b-8234-d7c2f6f4ca1a_1024x1024.jpg?v=1491404814",
@@ -1091,7 +1091,7 @@
     }
   },
   {
-    "category": ["Home", "Camera"],
+    "category": ["Camera"],
     "name": "JBL CHARGE 3",
     "brand": "JBL",
     "thumb": "https://digital-world-2.myshopify.com/cdn/shop/products/z2_2_1024x1024.jpg?v=1491404907",
@@ -1123,7 +1123,7 @@
     }
   },
   {
-    "category": ["Home", "Camera"],
+    "category": ["Camera"],
     "name": "APPLE WATCH EDITION SERIES 2",
     "brand": "APPLE",
     "thumb": "https://digital-world-2.myshopify.com/cdn/shop/products/Untitled-123_1024x1024.jpg?v=1491404922",
@@ -1157,7 +1157,7 @@
     }
   },
   {
-    "category": ["Home", "Printer"],
+    "category": ["Printer"],
     "name": "HP Color Laser 150NW 4ZB95A",
     "brand": "HP",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/m/a/may-in-hp-color-laser-150nw_8_.png",
@@ -1183,7 +1183,7 @@
     }
   },
   {
-    "category": ["Home", "Printer"],
+    "category": ["Printer"],
     "name": "Laser Brother MFC-B7810DW",
     "brand": "Brother",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/t/e/text_ng_n_5__5_32.png",
@@ -1213,7 +1213,7 @@
     }
   },
   {
-    "category": ["Home", "Printer"],
+    "category": ["Printer"],
     "name": "Brother DCP-T720DW",
     "brand": "Brother",
     "thumb": "https://digital-world-2.myshopify.com/cdn/shop/products/z1_1_1024x1024.jpg?v=1491404913",
@@ -1242,7 +1242,7 @@
     }
   },
   {
-    "category": ["Home", "Printer"],
+    "category": ["Printer"],
     "name": "Laser Brother MFC-L2701D (COPY, FAX, SCAN)",
     "brand": "Brother",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/t/e/text_ng_n_14__5_13.png",
@@ -1272,7 +1272,7 @@
     }
   },
   {
-    "category": ["Home", "Printer"],
+    "category": ["Printer"],
     "name": "HP LaserJet MFP M236dw (9YF95A)",
     "brand": "HP",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/t/_/t_i_xu_ng_54__1_6.png",
@@ -1302,7 +1302,7 @@
     }
   },
   {
-    "category": ["Home", "Printer"],
+    "category": ["Printer"],
     "name": "HP Laser MFP 136W Multifunction 4ZB86A",
     "brand": "HP",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/t/e/text_ng_n_20__5_2_1.png",
@@ -1335,7 +1335,7 @@
     }
   },
   {
-    "category": ["Home", "Printer"],
+    "category": ["Printer"],
     "name": "A4 HPRT GT1",
     "brand": "HPRT",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/f/r/frame_1_27__1.png",
@@ -1367,7 +1367,7 @@
     }
   },
   {
-    "category": ["Home", "Printer"],
+    "category": ["Printer"],
     "name": "A4 HPRT FT800",
     "brand": "HPRT",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/g/r/group_415_10_.png",
@@ -1397,7 +1397,7 @@
     }
   },
   {
-    "category": ["Home", "Speaker"],
+    "category": ["Speaker"],
     "name": "USB SANDISK",
     "brand": "USB",
     "thumb": "https://digital-world-2.myshopify.com/cdn/shop/products/z4_1b6e3a93-aa84-4a15-8324-deab9b1d4711_1024x1024.jpg?v=1491404811",
@@ -1425,7 +1425,7 @@
     }
   },
   {
-    "category": ["Home", "Speaker"],
+    "category": ["Speaker"],
     "name": "SENNHEISER EZX 80",
     "brand": "SENNHEISER",
     "thumb": "https://digital-world-2.myshopify.com/cdn/shop/products/z1_2_1024x1024.jpg?v=1491404910",
@@ -1453,7 +1453,7 @@
     }
   },
   {
-    "category": ["Home", "Speaker"],
+    "category": ["Speaker"],
     "name": "SAMSUNG GEAR VR",
     "brand": "SAMSUNG",
     "thumb": "https://digital-world-2.myshopify.com/cdn/shop/products/z1_1_1024x1024.jpg?v=1491404913",
@@ -1483,7 +1483,7 @@
     }
   },
   {
-    "category": ["Home", "Speaker"],
+    "category": ["Speaker"],
     "name": "MOTOROLA MOTO 360 (2ND GEN)",
     "brand": "MOTOROLA",
     "thumb": "https://digital-world-2.myshopify.com/cdn/shop/products/Untitled-189_1024x1024.jpg?v=1491404918",
@@ -1522,7 +1522,7 @@
     }
   },
   {
-    "category": ["Home", "Speaker"],
+    "category": ["Speaker"],
     "name": "LOGITECH WIRELESS KEYBOARD MK240 NANO",
     "brand": "LOGITECH",
     "thumb": "https://digital-world-2.myshopify.com/cdn/shop/products/z6_1024x1024.jpg?v=1491404809",
@@ -1547,7 +1547,7 @@
     }
   },
   {
-    "category": ["Home", "Speaker"],
+    "category": ["Speaker"],
     "name": "LOGITECH MX ANYWHERE 2",
     "brand": "LOGITECH",
     "thumb": "https://digital-world-2.myshopify.com/cdn/shop/products/z1_377a4aa6-df39-466b-8234-d7c2f6f4ca1a_1024x1024.jpg?v=1491404814",
@@ -1580,7 +1580,7 @@
     }
   },
   {
-    "category": ["Home", "Speaker"],
+    "category": ["Speaker"],
     "name": "JBL CHARGE 3",
     "brand": "JBL",
     "thumb": "https://digital-world-2.myshopify.com/cdn/shop/products/z2_2_1024x1024.jpg?v=1491404907",
@@ -1612,7 +1612,7 @@
     }
   },
   {
-    "category": ["Home", "Speaker"],
+    "category": ["Speaker"],
     "name": "APPLE WATCH EDITION SERIES 2",
     "brand": "APPLE",
     "thumb": "https://digital-world-2.myshopify.com/cdn/shop/products/Untitled-123_1024x1024.jpg?v=1491404922",
@@ -1646,7 +1646,7 @@
     }
   },
   {
-    "category": ["Home", "Accessories"],
+    "category": ["Accessories"],
     "name": "Bluetooth Apple AirPods 4",
     "brand": "Bluetooth",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/a/i/airpods-4-2.png",
@@ -1677,7 +1677,7 @@
     }
   },
   {
-    "category": ["Home", "Accessories"],
+    "category": ["Accessories"],
     "name": "Logitech MX Master 2S",
     "brand": "Mouse",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/c/h/chuot-khong-day-logitech-mx-master-2s_3.png",
@@ -1709,7 +1709,7 @@
     }
   },
   {
-    "category": ["Home", "Accessories"],
+    "category": ["Accessories"],
     "name": "Apple Magic Keyboard 2",
     "brand": "Keyboard",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/m/a/magic-keyboard-2-phim-so-1_1.jpg",
@@ -1734,7 +1734,7 @@
     }
   },
   {
-    "category": ["Home", "Accessories"],
+    "category": ["Accessories"],
     "name": "Bose Headphones 700",
     "brand": "Headphone",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/t/a/tai-nghe-bose-headphone-700-chinh-hang_2.png",
@@ -1764,7 +1764,7 @@
     }
   },
   {
-    "category": ["Home", "Accessories"],
+    "category": ["Accessories"],
     "name": "Sandisk Extreme Pro V30 A2 200MB/S 1TB Micro SDXC Memory Card",
     "brand": "Memory card",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/t/h/the-nho-micro-sdxc-sandisk-extreme-pro-v30-a2-1tb-200mbs.png",
@@ -1791,7 +1791,7 @@
     }
   },
   {
-    "category": ["Home", "Accessories"],
+    "category": ["Accessories"],
     "name": "Ram PC Kingston Fury Beast RGB DDR5 6000MHz 64GB (2*32GB)",
     "brand": "Case",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/t/e/text_ng_n_17__7_30_1_1_1_1_1_1_1_1.png",
@@ -1821,7 +1821,7 @@
     }
   },
   {
-    "category": ["Home", "Accessories"],
+    "category": ["Accessories"],
     "name": "Bluetooth Apple AirPods Pro 2 2023 USB-C",
     "brand": "USB",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/a/p/apple-airpods-pro-2-usb-c_8_.png",
@@ -1851,7 +1851,7 @@
     }
   },
   {
-    "category": ["Home", "Accessories"],
+    "category": ["Accessories"],
     "name": "Ram Corsair Dominator Titanium RGB DDR5 6000MT/S 32GB",
     "brand": "Case",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/r/a/ram-corsair-dominator-titanium-rgb-ddr5-6000mt-s-32gb_4_.png",
@@ -1884,7 +1884,7 @@
     }
   },
   {
-    "category": ["Home", "Television"],
+    "category": ["Television"],
     "name": "Google Tivi AQUA QLED 4K 75 inch 2024 (AQT75S800UX)",
     "brand": "Aqua",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/g/o/google-tivi-aqua-qled-aqt75s800ux-4k-75-inch_2_.png",
@@ -1918,7 +1918,7 @@
     }
   },
   {
-    "category": ["Home", "Television"],
+    "category": ["Television"],
     "name": "Google Tivi TCL QLED 4K 98 inch 2024 (98C655)",
     "brand": "TCL",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/g/o/google-tivi-tcl-qled-98c655-4k-98-inch-2024.png",
@@ -1951,7 +1951,7 @@
     }
   },
   {
-    "category": ["Home", "Television"],
+    "category": ["Television"],
     "name": "Xiaomi Max 2025 100 N36Z",
     "brand": "Xiaomi",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/g/o/google-tivi-xiaomi-max-100-inch-n36z-2025.png",
@@ -1986,7 +1986,7 @@
     }
   },
   {
-    "category": ["Home", "Television"],
+    "category": ["Television"],
     "name": "Smart Tivi LG OLED Evo 4K 83 inch 2024 (83C4PSA)",
     "brand": "LG",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/s/m/smart-tivi-lg-oled-evo-83c4psa-4k-83-inch-2024.png",
@@ -2027,7 +2027,7 @@
     }
   },
   {
-    "category": ["Home", "Television"],
+    "category": ["Television"],
     "name": "Google Tivi Sony 4K 85 inch (K-85S30)",
     "brand": "Sony",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/g/o/google-tivi-sony-k-85s30-4k-85-inch.png",
@@ -2060,7 +2060,7 @@
     }
   },
   {
-    "category": ["Home", "Television"],
+    "category": ["Television"],
     "name": "Smart Tivi Sony 4K 77 inch XR-77A80K VN3",
     "brand": "Sony",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/1/_/1_187_3.png",
@@ -2096,7 +2096,7 @@
     }
   },
   {
-    "category": ["Home", "Television"],
+    "category": ["Television"],
     "name": "Smart Tivi Samsung Neo QLED 8K 85 inch 2024 (85QN900D)",
     "brand": "Samsung",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/s/m/smart-tivi-samsung-neo-qled-85qn900d-8k-85-inch-2024.png",
@@ -2133,7 +2133,7 @@
     }
   },
   {
-    "category": ["Home", "Television"],
+    "category": ["Television"],
     "name": "Smart Tivi Samsung Neo QLED 8K 85 inch 85QN900B",
     "brand": "Samsung",
     "thumb": "https://cdn2.cellphones.com.vn/x/media/catalog/product/1/_/1_74_3.jpg",
