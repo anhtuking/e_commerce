@@ -6,6 +6,13 @@ module.exports = {
       main: ["Poppins", "sans-serif"],
       main2: ["Roboto Mono", "monospace"],
     },
+    listStyleType: {
+      none: 'none',
+      disc: 'disc',
+      decimal: 'decimal',
+      square: 'square',
+      roman: 'upper-roman',
+    },
     extend: {
       width: {
         main: "1220px",

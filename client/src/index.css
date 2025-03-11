@@ -36,7 +36,7 @@ button.slick-prev::before{
     align-items: center;
 }
 
-.product-item {
+.border-item {
     border: 1px solid rgb(180, 180, 180); 
     border-radius: 8px; 
     padding: 10px;
@@ -50,4 +50,8 @@ button.slick-prev::before{
 
 .animate-blink {
     animation: blink 0.5s infinite;
+}
+
+input {
+    -webkit-appearance: none;
 }

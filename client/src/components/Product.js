@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 const {FaEye, TiThMenuOutline, FaHeart} = icons
 
-const Product = ({ productData, isNew }) => {
+const Product = ({ productData, isNew, normal }) => {
   const [isShowOption, setIsShowOption] = useState(false)
   return (
     <div className="w-full text-base px-[10px]">
@@ -32,11 +32,11 @@ const Product = ({ productData, isNew }) => {
             alt=""
             className="w-[270px] h-[250px] object-contain mx-auto"
           />
-          <img
+          {!normal && <img
             src={isNew ? tagnew : trending}
             alt=""
             className="absolute top-[-15px] right-[-15px] w-[70px] h-[25px] object-cover"
-          ></img> 
+          ></img>} 
         </div>
         <div className="flex flex-col gap-2 mt-[15px] items-center w-full">
           <span className="flex h-4">{renderStarFromNumber(productData?.totalRatings)?.map((el, index) => (

@@ -1,17 +1,13 @@
 import React, {memo} from 'react';
 
-const Button = ({name, handleOnClick, style, iconsBefore, iconsAfter, fw}) => {
+const Button = ({children, handleOnClick, style, fw}) => {
     return (
         <button
             type='button'
             className={style   ? style : `px-4 py-2 rounded-md text-white bg-main text-semibold my-2 ${fw ? 'w-full' : 'w-fix'}`}
             onClick={() => {handleOnClick && handleOnClick()}}
         >
-            {iconsBefore}
-            <span>
-                {name}
-            </span>
-            {iconsAfter}
+        {children}
         </button>
     )
 }

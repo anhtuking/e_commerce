@@ -1,30 +1,33 @@
-import React, {memo} from 'react';
+import React, { memo } from "react";
 import Slider from "react-slick";
-import {Product} from './'
+import { Product } from "./";
 
 var settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-  };
+  dots: false,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 4,
+  slidesToScroll: 1,
+};
 
-const CustomSlider = ({products, activeTab}) => {
-    return (
-        <>
-        {products && <Slider {...settings}>
+const CustomSlider = ({ products, activeTab, normal }) => {
+  return (
+    <>
+      {products && (
+        <Slider className="custom-slider" {...settings}>
           {products?.map((el) => (
             <Product
               key={el._id}
               pid={el._id}
               productData={el}
               isNew={activeTab === 1 ? false : true}
+              normal={normal}
             />
           ))}
-        </Slider>}
-        </>
-    )
-}
+        </Slider>
+      )}
+    </>
+  );
+};
 
-export default memo(CustomSlider)
+export default memo(CustomSlider);
