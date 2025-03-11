@@ -37,8 +37,8 @@ const getAllProducts = asyncHandler(async (req, res) => {
   const formatedQueries = JSON.parse(queryString);
 
   // Filtering
-  if (queries?.title)
-    formatedQueries.title = { $regex: queries.title, $options: "i" }; // 'i': không phân biệt hoa, thường
+  if (queries?.title) formatedQueries.title = { $regex: queries.title, $options: "i" }; // 'i': không phân biệt hoa, thường
+  if (queries?.category) formatedQueries.category = { $regex: queries.category, $options: 'i'}
   let queryCommand = Product.find(formatedQueries);
 
   // Sorting

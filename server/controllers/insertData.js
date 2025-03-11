@@ -9,10 +9,10 @@ const fn = async (product) => {
     await Product.create({
         title: product?.name,
         slug: slugify(product?.name) + "-" + Math.round(Math.random() * 100),
-        description: product?.description?.join(", "), 
+        description: product?.description, 
         brand: product?.brand,
         price: parseFloat(product?.price.replace(/[^\d,]/g, '').replace(',', '.')), 
-        category: product?.category.join(" > "),
+        category: product?.category?.[0] || "",
         quantity: Math.floor(Math.random() * 1000) + 1, 
         sold: Math.floor(Math.random() * 100), 
         images: product?.images,
