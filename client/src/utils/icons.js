@@ -9,6 +9,7 @@ import {
   FaDiscord,
   FaEye,
   FaEyeSlash,
+  FaChevronDown
 } from "react-icons/fa";
 import { MdEmail, MdOutlineStar, MdOutlineStarBorder } from "react-icons/md";
 import { IoBagHandle, IoLogOutOutline } from "react-icons/io5";
@@ -51,6 +52,7 @@ const icons = {
   FaReply,
   FaShieldHalved,
   FaTty,
+  FaChevronDown,
 };
 
 export default icons;

@@ -142,13 +142,6 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <button
-                type="button"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <FaEyeSlash size={25} /> : <FaEye size={25} />}
-              </button>
             </div>
             <div className="flex items-center justify-end w-full gap-4 font-main2">
               <Button
@@ -213,7 +206,7 @@ const Login = () => {
             />
             <button
               type="button"
-              className="absolute right-2 top-1/3 transform -translate-y-1/2"
+              className="absolute right-2 top-1/2 transform -translate-y-3"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}

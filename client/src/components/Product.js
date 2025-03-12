@@ -11,7 +11,7 @@ const {FaEye, TiThMenuOutline, FaHeart} = icons
 const Product = ({ productData, isNew, normal }) => {
   const [isShowOption, setIsShowOption] = useState(false)
   return (
-    <div className="w-full text-base px-[10px]">
+    <div className="w-full text-base px-[10px] font-main2">
       <Link 
         className="w-full border p-[15px] flex flex-col items-center" 
         to={`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData?.title}`}
