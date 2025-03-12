@@ -3,6 +3,7 @@ import icons from "../utils/icons";
 import { colors } from "../utils/contants";
 import { createSearchParams, useNavigate, useParams } from "react-router-dom";
 import { apiGetProducts } from "../api";
+import useDebounce from "../hooks/useDebounce";
 
 const { FaChevronDown } = icons;
 
@@ -16,7 +17,10 @@ const SearchItems = ({
   const { category } = useParams();
   const [selected, setSelected] = useState([]);
   const [price, setPrice] = useState([0,0])
-  const [bestPrice , setBestPrice ] = useState(null)
+  const [bestPrice , setBestPrice ] = useState({
+    from: '',
+    to: ''
+  })
   const handleSelect = (e) => {
     changeActiveFilter(null);
     const alreadyEl = selected.find((el) => el === e.target.value);
@@ -46,19 +50,26 @@ const SearchItems = ({
     if (type === 'input') fetchBestPriceProduct()
   }, [type])
 
-//   useEffect(() => {
-//     const validPrice = price.filter(el => +el > 0)
-//     if (price.from > 0) {
-//         navigate({
-//           pathname: `/${category}`,
-//           search: createSearchParams({
-//             color: validPrice,
-//           }).toString(),
-//         });
-//       } else {
-//         navigate(`/${category}`);
-//       }
-//   }, [price])
+  useEffect(() => { 
+    if (price.from > price.to) alert('Price from cannot be higher than price to!')
+   }, [price])
+
+  const debouncePriceFrom = useDebounce(price.from, 500)
+  const debouncePriceTo = useDebounce(price.to, 500)
+  useEffect(() => {
+    const data = {}
+    if (Number(price.from) > 0) data.from = price.from
+    if (Number(price.to) > 0) data.to = price.to
+    
+    // if (price.from > 0) {
+        navigate({
+          pathname: `/${category}`,
+          search: createSearchParams(data).toString(),
+        });
+      // } else {
+      //   navigate(`/${category}`);
+      // }
+  }, [debouncePriceFrom, debouncePriceTo,])
 
   return (
     <div
@@ -69,14 +80,15 @@ const SearchItems = ({
       <FaChevronDown />
       {activeClick === name && (
         <div className="absolute z-10 top-[calc(100%+1px)] left-0 w-fit p-4 border-item bg-[#dad6d6] min-w-[150px]">
+          {/* filter color */}
           {type === "checkbox" && (
             <div className="">
               <div className="p-4 items-center justify-between flex gap-8 border-b">
-                <span className="whitespace-nowrap text-black">
+                <span className="whitespace-nowrap text-black border-item">
                   {`${selected.length} selected`}
                 </span>
                 <span
-                  className="underline hover:text-black cursor-pointer"
+                  className="border-item hover:text-black cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelected([]);
@@ -86,7 +98,7 @@ const SearchItems = ({
                 </span>
               </div>
               <div
-                className="flex flex-col gap-3 mt-4"
+                className="grid grid-cols-2 gap-3 mt-4 ml-5"
                 onClick={(e) => e.stopPropagation()}
               >
                 {colors.map((el, index) => (
@@ -109,30 +121,36 @@ const SearchItems = ({
               </div>
             </div>
           )}
+          {/* filter price  */}
           {type === 'input' && <div onClick={e=> e.stopPropagation()}>
             <div className="p-4 items-center justify-between flex gap-8 border-b" >
-                <span className="whitespace-nowrap text-gray-800">
-                    {`The highest price is ${Number(bestPrice).toLocaleString()} VND`}
-                    {`You can filter products by price here.`}
-                </span>
+                <div className="flex flex-col ">
+                  <span className="whitespace-nowrap text-black">
+                      {`The highest price is <${Number(bestPrice).toLocaleString()}> VND`}
+                  </span>
+                  <span className="whitespace-nowrap text-gray-600">
+                      {`You can filter products by price here.`}
+                  </span>
+                </div>
                 <span
-                  className="underline hover:text-black cursor-pointer"
+                  className="border-item hover:text-black cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelected([]);
+                    setPrice({from: '', to: ''})
+                    changeActiveFilter(null)
                   }}
                 >
                   Reset
                 </span>
               </div>
               <div className="flex items-center gap-2 p-2">
-                <div className="flex items-center gap-2">
-                    <label htmlFor="from">From</label>
-                    <input className="form-input" type="number" id="from" value={price[0]} onChange={e => setPrice(prev => prev.map((el, index) => index === 0 ? e.target.value : el))}/>
+                <div className="flex items-center gap-2 font-main2 text-black font-semibold">
+                    <label  htmlFor="from">From:</label>
+                    <input className="form-input" type="number" id="from" value={price.from} onChange={e => setPrice(prev => ({...prev, from: e.target.value}))}/>
                 </div>
-                <div className="flex items-center gap-2">
-                    <label htmlFor="to">To</label>
-                    <input className="form-input" type="number" id="to" value={price[1]} onChange={e => setPrice(prev => prev.map((el, index) => index === 1 ? e.target.value : el))}/>
+                <div className="flex items-center gap-2 font-main2 text-black font-semibold">
+                    <label htmlFor="to">To:</label>
+                    <input className="form-input" type="number" id="to" value={price.to} onChange={e => setPrice(prev => ({...prev, to: e.target.value}))}/>
                 </div>
               </div>
             </div>}
