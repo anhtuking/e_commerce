@@ -14,7 +14,13 @@ const createProduct = asyncHandler(async (req, res) => {
 
 const getProduct = asyncHandler(async (req, res) => {
   const { pid } = req.params;
-  const product = await Product.findById(pid);
+  const product = await Product.findById(pid).populate({
+    path: 'rating',
+    populate: {
+      path: 'postedBy',
+      select: 'firstname lastname avatar'
+    }
+  });
   return res.status(200).json({
     success: product ? true : false,
     dataProduct: product ? product : "Cannot get product",
@@ -104,7 +110,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
 const ratingProduct = asyncHandler(async (req, res) => {
   const { id } = req.user;
-  const { star, comment, pid } = req.body;
+  const { star, comment, pid, updatedAt } = req.body;
   if (!star || !pid) throw new Error("Missing value");
   const rating = await Product.findById(pid);
   // dùng hàm some để check uid === id => true, ngược lại => false
@@ -120,6 +126,7 @@ const ratingProduct = asyncHandler(async (req, res) => {
         $set: {
           "ratings.$.star": star,
           "ratings.$.comment": comment,
+          "ratings.$.updatedAt": updatedAt,
         },
       },
       {
@@ -131,7 +138,7 @@ const ratingProduct = asyncHandler(async (req, res) => {
     await Product.findByIdAndUpdate(
       pid,
       {
-        $push: { ratings: { star, comment, postedBy: id } },
+        $push: { ratings: { star, comment, postedBy: id, updatedAt } },
       },
       {
         new: true,
