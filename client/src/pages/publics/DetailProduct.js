@@ -18,28 +18,48 @@ var settings = {
 const DetailProduct = () => {
     const {pid, title, category} = useParams()
     const [product, setProduct] = useState(null)
+    const [currentImage, setCurrentImage] = useState(null)
     const [quantity, setQuantity] = useState(1)
     const [relatedProduct, setRelatedProduct] = useState(null)
+    const [update, setUpdate] = useState(false)
+
     const fetchProductData = async () => {
         const response = await apiGetProduct(pid)
-        if (response.success) setProduct(response.dataProduct)
+        if (response.success) {
+            setProduct(response.dataProduct)
+            setCurrentImage(response.dataProduct?.thumb)
+        }
     } 
     const fetchProducts = async () => {
         const response = await apiGetProducts({category})
         if (response.success) setRelatedProduct(response.dataProducts)
     }
+
+    const rerender = useCallback(() => { 
+        setUpdate(!update)
+     }, [update])
+
     useEffect(() => {
         if(pid) {
             fetchProductData()
             fetchProducts()
         }
+        window.scroll(0,0)
     }, [pid])
+     useEffect(() => {
+        if(pid) fetchProductData()
+    }, [update])
+
     const handleQuantity = useCallback((number) => {
         console.log(number);
         if (!Number(number) || Number(number) < 1) {
             return
         } else setQuantity(number)
     }, [quantity])
+    const handleClickImages = (e, el) => { 
+        e.stopPropagation()
+        setCurrentImage(el)
+     }
     const handleChangeQuantity = useCallback ((flag) => {
         if (flag === 'minus' && quantity === 1) return
         if (flag === 'minus') setQuantity(prev => +prev - 1)
@@ -60,10 +80,10 @@ const DetailProduct = () => {
                             smallImage: {
                                 alt: '',
                                 isFluidWidth: true,
-                                src: product?.thumb
+                                src: currentImage
                             },
                             largeImage: {
-                                src: product?.thumb,
+                                src: currentImage,
                                 width: 1800,
                                 height: 1500
                             }
@@ -72,8 +92,8 @@ const DetailProduct = () => {
                     <div className='w-[458px]'>
                         <Slider {...settings}>
                         {product?.images?.map((el, index) => (
-                            <div className='flex w-full gap-2'key={el}>
-                                <img key={index} src={el} alt={`sub-product-${index}`} className='h-[140px] w-[140px] object-cover border-items'/>
+                            <div className='flex w-full gap-2 cursor-pointer'key={el}>
+                                <img onClick={e => handleClickImages(e, el)} src={el} alt={`sub-product-${index}`} className='h-[140px] w-[140px] object-cover border-items'/>
                             </div>
                         ))}
                         </Slider>
@@ -123,7 +143,7 @@ const DetailProduct = () => {
                 </div>
             </div>
             <div className='w-main m-auto mt-8'>
-                <ProductInformation/>
+                <ProductInformation totalRatings={product?.totalRatings} ratings={product?.ratings} nameProduct={product?.title} pid={product?._id} rerender={rerender}/>
             </div>
             <div className='w-main m-auto mt-8'>
                 <h3 className='text-[20px] font-semibold py-[15px] border-b-2 border-main'>OTHER CUSTOMER ALSO BUY</h3>

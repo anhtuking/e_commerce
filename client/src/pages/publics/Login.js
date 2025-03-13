@@ -1,7 +1,12 @@
 /* eslint-disable react/style-prop-object */
 import React, { useState, useCallback, useEffect } from "react";
 import { InputField, Button } from "../../components";
-import { apiRegister, apiLogin, apiForgotPassword, apiFinalRegister } from "../../api/user";
+import {
+  apiRegister,
+  apiLogin,
+  apiForgotPassword,
+  apiFinalRegister,
+} from "../../api/user";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import path from "../../utils/path";
@@ -27,7 +32,7 @@ const Login = () => {
     password: "",
     mobile: "",
   });
-  const [isVerifiedEmail, setIsVerifiedEmail] = useState(false)
+  const [isVerifiedEmail, setIsVerifiedEmail] = useState(false);
   const [invalidFields, setInvalidFields] = useState([]);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
@@ -41,7 +46,7 @@ const Login = () => {
       mobile: "",
     });
   };
-  const [token, setToken] = useState('')
+  const [token, setToken] = useState("");
   const [email, setEmail] = useState("");
   const handleForgotPassword = async () => {
     const response = await apiForgotPassword({ email });
@@ -58,12 +63,14 @@ const Login = () => {
   const handleSubmit = useCallback(async () => {
     const { firstname, lastname, mobile, ...data } = payload;
 
-    const invalids = isRegister ? validate(payload, setInvalidFields) : validate(data, setInvalidFields);
+    const invalids = isRegister
+      ? validate(payload, setInvalidFields)
+      : validate(data, setInvalidFields);
     if (invalids === 0) {
       if (isRegister) {
         const response = await apiRegister(payload);
         if (response.success) {
-          setIsVerifiedEmail(true)
+          setIsVerifiedEmail(true);
         } else {
           Swal.fire({
             title: "Oops!",
@@ -96,8 +103,8 @@ const Login = () => {
   }, [payload, isRegister, navigate, dispatch]);
 
   const finalRegister = async () => {
-    const response = await apiFinalRegister(token)
-    if (response.success){
+    const response = await apiFinalRegister(token);
+    if (response.success) {
       Swal.fire({
         title: "Congratulations",
         text: response?.mes,
@@ -115,20 +122,36 @@ const Login = () => {
         confirmButtonText: "OK",
       });
     }
-    setIsVerifiedEmail(false)
-    setToken('')
-  }
+    setIsVerifiedEmail(false);
+    setToken("");
+  };
 
-  return (          
-    <div className="w-screen h-screen relative font-main2">
-      {isVerifiedEmail && <div className="absolute top-0 left-0 right-0 bottom-0 bg-overlay z-50 flex flex-col items-center justify-center">
-        <div className="bg-white w-[500px] rounded-md p-8 text-justify">
-          <h4>We have sent your registration code to your email. Please check your email and enter your code.</h4>
-          <input type="text" value={token} onChange={e => setToken(e.target.value)} className="p-2 w-[310px] border rounded-md outline-none mt-4" placeholder="Enter code"/>
-          <button type="button" className="px-4 py-2 bg-blue-500 font-semibold text-white rounded-md ml-10" onClick={finalRegister}>Submit</button>
+  return (
+    <div className="flex items-start justify-center min-h-screen mt-0 pt-0 relative font-main2">
+      {isVerifiedEmail && (
+        <div className="absolute top-0 left-0 right-0 bottom-0 bg-overlay z-50 flex flex-col items-center justify-center">
+          <div className="bg-white w-[500px] rounded-md p-8 text-justify">
+            <h4>
+              We have sent your registration code to your email. Please check
+              your email and enter your code.
+            </h4>
+            <input
+              type="text"
+              value={token}
+              onChange={(e) => setToken(e.target.value)}
+              className="p-2 w-[310px] border rounded-md outline-none mt-4"
+              placeholder="Enter code"
+            />
+            <button
+              type="button"
+              className="px-4 py-2 bg-blue-500 font-semibold text-white rounded-md ml-10"
+              onClick={finalRegister}
+            >
+              Submit
+            </button>
+          </div>
         </div>
-      </div>
-      }
+      )}
       {isForgotPassword && (
         <div className="absolute animate-slide-right top-0 left-0 bottom-0 right-0 bg-white flex flex-col items-center py-6 z-50">
           <div className="flex flex-col gap-4 font-main2">
@@ -159,15 +182,14 @@ const Login = () => {
           </div>
         </div>
       )}
-      {/* <div><img src={logo} alt="logo" className="w-[155px] h-[55px] flex flex-col items-center justify-center"/></div> */}
-      <img
-        src={banner_login}
-        alt=""
-        className="w-full h-full object-contain"
-      />
-      <div className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center font-main2">
+      <img src={banner_login} alt="" className="w-full h-full object-contain" />
+      <div className="absolute top-0 bottom-0 left-0 right-0 flex flex-col items-center justify-center font-main2">
+        <div className="flex items-center justify-center mb-0">
+          <img src={logo} alt="Logo" className="logo" />
+        </div>
+        <div className="mb-2">Welcome to Marseille!</div>
         <div className="p-8 bg-white flex flex-col items-center rounded-md min-w-[500px]">
-          <h1 className="text-[28px] font-semibold text-main mb-8">
+          <h1 className="text-[28px] font-semibold text-main2 mb-8">
             {isRegister ? "Register" : "Login"}
           </h1>
           {isRegister && (
@@ -221,11 +243,9 @@ const Login = () => {
               setInvalidFields={setInvalidFields}
             />
           )}
-          <Button
-            name={isRegister ? "Sign Up" : "Sign In"}
-            handleOnClick={handleSubmit}
-            fw
-          />
+          <Button handleOnClick={handleSubmit} fw>
+            {isRegister ? "Sign Up" : "Sign In"}
+          </Button>
           <div className="flex items-center justify-between my-2 w-full text-sm cursor-pointer">
             {!isRegister && (
               <span
@@ -252,7 +272,12 @@ const Login = () => {
               </span>
             )}
           </div>
-          <Link className= 'text-main text-semibold font-main2 hover:uppercase hover:underline cursor-pointer' to = {`/${path.HOME}`}>our shop</Link>
+          <Link
+            className="text-main2 text-semibold font-main2 hover:uppercase hover:underline cursor-pointer"
+            to={`/${path.HOME}`}
+          >
+            our shop
+          </Link>
         </div>
       </div>
     </div>

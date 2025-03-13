@@ -35,7 +35,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="h-[330px] w-full bg-[#363636] flex items-center justify-center text-white text-[13pX] font-main2 font-bold">
+      <div className="h-[300px] w-full bg-[#363636] flex items-center justify-center text-white text-[13pX] font-main2 font-bold">
         <div className="w-main flex items-center gap-x-16">
           <div className="flex-22 flex flex-col gap-2">
             <h3 className="mb-[20px] text-[15px] font-medium border-l-2 border-main pl-[15px] ">
@@ -137,7 +137,10 @@ const Footer = () => {
             alt=""
           />
         </div>
-        <div className="text-white font-main2 flex items-center justify-center pt-4 pb-4 font-bold">
+        <div className="text-white font-main2 flex items-center justify-center pt-4 pb-1 font-semibold">
+          Wish customers have the best service experience in Marseille
+        </div>
+        <div className="text-white font-main2 flex items-center justify-center pt-1 pb-4 font-semibold">
           Copyright © 2025 ATKING theme. Created by ATKING
         </div>
       </div>

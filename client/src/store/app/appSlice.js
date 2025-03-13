@@ -1,16 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getCategories } from "./asyncAction";
 
-const initialState = {
-  categories: [],
-  loading: false,
-  error: null,
-};
-
 const appSlice = createSlice({
   name: "app",
-  initialState,
-  reducers: {},
+  initialState: {
+    categories: null,
+    loading: false,
+    error: null,
+    isShowModal: false,
+    modalChildren: null,
+  },
+  reducers: {
+    showModal: (state, action) => {
+      state.isShowModal = action.payload.isShowModal;
+      state.modalChildren = action.payload.modalChildren;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getCategories.pending, (state) => {
@@ -18,7 +23,7 @@ const appSlice = createSlice({
       })
       .addCase(getCategories.fulfilled, (state, action) => {
         state.isLoadings = false;
-        state.categories = action.payload; 
+        state.categories = action.payload;
       })
       .addCase(getCategories.rejected, (state, action) => {
         state.isLoadings = false;
@@ -26,5 +31,7 @@ const appSlice = createSlice({
       });
   },
 });
+
+export const { showModal } = appSlice.actions;
 
 export default appSlice.reducer;
