@@ -35,11 +35,19 @@ const getAllProducts = asyncHandler(async (req, res) => {
     (matchedEl) => `$${matchedEl}`
   );
   const formatedQueries = JSON.parse(queryString);
+  let colorQueryObject = {}
 
   // Filtering
   if (queries?.title) formatedQueries.title = { $regex: queries.title, $options: "i" }; // 'i': không phân biệt hoa, thường
   if (queries?.category) formatedQueries.category = { $regex: queries.category, $options: 'i'}
-  let queryCommand = Product.find(formatedQueries);
+  if (queries?.color) {
+    delete formatedQueries.color
+    const colorArr = queries.color?.split(',')
+    const colorQuery = colorArr.map(el => ({color: {$regex: el, $options: 'i'}}))
+    colorQueryObject= {$or: colorQuery}
+  }
+  const q = {...colorQueryObject, ...formatedQueries}
+  let queryCommand = Product.find(q);
 
   // Sorting
   if (req.query.sort) {
@@ -63,7 +71,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
   try {
     // Thực thi truy vấn
     const response = await queryCommand;
-    const counts = await Product.countDocuments(formatedQueries);
+    const counts = await Product.countDocuments(q);
 
     return res.status(200).json({
       success: true,
@@ -140,7 +148,7 @@ const ratingProduct = asyncHandler(async (req, res) => {
   await updatedProduct.save()
 
   return res.status(200).json({
-    status: true,
+    success: true,
     updatedProduct
   });
 });
