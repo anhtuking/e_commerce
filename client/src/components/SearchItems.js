@@ -1,7 +1,12 @@
 import React, { memo, useEffect, useState } from "react";
 import icons from "../utils/icons";
 import { colors } from "../utils/contants";
-import { createSearchParams, useNavigate, useParams } from "react-router-dom";
+import {
+  createSearchParams,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { apiGetProducts } from "../api";
 import useDebounce from "../hooks/useDebounce";
 
@@ -15,12 +20,13 @@ const SearchItems = ({
 }) => {
   const navigate = useNavigate();
   const { category } = useParams();
+  const [params] = useSearchParams();
   const [selected, setSelected] = useState([]);
-  const [price, setPrice] = useState([0,0])
-  const [bestPrice , setBestPrice ] = useState({
-    from: '',
-    to: ''
-  })
+  const [price, setPrice] = useState([0, 0]);
+  const [bestPrice, setBestPrice] = useState({
+    from: "",
+    to: "",
+  });
   const handleSelect = (e) => {
     changeActiveFilter(null);
     const alreadyEl = selected.find((el) => el === e.target.value);
@@ -29,47 +35,52 @@ const SearchItems = ({
     else setSelected((prev) => [...prev, e.target.value]);
   };
   const fetchBestPriceProduct = async () => {
-    const response = await apiGetProducts({sort: '-price', limit: 1})
-    if (response.success) setBestPrice(response.dataProducts[0]?.price)
-  }
+    const response = await apiGetProducts({ sort: "-price", limit: 1 });
+    if (response.success) setBestPrice(response.dataProducts[0]?.price);
+  };
 
   useEffect(() => {
-    if (selected.length > 0) {
+      let param = [];
+      for (let i of params.entries()) param.push(i);
+      const queries = {};
+      for (let i of param) queries[i[0]] = i[1];
+      if (selected.length > 0) {
+        queries.color = selected.join(",")
+        queries.page = 1
+      } else delete queries.color
       navigate({
         pathname: `/${category}`,
-        search: createSearchParams({
-          color: selected.join(","),
-        }).toString(),
+        search: createSearchParams(queries).toString(),
       });
-    } else {
-      navigate(`/${category}`);
-    }
-  }, [selected, category, navigate]);
+  }, [selected]);
 
   useEffect(() => {
-    if (type === 'input') fetchBestPriceProduct()
-  }, [type])
+    if (type === "input") fetchBestPriceProduct();
+  }, [type]);
 
-  useEffect(() => { 
-    if (price.from > price.to && price.from && price.to) alert('Price from cannot be higher than price to!')
-   }, [price])
-
-  const debouncePriceFrom = useDebounce(price.from, 500)
-  const debouncePriceTo = useDebounce(price.to, 500)
   useEffect(() => {
-    const data = {}
-    if (Number(price.from) > 0) data.from = price.from
-    if (Number(price.to) > 0) data.to = price.to
+    if (price.from > price.to && price.from && price.to)
+      alert("Price from cannot be higher than price to!");
+  }, [price]);
+
+  const debouncePriceFrom = useDebounce(price.from, 500); 
+  const debouncePriceTo = useDebounce(price.to, 500); 
+  useEffect(() => {
+    let param = [];
+    for (let i of params.entries()) param.push(i);
+    const queries = {};
+    for (let i of param) queries[i[0]] = i[1];
+    if (Number(price.from) > 0) queries.from = price.from 
+    else delete queries.from
+    if (Number(price.to) > 0) queries.to = price.to;
+    else delete queries.to
+    queries.page = 1
     
-    // if (price.from > 0) {
-        navigate({
-          pathname: `/${category}`,
-          search: createSearchParams(data).toString(),
-        });
-      // } else {
-      //   navigate(`/${category}`);
-      // }
-  }, [debouncePriceFrom, debouncePriceTo,])
+    navigate({
+        pathname: `/${category}`,  
+        search: createSearchParams(queries).toString()
+    });
+  }, [debouncePriceFrom, debouncePriceTo]); 
 
   return (
     <div
@@ -92,6 +103,7 @@ const SearchItems = ({
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelected([]);
+                    changeActiveFilter(null);
                   }}
                 >
                   Reset
@@ -122,22 +134,25 @@ const SearchItems = ({
             </div>
           )}
           {/* filter price  */}
-          {type === 'input' && <div onClick={e=> e.stopPropagation()}>
-            <div className="p-4 items-center justify-between flex gap-8 border-b" >
+          {type === "input" && (
+            <div onClick={(e) => e.stopPropagation()}>
+              <div className="p-4 items-center justify-between flex gap-8 border-b">
                 <div className="flex flex-col ">
                   <span className="whitespace-nowrap text-black">
-                      {`The highest price is <${Number(bestPrice).toLocaleString()}> VND`}
+                    {`The highest price is <${Number(
+                      bestPrice
+                    ).toLocaleString()}> VND`}
                   </span>
                   <span className="whitespace-nowrap text-gray-600">
-                      {`You can filter products by price here.`}
+                    {`You can filter products by price here.`}
                   </span>
                 </div>
                 <span
                   className="border-item hover:text-black cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setPrice({from: '', to: ''})
-                    changeActiveFilter(null)
+                    setPrice({ from: "", to: "" });
+                    changeActiveFilter(null);
                   }}
                 >
                   Reset
@@ -145,15 +160,32 @@ const SearchItems = ({
               </div>
               <div className="flex items-center gap-2 p-2">
                 <div className="flex items-center gap-2 font-main2 text-black font-semibold">
-                    <label  htmlFor="from">From:</label>
-                    <input className="form-input" type="number" id="from" value={price.from} onChange={e => setPrice(prev => ({...prev, from: e.target.value}))}/>
+                  <label htmlFor="from">From:</label>
+                  <input
+                    className="form-input"
+                    type="number"
+                    id="from"
+                    value={price.from}
+                    onChange={(e) =>
+                      setPrice((prev) => ({ ...prev, from: e.target.value }))
+                    }
+                  />
                 </div>
                 <div className="flex items-center gap-2 font-main2 text-black font-semibold">
-                    <label htmlFor="to">To:</label>
-                    <input className="form-input" type="number" id="to" value={price.to} onChange={e => setPrice(prev => ({...prev, to: e.target.value}))}/>
+                  <label htmlFor="to">To:</label>
+                  <input
+                    className="form-input"
+                    type="number"
+                    id="to"
+                    value={price.to}
+                    onChange={(e) =>
+                      setPrice((prev) => ({ ...prev, to: e.target.value }))
+                    }
+                  />
                 </div>
               </div>
-            </div>}
+            </div>
+          )}
         </div>
       )}
     </div>

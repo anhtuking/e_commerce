@@ -50,13 +50,14 @@ const Products = () => {
           { price: { lte: queries.to } },
         ],
       };
+      delete queries.price;
+    } else {
+      if (queries.from) queries.price = { gte: queries.from };
+      if (queries.to) queries.price = { gte: queries.to };
     }
-    if (queries.from) queries.price = { gte: queries.from };
-    if (queries.to) queries.price = { gte: queries.to };
 
     delete queries.to;
     delete queries.from;
-    delete queries.price;
     const q = { ...priceQuery, ...queries };
 
     fetchProductsByCategory(q);
@@ -135,8 +136,11 @@ const Products = () => {
           ))}
         </Masonry>
       </div>
+      {products?.dataProducts?.length}
       <div className="flex">
-        <Pagination totalCount={products?.counts}/>
+        <Pagination 
+        totalCount = {products?.counts}
+        />
       </div>
       <div className="w-full h-[500px]"></div>
     </div>
