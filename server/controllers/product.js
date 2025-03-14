@@ -15,7 +15,7 @@ const createProduct = asyncHandler(async (req, res) => {
 const getProduct = asyncHandler(async (req, res) => {
   const { pid } = req.params;
   const product = await Product.findById(pid).populate({
-    path: 'rating',
+    path: 'ratings',
     populate: {
       path: 'postedBy',
       select: 'firstname lastname avatar'
