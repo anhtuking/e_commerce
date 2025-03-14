@@ -10,6 +10,7 @@ import {
   Product,
   SearchItems,
   InputSelect,
+  Pagination
 } from "../../components";
 import { apiGetProducts } from "../../api";
 import { useEffect, useState, useCallback } from "react";
@@ -32,7 +33,7 @@ const Products = () => {
 
   const fetchProductsByCategory = async (queries) => {
     const response = await apiGetProducts(queries);
-    if (response.success) setProducts(response.dataProducts);
+    if (response.success) setProducts(response);
   };
   const { category } = useParams();
   useEffect(() => {
@@ -59,6 +60,7 @@ const Products = () => {
     const q = { ...priceQuery, ...queries };
 
     fetchProductsByCategory(q);
+    window.scrollTo(0,0)
   }, [params]);
   const changeActiveFilter = useCallback(
     (name) => {
@@ -75,10 +77,12 @@ const Products = () => {
     [sort]
   );
   useEffect(() => {
-    navigate({
-      pathname: `/${category}`,
-      search: createSearchParams({ sort }).toString(),
-    });
+    if(sort) {
+      navigate({
+        pathname: `/${category}`,
+        search: createSearchParams({ sort }).toString(),
+      });
+    }
   }, [sort, category, navigate]);
   return (
     <div className="w-full">
@@ -126,10 +130,13 @@ const Products = () => {
           className="my-masonry-grid flex"
           columnClassName="my-masonry-grid_column"
         >
-          {products?.map((el) => (
+          {products?.dataProducts.map((el) => (
             <Product key={el._id} pid={el._id} productData={el} normal={true} />
           ))}
         </Masonry>
+      </div>
+      <div className="flex">
+        <Pagination totalCount={products?.counts}/>
       </div>
       <div className="w-full h-[500px]"></div>
     </div>

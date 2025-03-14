@@ -137,11 +137,8 @@ const Footer = () => {
             alt=""
           />
         </div>
-        <div className="text-white font-main2 flex items-center justify-center pt-4 pb-1 font-semibold">
-          Wish customers have the best service experience in Marseille
-        </div>
-        <div className="text-white font-main2 flex items-center justify-center pt-1 pb-4 font-semibold">
-          Copyright © 2025 ATKING theme. Created by ATKING
+        <div className="text-gray-300 font-main2 flex items-center justify-center pt-1 pb-4">
+        Wish customers have the best service experience in Marseille. Copyright © 2025 ATKING theme. Created by ATKING
         </div>
       </div>
     </div>

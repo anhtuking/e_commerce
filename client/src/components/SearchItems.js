@@ -51,7 +51,7 @@ const SearchItems = ({
   }, [type])
 
   useEffect(() => { 
-    if (price.from > price.to) alert('Price from cannot be higher than price to!')
+    if (price.from > price.to && price.from && price.to) alert('Price from cannot be higher than price to!')
    }, [price])
 
   const debouncePriceFrom = useDebounce(price.from, 500)
