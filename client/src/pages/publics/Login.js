@@ -1,23 +1,23 @@
 /* eslint-disable react/style-prop-object */
 import React, { useState, useCallback, useEffect } from "react";
-import { InputField, Button } from "../../components";
+import { InputField, Button } from "components";
 import {
   apiRegister,
   apiLogin,
   apiForgotPassword,
   apiFinalRegister,
-} from "../../api/user";
+} from "api/user";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import path from "../../utils/path";
-import { login } from "../../store/user/userSlice";
+import path from "utils/path";
+import { login } from "store/user/userSlice";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import icons from "../../utils/icons";
-import { validate } from "../../utils/helpers";
+import icons from "utils/icons";
+import { validate } from "utils/helpers";
 import { Link } from "react-router-dom";
-import banner_login from "../../assets/banner_login.png";
-import logo from "../../assets/logo.png";
+import banner_login from "assets/banner_login.png";
+import logo from "assets/logo.png";
 
 const { FaEye, FaEyeSlash } = icons;
 
