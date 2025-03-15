@@ -25,6 +25,8 @@ import {
 } from "react-icons/fa6";
 import { TiThMenuOutline } from "react-icons/ti";
 import { GiPositionMarker } from "react-icons/gi";
+import { RxDashboard } from "react-icons/rx";
+import { RiGroupLine, RiProductHuntLine, RiBillLine } from "react-icons/ri";
 const icons = {
   FaPhoneAlt,
   MdEmail,
@@ -53,6 +55,10 @@ const icons = {
   FaShieldHalved,
   FaTty,
   FaChevronDown,
+  RxDashboard,
+  RiGroupLine,
+  RiProductHuntLine,
+  RiBillLine 
 };
 
 export default icons;

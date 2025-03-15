@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { apiGetProduct, apiGetProducts } from '../../api/product';
-import { Breadcrumb, Button, ProductExtraInfoItem, SelectQuantity, ProductInformation, CustomSlider } from '../../components';
+import { apiGetProduct, apiGetProducts } from 'api/product';
+import { Breadcrumb, Button, ProductExtraInfoItem, SelectQuantity, ProductInformation, CustomSlider } from 'components';
 import Slider from "react-slick";
 import ReactImageMagnify from 'react-image-magnify';
-import { formatMoney, formatPrice, renderStarFromNumber } from '../../utils/helpers';
-import { productExtraInformation } from '../../utils/contants';
+import { formatMoney, formatPrice, renderStarFromNumber } from 'utils/helpers';
+import { productExtraInformation } from 'utils/contants';
 
 var settings = {
     dots: false,

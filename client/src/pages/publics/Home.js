@@ -40,7 +40,7 @@ const Home = () => {
         </h3>
         <div className="grid grid-cols-3 gap-6 mt-6 font-main2">
           {categories?.filter(el => el.brand.length > 0)?.map((el) => (
-            <div key={el._id} className="border p-4 flex items-center uppercase">
+            <div key={el._id} className="border-item p-4 flex items-center uppercase">
               <img
                 src={el?.image}
                 alt=""
@@ -62,7 +62,7 @@ const Home = () => {
         </div>
       </div>
       <div className="my-8 w-main">
-        <h3 className="text-[20px] py-[15px] border-b-2 border-main">
+        <h3 className="text-[20px] py-[15px] border-b-2 border-main font-semibold">
           BLOG POSTS
         </h3>
       </div>

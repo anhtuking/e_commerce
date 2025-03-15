@@ -1,6 +1,6 @@
 /* eslint-disable react/style-prop-object */
 import React, { useState, useCallback, useEffect } from "react";
-import { InputField, Button } from "components";
+import { InputField, Button, Loading } from "components";
 import {
   apiRegister,
   apiLogin,
@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 import icons from "utils/icons";
 import { validate } from "utils/helpers";
 import { Link } from "react-router-dom";
-import banner_login from "assets/banner_login.png";
+import { showModal } from "store/app/appSlice";
 import logo from "assets/logo.png";
 
 const { FaEye, FaEyeSlash } = icons;
@@ -68,7 +68,9 @@ const Login = () => {
       : validate(data, setInvalidFields);
     if (invalids === 0) {
       if (isRegister) {
+        dispatch(showModal({isShowModal: true, modalChildren: <Loading />}))
         const response = await apiRegister(payload);
+        dispatch(showModal({isShowModal: false, modalChildren: null}))
         if (response.success) {
           setIsVerifiedEmail(true);
         } else {
@@ -182,14 +184,14 @@ const Login = () => {
           </div>
         </div>
       )}
-      <img src={banner_login} alt="" className="w-full h-full object-contain" />
+      {/* <img src="" alt="" className="w-full h-full object-contain" /> */}
       <div className="absolute top-0 bottom-0 left-0 right-0 flex flex-col items-center justify-center font-main2">
         <div className="flex items-center justify-center mb-0">
           <img src={logo} alt="Logo" className="logo" />
         </div>
-        <div className="mb-2">Welcome to Marseille!</div>
+        <div className="mb-2 text-main">Welcome to Marseille!</div>
         <div className="p-8 bg-white flex flex-col items-center rounded-md min-w-[500px]">
-          <h1 className="text-[28px] font-semibold text-main2 mb-8">
+          <h1 className="text-[28px] font-semibold text-main mb-8">
             {isRegister ? "Register" : "Login"}
           </h1>
           {isRegister && (
@@ -273,7 +275,7 @@ const Login = () => {
             )}
           </div>
           <Link
-            className="text-main2 text-semibold font-main2 hover:uppercase hover:underline cursor-pointer"
+            className="text-blue-500 text-semibold font-main2 hover:uppercase hover:underline cursor-pointer"
             to={`/${path.HOME}`}
           >
             our shop
