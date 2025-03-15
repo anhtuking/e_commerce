@@ -9,7 +9,7 @@ const jwt = require("jsonwebtoken");
 const sendMail = require("../ultils/sendMail");
 const crypto = require("crypto");
 const makeToken = require("uniqid");
-const { response } = require("express");
+const {users} = require('../ultils/constant')
 
 // const register = asyncHandler(async (req, res) => {
 //   const { email, password, firstname, lastname } = req.body;
@@ -120,7 +120,7 @@ const login = asyncHandler(async (req, res) => {
 
 const getCurrent = asyncHandler(async (req, res) => {
   const { _id } = new ObjectId(req.user); // Lấy id từ req.user
-  const user = await User.findById(_id).select("-refreshToken -password -role");
+  const user = await User.findById(_id).select("-refreshToken -password");
   return res.status(200).json({
     success: user ? true : false,
     result: user ? user : "User not found!",
@@ -240,12 +240,63 @@ const resetPassword = asyncHandler(async (req, res) => {
 });
 
 const getUsers = asyncHandler(async (req, res) => {
-  const response = await User.find().select("-refreshToken -password -role");
-  return res.status(200).json({
-    success: response ? true : false,
-    users: response,
+  const queries = { ...req.query };
+    // Tách các trường đặc biệt ra khỏi query
+    const excludeFields = ["limit", "sort", "page", "fields"];
+    excludeFields.forEach((el) => delete queries[el]); // delete các trường ra khỏi object queries
+  
+    // Format lại các operators cho đúng cú pháp của mongoose
+    let queryString = JSON.stringify(queries);
+    queryString = queryString.replace(
+      /\b(gte|gt|lt|lte)\b/g,
+      (matchedEl) => `$${matchedEl}`
+    );
+    const formatedQueries = JSON.parse(queryString);
+  
+    // Filtering
+    if (queries?.name) formatedQueries.name = { $regex: queries.name, $options: "i" };
+    if (req.query.search){
+      delete formatedQueries.search
+      formatedQueries['$or'] = [
+        { firstname: { $regex: req.query.search, $options: "i" }},
+        { lastname: { $regex: req.query.search, $options: "i" }},
+        { email: { $regex: req.query.search, $options: "i" }}
+      ]
+    }
+    let queryCommand = User.find(formatedQueries);
+  
+    // Sorting
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
+      queryCommand = queryCommand.sort(sortBy);
+    }
+  
+    // Fields limiting
+    if (req.query.fields) {
+      const fields = req.query.fields.split(",").join(" ");
+      queryCommand = queryCommand.select(fields);
+    }
+  
+    // Pagination
+    const page = req.query.page || 1;
+    const limit = req.query.limit || process.env.LIMIT_PRODUCTS;
+    const skip = (page - 1) * limit;
+    queryCommand.skip(skip).limit(limit);
+  
+    // Execute query
+    try {
+      const response = await queryCommand;
+      const counts = await User.countDocuments(formatedQueries);
+  
+      return res.status(200).json({
+        success: true,
+        counts,
+        users: response,
+      });
+    } catch (err) {
+      return res.status(500).json({ success: false, message: err.message });
+    }
   });
-});
 
 const deleteUser = asyncHandler(async (req, res) => {
   const { _id } = req.query;
@@ -343,6 +394,14 @@ const updateCart = asyncHandler(async (req, res) => {
   }
 });
 
+// createUsers = asyncHandler(async (req,res) => { 
+//   const response = await User.create(users)
+//   return res.status(200).json({
+//     success: response ? true : false,
+//     users: response ? response : 'some thing went wrong'
+//   })
+//  })
+
 module.exports = {
   register,
   finalRegister,
@@ -358,4 +417,5 @@ module.exports = {
   updateUserByAdmin,
   updateUserAddress,
   updateCart,
+  // createUsers
 };
