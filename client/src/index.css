@@ -124,5 +124,9 @@ input {
     border-radius: 8px;
     overflow: hidden;
   }
+
+  .w500 {
+    width: 500px;
+  }
   
   

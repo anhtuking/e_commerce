@@ -1,4 +1,5 @@
 import React, { memo } from "react";
+import clsx from "clsx";
 
 const InputField = ({
   value,
@@ -7,9 +8,13 @@ const InputField = ({
   type,
   invalidFields,
   setInvalidFields,
+  style,
+  fullWidth,
+  placeholder,
+  isShowLabel
 }) => {
   return (
-    <div className="w-full flex flex-col mb-2 relative font-main2">
+    <div className={clsx(" flex flex-col mb-2 relative font-main2", fullWidth && 'w-full')}>
       {
         value?.trim() !== "" && <label
         className="text-[12px] animate-slide-top-sm absolute top-0 left-[10px] block bg-white px-1"
@@ -20,13 +25,13 @@ const InputField = ({
       }
       <input
         type={type || "text"}
-        className="px-4 py-2 rounded-sm w-full border my-2 placeholder:text-sm placeholder:italic outline-none"
-        placeholder={nameKey?.slice(0, 1).toUpperCase() + nameKey?.slice(1)}
+        className={clsx("px-4 py-2 rounded-sm w-full border my-2 placeholder:text-sm placeholder:italic outline-none", style)}
+        placeholder={placeholder || nameKey?.slice(0, 1).toUpperCase() + nameKey?.slice(1)}
         value={value}
         onChange={(e) =>
           setValue((prev) => ({ ...prev, [nameKey]: e.target.value }))
         }
-        onFocus={() => setInvalidFields([])}
+        onFocus={() => setInvalidFields && setInvalidFields([])}
       />
       {invalidFields?.some(el => el.name === nameKey) && <small className="font=[10px] italic font-main2 text-main pl-1 mb-2">
         {invalidFields.find(el => el.name === nameKey)?.mes}
