@@ -4,7 +4,7 @@ import { FaTrash, FaEdit, FaUserAlt, FaTimes } from "react-icons/fa";
 import { TiTick } from "react-icons/ti";
 import { MdAdminPanelSettings } from "react-icons/md";
 import moment from "moment";
-import { InputField, Pagination, InputForm, Select, Button } from "components";
+import { InputField, Pagination, InputForm, Select } from "components";
 import useDebounce from "hooks/useDebounce";
 import { useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -122,7 +122,7 @@ const ManageUser = () => {
           nameKey={"search"}
           value={queries?.search}
           setValue={setQueries}
-          style={"w500"}
+          styleClass={"w500"}
           placeholder="Search user..."
         />
       </div>
@@ -175,7 +175,7 @@ const ManageUser = () => {
                         errors={errors}
                         id={"firstname"}
                         validate={{ required: "This field is required." }}
-                        widthClass="w-[180px]"
+                        styleClass="w-[180px]"
                         defaultValue={editEl.firstname}
                       />
                     ) : (
@@ -217,7 +217,7 @@ const ManageUser = () => {
                         register={register}
                         errors={errors}
                         id={"mobile"}
-                        widthClass="w-[150px]"
+                        styleClass="w-[150px]"
                         validate={{
                           required: "This field is required.",
                           pattern: {

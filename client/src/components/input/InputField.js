@@ -8,7 +8,7 @@ const InputField = ({
   type,
   invalidFields,
   setInvalidFields,
-  style,
+  styleClass,
   fullWidth,
   placeholder,
   isShowLabel
@@ -25,7 +25,7 @@ const InputField = ({
       }
       <input
         type={type || "text"}
-        className={clsx("px-4 py-2 rounded-sm w-full border my-2 placeholder:text-sm placeholder:italic outline-none", style)}
+        className={clsx("px-4 py-2 rounded-sm w-full border my-2 placeholder:text-sm placeholder:italic outline-none", styleClass)}
         placeholder={placeholder || nameKey?.slice(0, 1).toUpperCase() + nameKey?.slice(1)}
         value={value}
         onChange={(e) =>
