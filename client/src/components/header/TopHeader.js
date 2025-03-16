@@ -36,7 +36,7 @@ const TopHeader = () => {
           {isLoggedIn && current
           ? <div className="flex gap-4 text-sm font-main2 items-center">
             <span onClick={() => dispatch(logout())} className="hover:rounded-full hover:bg-gray-200 p-2 hover:text-main2 cursor-pointer"><IoLogOutOutline size={18}/></span>
-            <span>{`Welcome ${current?.lastname} ${current?.firstname}`}</span>
+            <span>{`Welcome ${current?.firstname} ${current?.lastname}`}</span>
           </div>
           : <Link className='hover:text-gray-600 hover:underline' to={`/${path.LOGIN}`}>
           Login or Register

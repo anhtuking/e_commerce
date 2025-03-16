@@ -4,9 +4,10 @@ import { adminSidebar } from "utils/contants";
 import { NavLink } from "react-router-dom";
 import clsx from "clsx";
 import { AiFillCaretDown, AiFillCaretLeft  } from "react-icons/ai";
+import logo2 from '../../assets/logo2.png'
 
 const activeStyle =
-  "px-4 py-2 flex items-center gap-2 text-gray-800 font-bold bg-gray-200";
+  "px-4 py-2 flex items-center gap-2 text-gray-800 font-bold bg-gray-100";
 const notActiveStyle =
   "px-4 py-2 flex items-center gap-2 text-gray-200 font-bold hover:bg-gray-600";
 
@@ -17,7 +18,7 @@ const AdminSidebar = () => {
             else setActived(prev => [...prev, tabId])
      }
   return (
-    <div className="py-4 bg-zinc-800 h-full flex flex-col font-main2">
+    <div className="py-4 bg-zinc-700 h-full flex flex-col font-main2">
       <div className="flex flex-col items-center justify-center p-4 gap-2">
         <img
           src={avatarAdmin}
@@ -62,6 +63,21 @@ const AdminSidebar = () => {
           </Fragment>
         ))}
       </div>
+      <div className="flex items-center justify-center mt-96">
+      <img
+          src={logo2}
+          alt="Admin Logo"
+          className="w-auto h-auto "
+        />
+      </div>
+      {/* <div className="mt-8 flex items-center justify-center">
+        <NavLink
+          to="/"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full shadow-lg transition duration-300"
+        >
+          Home
+        </NavLink>
+      </div> */}
     </div>
   );
 };

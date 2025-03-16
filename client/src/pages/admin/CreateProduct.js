@@ -1,8 +1,10 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button, InputForm, Select, MarkdownEditor } from "components";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { validate } from "utils/helpers";
+import { getBase64, validate } from "utils/helpers";
+import { toast } from "react-toastify";
+import { FaTrash } from "react-icons/fa";
 
 const CreateProduct = () => {
   const { categories } = useSelector((state) => state.app);
@@ -13,27 +15,85 @@ const CreateProduct = () => {
     handleSubmit,
     watch,
   } = useForm();
-  const [payload, setPayload] = useState(
-    {
-      description: ''
+  const [payload, setPayload] = useState({
+    description: "",
+  });
+  const [hoverEl, setHoverEl] = useState(null);
+  const [invalidFields, setInvalidFields] = useState([]);
+  const [preview, setPreview] = useState({
+    thumb: null,
+    images: [],
+  });
+
+  const changValue = useCallback(
+    (e) => {
+      setPayload(e);
+    },
+    [payload]
+  );
+
+  const handlePreviewThumb = async (file) => {
+    const base64Thumb = await getBase64(file);
+    setPreview((prev) => ({ ...prev, thumb: base64Thumb }));
+  };
+
+  const handlePreviewImages = async (files) => {
+    const imagesPreview = [];
+    for (let file of files) {
+      console.log(file.type);
+      if (file.type !== "image/png" && file.type !== "image/jpeg") {
+        toast.warning("File not supported!");
+        return;
+      }
+      const base64 = await getBase64(file);
+      imagesPreview.push({ name: file.name, path: base64 });
     }
-  )
-  const [invalidFields, setInvalidFields] = useState([])
-  
-  const changValue = useCallback((e) => {
-    setPayload(e)
-  }, [payload])
-  
+    setPreview((prev) => ({ ...prev, images: imagesPreview }));
+  };
+
+  useEffect(() => {
+    const thumbFile = watch("thumb")?.[0];
+    if (thumbFile) {
+      handlePreviewThumb(thumbFile);
+    } else {
+      setPreview((prev) => ({ ...prev, thumb: null }));
+    }
+  }, [watch("thumb")]);
+
+  useEffect(() => {
+    const images = watch("images");
+    if (images && images.length > 0) {
+      handlePreviewImages(images);
+    } else {
+      setPreview((prev) => ({ ...prev, images: [] }));
+    }
+  }, [watch("images")]);
+
   const handleCreateProduct = (data) => {
-    const invalid = validate(payload, setInvalidFields)
-    if (invalid === 0){
-      if (data.category) data.category = categories?.find(el => el._id === data.category)?.title
-      const finalPayload = {...data, ...payload}
-      const formData = new FormData()
-      for (let i of Object.entries(finalPayload)) formData.append(i[0], i[1])
+    const invalid = validate(payload, setInvalidFields);
+    if (invalid === 0) {
+      if (data.category)
+        data.category = categories?.find(
+          (el) => el._id === data.category
+        )?.title;
+      const finalPayload = { ...data, ...payload };
+      const formData = new FormData();
+      for (let i of Object.entries(finalPayload)) formData.append(i[0], i[1]);
     }
   };
-  console.log(invalidFields);
+
+  // const handleRemoveImages = (name) => {
+  //   const files = [...watch('images')]
+  //   reset ({
+  //     images: files?.filter(el => el.name !== name)
+  //   })
+  //   if (preview.images?.some((el) => el.name === name))
+  //     setPreview((prev) => ({
+  //       ...prev,
+  //       images: prev.images?.filter((el) => el.name !== name),
+  //     }));
+  // };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-bold text-gray-800 mb-4">Create Product</h1>
@@ -106,13 +166,12 @@ const CreateProduct = () => {
             />
             <Select
               label="Brand"
-              options={categories?.find(
-                el => el._id === watch("category"))?.brand?.map((el) => ({
-                    code: el,
-                    value: el,
-                  })
-                )
-              }
+              options={categories
+                ?.find((el) => el._id === watch("category"))
+                ?.brand?.map((el) => ({
+                  code: el,
+                  value: el,
+                }))}
               register={register}
               id="brand"
               validate={{
@@ -122,32 +181,79 @@ const CreateProduct = () => {
               styleClass="flex-auto"
             />
           </div>
-          <MarkdownEditor 
-            name='description'
+          <MarkdownEditor
+            name="description"
             changValue={changValue}
-            label='Description'
+            label="Description"
             invalidFields={invalidFields}
             setInvalidFields={setInvalidFields}
           />
           <div className="flex flex-col gap-2 mt-8">
-            <label className="font-semibold" htmlFor="thumb">Upload thumb</label>
-            <input 
-              type="file" 
+            <label className="font-semibold" htmlFor="thumb">
+              Upload thumb
+            </label>
+            <input
+              type="file"
               id="thumb"
-              {...register("thumb" , {required: "Need fill this field"})}
+              {...register("thumb", { required: "Need fill this field" })}
             />
-            {errors?.["thumb"] && <small className='text-xs text-red-500'>{errors["thumb"]?.message}</small>}
+            {errors?.["thumb"] && (
+              <small className="text-xs text-red-500">
+                {errors["thumb"]?.message}
+              </small>
+            )}
           </div>
+          {preview.thumb && (
+            <div className="my-4">
+              <img
+                src={preview.thumb}
+                alt="thumbnail"
+                className="w-[200px] object-contain"
+              />
+            </div>
+          )}
           <div className="flex flex-col gap-2 mt-8">
-            <label className="font-semibold" htmlFor="images">Upload images of product</label>
-            <input 
+            <label className="font-semibold" htmlFor="images">
+              Upload images of product
+            </label>
+            <input
               multiple
-              type="file" 
+              type="file"
               id="images"
-              {...register("images" , {required: "Need fill this field"})}
+              {...register("images", { required: "Need fill this field" })}
             />
-            {errors?.["images"] && <small className='text-xs text-red-500'>{errors["images"]?.message}</small>}
+            {errors?.["images"] && (
+              <small className="text-xs text-red-500">
+                {errors["images"]?.message}
+              </small>
+            )}
           </div>
+          {preview.images.length > 0 && (
+            <div className="my-4 flex w-full gap-3 flex-wrap">
+              {preview.images?.map((el, index) => (
+                <div
+                  className="w-fit relative"
+                  key={index}
+                  onMouseEnter={() => setHoverEl(el.name)}
+                  onMouseLeave={() => setHoverEl(null)}
+                >
+                  <img
+                    src={el.path}
+                    alt="images"
+                    className="w-[200px] object-contain"
+                  />
+                  {/* {hoverEl === el.name && (
+                    <div
+                      className="absolute inset-0 bg-overlay flex items-center justify-center cursor-pointer"
+                      onClick={() => handleRemoveImages(el.name)}
+                    >
+                      <FaTrash size={25} color="red" />
+                    </div>
+                  )} */}
+                </div>
+              ))}
+            </div>
+          )}
           <div className="mt-8 flex justify-end">
             <Button type="submit">Save product</Button>
           </div>
