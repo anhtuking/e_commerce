@@ -6,6 +6,7 @@ import Slider from "react-slick";
 import ReactImageMagnify from 'react-image-magnify';
 import { formatMoney, formatPrice, renderStarFromNumber } from 'utils/helpers';
 import { productExtraInformation } from 'utils/contants';
+import DOMPurify from 'dompurify';
 
 var settings = {
     dots: false,
@@ -120,11 +121,8 @@ const DetailProduct = () => {
                         </span>
                     </div>
                     <ul className='list-disc pl-5 text-sm font-main2 text-gray-800'>
-                        {product?.description?.map((el, index) => (
-                            <li key={index} className='leading-8'>
-                                {el}
-                            </li>
-                        ))}
+                        {product?.description?.length > 1 && product?.description?.map((el) => (<li key={el} className='leading-8'>{el}</li>))}
+                        {product?.description?.length === 1 && <div className='text-sm' dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(product?.description[0])}}></div>}
                     </ul>
                     <div className='flex flex-col gap-8 font-main2'>
                         <div className='flex items-center gap-4'>

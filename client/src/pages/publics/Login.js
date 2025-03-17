@@ -189,10 +189,9 @@ const Login = () => {
         <div className="flex items-center justify-center mb-0">
           <img src={logo} alt="Logo" className="logo" />
         </div>
-        <div className="mb-2 text-main">Welcome to Marseille!</div>
         <div className="p-8 bg-white flex flex-col items-center rounded-md min-w-[500px]">
           <h1 className="text-[28px] font-semibold text-main mb-8">
-            {isRegister ? "Register" : "Login"}
+            {isRegister ? "REGISTER" : "LOGIN"}
           </h1>
           {isRegister && (
             <div className="flex items-center gap-2">

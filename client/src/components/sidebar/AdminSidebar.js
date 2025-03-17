@@ -1,7 +1,7 @@
 import React, { Fragment, memo, useState } from "react";
 import avatarAdmin from "assets/avatarAdmin.jpg";
 import { adminSidebar } from "utils/contants";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import clsx from "clsx";
 import { AiFillCaretDown, AiFillCaretLeft  } from "react-icons/ai";
 import logo2 from '../../assets/logo2.png'
@@ -25,6 +25,13 @@ const AdminSidebar = () => {
           alt="Admin Avatar"
           className="w-[100px] h-[100px] object-cover rounded-full border-2 border-white"
         />
+        <Link className="flex items-center justify-center mt-6" to={'/'}>
+          <img
+            src={logo2}
+            alt="Admin Logo"
+            className="w-auto h-auto "
+          />
+        </Link>
         <small className="mt-2 text-white font-semibold text-xl">ADMIN WORKSPACE</small>
       </div>
       <div>
@@ -63,21 +70,6 @@ const AdminSidebar = () => {
           </Fragment>
         ))}
       </div>
-      <div className="flex items-center justify-center mt-96">
-      <img
-          src={logo2}
-          alt="Admin Logo"
-          className="w-auto h-auto "
-        />
-      </div>
-      {/* <div className="mt-8 flex items-center justify-center">
-        <NavLink
-          to="/"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full shadow-lg transition duration-300"
-        >
-          Home
-        </NavLink>
-      </div> */}
     </div>
   );
 };

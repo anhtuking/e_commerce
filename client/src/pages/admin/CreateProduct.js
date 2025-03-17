@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { getBase64, validate } from "utils/helpers";
 import { toast } from "react-toastify";
 import { FaTrash } from "react-icons/fa";
+import { apiCreateProduct } from "api";
 
 const CreateProduct = () => {
   const { categories } = useSelector((state) => state.app);
@@ -69,30 +70,35 @@ const CreateProduct = () => {
     }
   }, [watch("images")]);
 
-  const handleCreateProduct = (data) => {
+  const handleCreateProduct = async (data) => {
     const invalid = validate(payload, setInvalidFields);
     if (invalid === 0) {
       if (data.category)
-        data.category = categories?.find(
-          (el) => el._id === data.category
-        )?.title;
+        data.category = categories?.find( el => el._id === data.category )?.title;
       const finalPayload = { ...data, ...payload };
+      console.log(finalPayload);
       const formData = new FormData();
       for (let i of Object.entries(finalPayload)) formData.append(i[0], i[1]);
+      if (finalPayload.thumb) formData.append('thumb', finalPayload.thumb[0])
+      if (finalPayload.images){
+        for (let image of finalPayload.images) formData.append('images', image)
+      }
+      const response = await apiCreateProduct(formData)
+      console.log(response);
     }
   };
 
-  // const handleRemoveImages = (name) => {
-  //   const files = [...watch('images')]
-  //   reset ({
-  //     images: files?.filter(el => el.name !== name)
-  //   })
-  //   if (preview.images?.some((el) => el.name === name))
-  //     setPreview((prev) => ({
-  //       ...prev,
-  //       images: prev.images?.filter((el) => el.name !== name),
-  //     }));
-  // };
+  const handleRemoveImages = (name) => {
+    const files = [...watch('images')]
+    reset ({
+      images: files?.filter(el => el.name !== name)
+    })
+    if (preview.images?.some((el) => el.name === name))
+      setPreview((prev) => ({
+        ...prev,
+        images: prev.images?.filter((el) => el.name !== name),
+      }));
+  };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -242,14 +248,14 @@ const CreateProduct = () => {
                     alt="images"
                     className="w-[200px] object-contain"
                   />
-                  {/* {hoverEl === el.name && (
+                  {hoverEl === el.name && (
                     <div
                       className="absolute inset-0 bg-overlay flex items-center justify-center cursor-pointer"
                       onClick={() => handleRemoveImages(el.name)}
                     >
                       <FaTrash size={25} color="red" />
                     </div>
-                  )} */}
+                  )}
                 </div>
               ))}
             </div>
