@@ -1,45 +1,44 @@
 import { useMemo } from "react";
 import { generateRange } from "../utils/helpers";
-import { BiDotsHorizontal } from "react-icons/bi";
 
 const usePagination = (totalProductCount, currentPage, siblingCount = 1) => {
   const paginationArray = useMemo(() => {
-    const pageSize = process.env.REACT_APP_LIMIT || 10;
-    const paginationCount = Math.ceil(totalProductCount / pageSize);
-    const totalPaginationItem = siblingCount + 5;
+    const pageSize = Number(process.env.REACT_APP_LIMIT) || 10;
+    const totalPageCount = Math.ceil(totalProductCount / pageSize);
+    const totalPageNumbers = siblingCount + 5;
 
-    // [1,2,3,4,5,6]
-    if (paginationCount <= totalPaginationItem)
-      return generateRange(1, paginationCount);
-
-    const isShowLeft = currentPage - siblingCount > 2;
-    const isShowRight = currentPage + siblingCount < paginationCount - 1;
-    // [1,...,6,7,8,9,10]
-    if (isShowLeft && !isShowRight) {
-      const rightStart = paginationCount - 4;
-      const rightRange = generateRange(rightStart, paginationCount);
-      return [1, <BiDotsHorizontal />, ...rightRange];
-    }
-    // [1,2,3,4,5,...,10]
-    if (!isShowLeft && isShowRight) {
-      const leftRange = generateRange(1, 5);
-      return [...leftRange, <BiDotsHorizontal />, paginationCount];
+    // Nếu tổng số trang nhỏ hơn số phần tử phân trang cần hiển thị thì hiển thị hết
+    if (totalPageNumbers >= totalPageCount) {
+      return generateRange(1, totalPageCount);
     }
 
-    const siblingLeft = Math.max(currentPage - siblingCount, 1);
-    const siblingRight = Math.min(currentPage + siblingCount, paginationCount);
-    // [1,...,5,6,7,...,10]
-    if (isShowLeft && isShowRight) {
-      const middleRange = generateRange(siblingLeft, siblingRight);
-      return [
-        1,
-        <BiDotsHorizontal />,
-        ...middleRange,
-        <BiDotsHorizontal />,
-        paginationCount,
-      ];
+    const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
+    const rightSiblingIndex = Math.min(currentPage + siblingCount, totalPageCount);
+
+    const shouldShowLeftDots = leftSiblingIndex > 2;
+    const shouldShowRightDots = rightSiblingIndex < totalPageCount - 1;
+
+    const firstPageIndex = 1;
+    const lastPageIndex = totalPageCount;
+
+    if (!shouldShowLeftDots && shouldShowRightDots) {
+      let leftItemCount = 3 + 2 * siblingCount;
+      let leftRange = generateRange(1, leftItemCount);
+      return [...leftRange, "dots", lastPageIndex];
+    }
+
+    if (shouldShowLeftDots && !shouldShowRightDots) {
+      let rightItemCount = 3 + 2 * siblingCount;
+      let rightRange = generateRange(totalPageCount - rightItemCount + 1, totalPageCount);
+      return [firstPageIndex, "dots", ...rightRange];
+    }
+
+    if (shouldShowLeftDots && shouldShowRightDots) {
+      let middleRange = generateRange(leftSiblingIndex, rightSiblingIndex);
+      return [firstPageIndex, "dots", ...middleRange, "dots", lastPageIndex];
     }
   }, [totalProductCount, currentPage, siblingCount]);
+
   return paginationArray;
 };
 

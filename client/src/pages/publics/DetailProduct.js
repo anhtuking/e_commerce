@@ -76,7 +76,7 @@ const DetailProduct = () => {
             </div>
             <div className='w-main m-auto mt-6 flex'>
                 <div className=' flex flex-col gap-4 w-2/5'>
-                    <div className='h-[458px] w-[458px]'>
+                    <div className='h-[458px] w-[458px] border flex items-center overflow-hidden'>
                         <ReactImageMagnify {...{
                             smallImage: {
                                 alt: '',
@@ -122,7 +122,7 @@ const DetailProduct = () => {
                     </div>
                     <ul className='list-disc pl-5 text-sm font-main2 text-gray-800'>
                         {product?.description?.length > 1 && product?.description?.map((el) => (<li key={el} className='leading-8'>{el}</li>))}
-                        {product?.description?.length === 1 && <div className='text-sm' dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(product?.description[0])}}></div>}
+                        {product?.description?.length === 1 && <div className='text-sm line-clamp-[15] mb-8' dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(product?.description[0])}}></div>}
                     </ul>
                     <div className='flex flex-col gap-8 font-main2'>
                         <div className='flex items-center gap-4'>

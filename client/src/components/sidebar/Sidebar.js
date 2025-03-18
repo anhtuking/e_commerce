@@ -6,7 +6,6 @@ import { FaList } from "react-icons/fa";
 
 const Sidebar = () => {
   const categories = useSelector((state) => state.app?.categories);
-  // console.log("Redux State:", categories);
   return (
     
     <div className="flex flex-col border-item bg-white">

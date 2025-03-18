@@ -1,14 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, InputForm, Select, MarkdownEditor } from "components";
+import { Button, InputForm, Select, MarkdownEditor, Loading } from "components";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getBase64, validate } from "utils/helpers";
 import { toast } from "react-toastify";
 import { FaTrash } from "react-icons/fa";
 import { apiCreateProduct } from "api";
+import { showModal } from "store/app/appSlice";
 
 const CreateProduct = () => {
   const { categories } = useSelector((state) => state.app);
+  const dispatch = useDispatch()
   const {
     register,
     formState: { errors },
@@ -83,8 +85,17 @@ const CreateProduct = () => {
       if (finalPayload.images){
         for (let image of finalPayload.images) formData.append('images', image)
       }
+      dispatch(showModal({isShowModal: true, modalChildren: <Loading />}))
       const response = await apiCreateProduct(formData)
-      console.log(response);
+      dispatch(showModal({isShowModal: false, modalChildren: null}))
+      if (response.success) {
+        toast.success(response.mes)
+        reset()
+        setPayload({
+          thumb: '',
+          image: []
+        })
+      } else toast.error(response.mes)
     }
   };
 

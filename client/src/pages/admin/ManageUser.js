@@ -129,7 +129,7 @@ const ManageUser = () => {
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
         <form onSubmit={handleSubmit(handleUpdate)}>
           <table className="w-full table-auto text-left border-collapse">
-            <thead className="bg-blue-500 text-white text-sm uppercase">
+            <thead className="bg-sky-900 text-white text-sm uppercase">
               <tr>
                 <th className="px-4 py-3 text-center">#</th>
                 <th className="px-4 py-3 w-[365px]">Email</th>
@@ -262,13 +262,13 @@ const ManageUser = () => {
                   <td className="px-4 py-3 flex items-center justify-center gap-3 my-auto">
                     {editEl?._id === el._id ? (
                       <>
-                      <button
-                        className="text-gray-500 hover:text-gray-800 transition"
-                        onClick={() => setEditEl(null)}
-                        type="button"
-                      >
-                        <FaTimes size={24} />
-                      </button>
+                        <button
+                          className="text-gray-500 hover:text-gray-800 transition"
+                          onClick={() => setEditEl(null)}
+                          type="button"
+                        >
+                          <FaTimes size={24} />
+                        </button>
                         <button
                           className="text-green-600 hover:text-green-800 transition"
                           type="submit"
@@ -277,7 +277,6 @@ const ManageUser = () => {
                         </button>
                       </>
                     ) : (
-                      /* Nút Edit (chuyển sang chế độ edit cho dòng đó) */
                       <button
                         className="text-blue-600 hover:text-blue-800 transition"
                         onClick={() => setEditEl(el)}
@@ -297,10 +296,10 @@ const ManageUser = () => {
               ))}
             </tbody>
           </table>
+          <div className="w-full text-right justify-end my-4">
+            <Pagination totalCount={users?.counts} />
+          </div>
         </form>
-      </div>
-      <div className="w-full text-right justify-end">
-        <Pagination totalCount={users?.counts} />
       </div>
     </div>
   );

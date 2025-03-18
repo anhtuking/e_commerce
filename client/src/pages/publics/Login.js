@@ -82,7 +82,9 @@ const Login = () => {
           });
         }
       } else {
+        dispatch(showModal({isShowModal: true, modalChildren: <Loading />}))
         const result = await apiLogin(data);
+        dispatch(showModal({isShowModal: false, modalChildren: null}))
         if (result.success) {
           dispatch(
             login({
