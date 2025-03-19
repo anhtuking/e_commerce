@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import { getBase64, validate } from "utils/helpers";
 import { toast } from "react-toastify";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaSave  } from "react-icons/fa";
 import { apiCreateProduct } from "api";
 import { showModal } from "store/app/appSlice";
 
@@ -272,7 +272,7 @@ const CreateProduct = () => {
             </div>
           )}
           <div className="mt-8 flex justify-end">
-            <Button type="submit">Save product</Button>
+            <Button type="submit">Save<FaSave/></Button>
           </div>
         </form>
       </div>

@@ -100,6 +100,7 @@ const ManageUser = () => {
     Swal.fire({
       title: "Delete User",
       text: "Are you sure you want to delete this line?",
+      icon: 'warning',
       showCancelButton: true,
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -131,15 +132,15 @@ const ManageUser = () => {
           <table className="w-full table-auto text-left border-collapse">
             <thead className="bg-sky-900 text-white text-sm uppercase">
               <tr>
-                <th className="px-4 py-3 text-center">#</th>
-                <th className="px-4 py-3 w-[365px]">Email</th>
-                <th className="px-4 py-3">First Name</th>
-                <th className="px-4 py-3">Last Name</th>
-                <th className="px-4 py-3">Role</th>
-                <th className="px-4 py-3">Phone</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Created At</th>
-                <th className="px-4 py-3 text-center">Actions</th>
+                <th className="px-4 py-3 text-center border">#</th>
+                <th className="px-4 py-3 w-[365px] border">Email</th>
+                <th className="px-4 py-3 border">First Name</th>
+                <th className="px-4 py-3 border">Last Name</th>
+                <th className="px-4 py-3 border">Role</th>
+                <th className="px-4 py-3 border">Phone</th>
+                <th className="px-4 py-3 border">Status</th>
+                <th className="px-4 py-3 border">Created At</th>
+                <th className="px-4 py-3 border text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="text-gray-700">

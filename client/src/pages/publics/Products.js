@@ -133,7 +133,7 @@ const Products = () => {
         </Masonry>
       </div>
       {products?.dataProducts?.length}
-      <div className="flex">
+      <div className="w-full text-right justify-end my-4 jb">
         <Pagination 
         totalCount = {products?.counts}
         />

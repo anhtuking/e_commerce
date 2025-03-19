@@ -23,14 +23,14 @@ const Pagination = ({ totalCount }) => {
   };
 
   const range = () => {
-    const start = Math.min(((currentPage - 1) * pageSize + 1), totalCount);
+    const start = Math.min((currentPage - 1) * pageSize + 1, totalCount);
     const end = Math.min(currentPage * pageSize, totalCount);
     return `${start} - ${end}`;
   };
 
   return (
     <div className="flex flex-col md:flex-row md:justify-between items-center">
-      <span className="text-sm italic mb-4 md:mb-0 pl-2">
+      <span className=" text-sm italic mb-4 md:mb-0 pl-2">
         {`Showing ${range()} of ${totalCount}`}
       </span>
       <div className="flex items-center space-x-2 pr-4">
@@ -46,7 +46,7 @@ const Pagination = ({ totalCount }) => {
           if (typeof item === "number") {
             return (
               <button
-                key={index}
+                key={`page-${item}`}
                 onClick={() => handlePageChange(item)}
                 className={`w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 ${
                   currentPage === item
@@ -59,7 +59,10 @@ const Pagination = ({ totalCount }) => {
             );
           } else {
             return (
-              <span key={index} className="w-10 h-10 flex items-center justify-center">
+              <span
+                key={`dots-${index}`}
+                className="w-10 h-10 flex items-center justify-center"
+              >
                 ...
               </span>
             );

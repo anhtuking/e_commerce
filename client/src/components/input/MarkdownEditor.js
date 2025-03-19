@@ -1,4 +1,4 @@
-import React, { memo, useRef } from "react";
+import React, { memo } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 
 const MarkdownEditor = ({
@@ -8,6 +8,7 @@ const MarkdownEditor = ({
   name,
   invalidFields,
   setInvalidFields,
+  setIsFocusDescription
 }) => {
   return (
     <div className="flex flex-col">
@@ -48,7 +49,11 @@ const MarkdownEditor = ({
         onChange={(e) =>
           changValue((prev) => ({ ...prev, [name]: e.target.getContent() }))
         }
-        onFocus={() => setInvalidFields && setInvalidFields([])}
+        onFocus={() => {
+          setInvalidFields && setInvalidFields([])
+          setIsFocusDescription(true)
+        }}
+        onBlur={() => setIsFocusDescription(false)}
       />
       {invalidFields?.some((el) => el.name === name) && (
         <small className="text-main text-sm">
