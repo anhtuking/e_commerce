@@ -84,37 +84,70 @@ const finalRegister = asyncHandler(async (req, res) => {
 
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password)
+  if (!email || !password) {
     return res.status(400).json({
       success: false,
-      mes: "Missing inputs",
+      mes: "Email and password are required",
     });
-  // plain object
-  const response = await User.findOne({ email });
-  if (response && (await response.isCorrectPassword(password))) {
-    // tách password và role ra khỏi response
-    const { password, role, refreshToken, ...userData } = response.toObject(); // dùng toán tử destructuring kết hợp với rest parameter.
-    const accessToken = generateAccessToken(response._id, role); // tạo access token => xác thực user và phân quyền user
-    const newRefreshToken = generateRefreshToken(response._id); // tạo refresh token => cấp mới lại access token
-    // lưu refresh token vào database
+  }
+  
+  try {
+    // Find user by email
+    const user = await User.findOne({ email });
+    
+    // If no user found with this email
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        mes: "Invalid email or password",
+      });
+    }
+    
+    // Check password
+    const isPasswordCorrect = await user.isCorrectPassword(password);
+    
+    if (!isPasswordCorrect) {
+      return res.status(401).json({
+        success: false,
+        mes: "Invalid email or password",
+      });
+    }
+    
+    // If credentials are valid
+    // Remove sensitive data from response
+    const { password: pwd, role, refreshToken, ...userData } = user.toObject();
+    
+    // Generate tokens
+    const accessToken = generateAccessToken(user._id, role);
+    const newRefreshToken = generateRefreshToken(user._id);
+    
+    // Update refresh token in database
     await User.findByIdAndUpdate(
-      response._id,
+      user._id,
       { refreshToken: newRefreshToken },
       { new: true }
     );
-    // lưu refresh token vào cookie
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true, // chỉ cho phép đầu http truy cập vào
-      maxAge: 7 * 24 * 60 * 60 * 1000, // time hết hạn của refresh token
+    
+    // Set refresh token in cookie
+    res.cookie("refreshToken", newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'strict'
     });
+    
+    // Send successful response
     return res.status(200).json({
       success: true,
       accessToken,
-      // refreshToken,
       userData,
     });
-  } else {
-    throw new Error("Invalid credentials"); //login fail
+  } catch (error) {
+    console.error('Login error:', error);
+    return res.status(500).json({
+      success: false,
+      mes: "Server error. Please try again later.",
+    });
   }
 });
 
@@ -299,28 +332,31 @@ const getUsers = asyncHandler(async (req, res) => {
   });
 
 const deleteUser = asyncHandler(async (req, res) => {
-  const { _id } = req.query;
-  if (!_id) throw new Error("Missing value");
-  const response = await User.findByIdAndDelete(_id);
+  const { uid } = req.params;
+  const response = await User.findByIdAndDelete(uid);
   return res.status(200).json({
     success: response ? true : false,
-    deleteUser: response
+    mes: response
       ? `User with email ${response.email} deleted`
       : `No user delete.`,
   });
 });
 
 const updateUser = asyncHandler(async (req, res) => {
-  // console.log(req.user);
   const { id } = req.user;
+  const { firstname, lastname, mobile, email } = req.body
+  const data = { firstname, lastname, mobile, email }
+  if (req.file) {
+    data.avatar = req.file.path
+  }
   if (!id || Object.keys(req.body).length === 0)
     throw new Error("Missing value");
-  const response = await User.findByIdAndUpdate(id, req.body, {
+  const response = await User.findByIdAndUpdate(id, data, {
     new: true,
   }).select("-password -role -refreshToken");
   return res.status(200).json({
     success: response ? true : false,
-    updatedUser: response ? response : "Some thing went wrong!",
+    mes: response ? "Updated" : "Some thing went wrong!",
   });
 });
 
@@ -333,7 +369,7 @@ const updateUserByAdmin = asyncHandler(async (req, res) => {
   }).select("-password -role -refreshToken");
   return res.status(200).json({
     success: response ? true : false,
-    updatedUser: response ? response : "Some thing went wrong",
+    mes: response ? "Updated" : "Some thing went wrong",
   });
 });
 

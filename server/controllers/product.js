@@ -1,14 +1,20 @@
 const Product = require("../models/product");
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
+const makeSKU = require("uniqid")
 
 const createProduct = asyncHandler(async (req, res) => {
-  if (Object.keys(req.body).length === 0) throw new Error("Missing inputs");
-  if (req.body && req.body.title) req.body.slug = slugify(req.body.title);
+  const {title, price, description, brand, category, color} = req.body
+  const thumb = req?.files?.thumb[0]?.path
+  const images = req.files?.images?.map(el => el.path)
+  if (!(title && price && description && brand && category && color)) throw new Error("Missing inputs");
+  req.body.slug = slugify(title);
+  if (thumb) req.body.thumb = thumb
+  if (images) req.body.images = images
   const newProduct = await Product.create(req.body);
   return res.status(200).json({
     success: newProduct ? true : false,
-    createdProduct: newProduct ? newProduct : "Cannot create new product",
+    mes: newProduct ? "Create success!" : "Create fail!",
   });
 });
 
@@ -52,7 +58,17 @@ const getAllProducts = asyncHandler(async (req, res) => {
     const colorQuery = colorArr.map(el => ({color: {$regex: el, $options: 'i'}}))
     colorQueryObject= {$or: colorQuery}
   }
-  const q = {...colorQueryObject, ...formatedQueries}
+  let queryObj = {}
+  if (queries?.q){
+    delete formatedQueries.q
+    queryObj= {$or: [
+      {color: {$regex: queries.q, $options: 'i'}},
+      {title: {$regex: queries.q, $options: 'i'}},
+      {category: {$regex: queries.q, $options: 'i'}},
+      {brand: {$regex: queries.q, $options: 'i'}}
+    ]}
+  }
+  const q = {...colorQueryObject, ...formatedQueries, ...queryObj}
   let queryCommand = Product.find(q);
 
   // Sorting
@@ -91,8 +107,11 @@ const getAllProducts = asyncHandler(async (req, res) => {
 
 const updateProduct = asyncHandler(async (req, res) => {
   const { pid } = req.params;
+  const files = req?.files
+  if (files?.thumb) req.body.thumb = files?.thumb[0]?.path 
+  if (files?.images) req.body.images = files?.images?.map(el => el.path) 
   if (req.body && req.body.title) req.body.slug = slugify(req.body.title);
-  const updatedProduct = await Product.findByIdAndUpdate(pid, req.body);
+  const updatedProduct = await Product.findByIdAndUpdate(pid, req.body, {new:true});
   return res.status(200).json({
     success: updatedProduct ? true : false,
     updatedProduct: updatedProduct ? updatedProduct : "Cannot update product",
@@ -104,7 +123,9 @@ const deleteProduct = asyncHandler(async (req, res) => {
   const deletedProduct = await Product.findByIdAndDelete(pid);
   return res.status(200).json({
     success: deletedProduct ? true : false,
-    deletedProduct: deletedProduct ? deletedProduct : "Cannot delete product",
+    mes: response
+      ? `Product with name ${response.name} deleted`
+      : `Cannot product delete.`,
   });
 });
 
@@ -163,11 +184,33 @@ const ratingProduct = asyncHandler(async (req, res) => {
 // upload ảnh sản phẩm 
 const uploadImagesProduct = asyncHandler(async(req, res) => {
   const {pid} = req.params
-  if (!req.files) throw new Error('Missing value')
+  const {title, price, color} = req.body
+  const thumb = req?.files?.thumb[0]?.path
+  const images = req.files?.images?.map(el => el.path)
+  if (!(title && price && color)) throw new Error("Missing inputs");
   const response = await Product.findByIdAndUpdate(pid, {$push: {images: {$each: req.files.map(el => el.path)}}}, {new: true})
   return res.status(200).json({
-    status: response ? true : false,
+    success: response ? true : false,
     uploadedImagesProduct: response ? response : 'Cannot upload images product'
+  });
+})
+
+// thêm biến thể sản phẩm 
+const addVarriantProduct = asyncHandler(async(req, res) => {
+  const {pid} = req.params
+  const {title, price, color} = req.body
+  let thumb, images;
+  if (req.files?.thumb) {
+    thumb = req.files.thumb[0].path;
+  }
+  if (req.files?.images) {
+    images = req.files.images.map(el => el.path);
+  }
+  if (!(title && price && color)) throw new Error("Missing inputs");
+  const response = await Product.findByIdAndUpdate(pid, {$push: {varriants: {color, price, title, thumb, images, sku: makeSKU().toUpperCase()}}}, {new: true})
+  return res.status(200).json({
+    success: response ? true : false,
+    mes: response ? "Add varriant success" : 'Cannot add varriants'
   });
 })
 
@@ -179,4 +222,5 @@ module.exports = {
   deleteProduct,
   ratingProduct,
   uploadImagesProduct,
+  addVarriantProduct
 };
