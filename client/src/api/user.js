@@ -15,7 +15,8 @@ export const apiFinalRegister = (token) => axios({
 export const apiLogin = (data) => axios({
     url: "/user/login",
     method: 'post',
-    data
+    data,
+    withCredentials: true
 })
 
 export const apiForgotPassword = (data) => axios({
@@ -50,4 +51,10 @@ export const apiUpdateUsers = (data, uid) => axios({
 export const apiDeleteUsers = (uid) => axios({
     url: "/user/" + uid,
     method: 'delete',
+})
+
+export const apiUpdateCurrent = (data) => axios({
+    url: "/user/current",
+    method: 'put',
+    data,
 })

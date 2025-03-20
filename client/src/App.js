@@ -13,7 +13,7 @@ import {
   ResetPassword,
 } from "pages/publics";
 import { AdminLayout, CreateProduct, Dashboard, ManageProduct, ManageOrder, ManageUser  } from "pages/admin";
-import { MemberLayout, Personal } from "pages/member";
+import { MemberLayout, Personal, MyCart, Wishlist, MyOders } from "pages/member";
 import path from "utils/path";
 import { getCategories } from "store/app/asyncAction";
 import { useDispatch, useSelector } from "react-redux";
@@ -50,6 +50,9 @@ function App() {
         </Route>
         <Route path={path.MEMBER} element={<MemberLayout/>}>
           <Route path={path.PERSONAL} element={<Personal/>}/>
+          <Route path={path.MY_CART} element={<MyCart/>}/>
+          <Route path={path.WISHLIST} element={<Wishlist/>}/>
+          <Route path={path.MY_ODER} element={<MyOders/>}/>
         </Route>
         <Route path={path.FINAL_REGISTER} element={<FinalRegister />}/>
         <Route path={path.LOGIN} element={<Login />}/>

@@ -65,7 +65,7 @@ const ManageProduct = () => {
       pathname: location.pathname,
       search: new URLSearchParams(queries).toString(),
     });
-  }, [queryDebounce, navigate, location, params]);
+  }, [queryDebounce, navigate, location]);
   
 
   useEffect(() => {
@@ -131,7 +131,7 @@ const ManageProduct = () => {
           <tbody>
             {products?.map((el, index) => (
               <tr
-                key={el.id}
+                key={el._id}
                 className="hover:bg-gray-100 transition-all border-b text-sm"
               >
                 <td className="p-3 text-center border">

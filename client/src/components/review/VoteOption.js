@@ -22,7 +22,11 @@ const VoteOption = ({nameProduct, handleSubmitVoteOption}) => {
     };
 
   return (
-    <div onClick={e => e.stopPropagation()} ref={modalRef} className='bg-white w-[700px] p-4 flex flex-col gap-4 items-center justify-center font-main2'>
+    <div 
+      onClick={e => e.stopPropagation()} 
+      ref={modalRef} 
+      className='bg-white w-[700px] max-w-[95vw] p-4 flex flex-col gap-4 items-center justify-center font-main2 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[2000] rounded-lg shadow-2xl'
+    >
         <img src={logo} alt='logo' className='w-[300px] my-6 object-contain'></img>
         <h2 className='text-center text-medium text-lg'>
             {`Product reviews: ${nameProduct}`}
@@ -72,7 +76,7 @@ const VoteOption = ({nameProduct, handleSubmitVoteOption}) => {
         </textarea>
         <div className='w-full flex flex-col gap-4 items-center border-item'>
             <p>How do you feel about this product?</p>
-            <div className='flex items-center justify-center gap-4'>
+            <div className='flex items-center justify-center gap-4 flex-wrap'>
                 {ratingOptions.map(el => (
                     <div key={el.id} onClick={() => setChosenScore(el.id)} className='flex items-center justify-center flex-col gap-2 p-4 cursor-pointer'>
                         {(Number(chosenScore)) && chosenScore >= el.id ? <AiFillStar color='orange' size={70}/> : <AiFillStar color='gray' size={70}/>}

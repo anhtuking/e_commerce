@@ -21,59 +21,87 @@ const BestSellers = () => {
   const [newProducts, setNewProducts] = useState(null);
   const [activeTab, setActiveTab] = useState(1);
   const [products, setProducts] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  
   const fetchProducts = async () => {
-    const response = await Promise.all([
-      apiGetProducts({ sort: "-sold" }),
-      apiGetProducts({ sort: "-createdAt" }),
-    ]);
-    // console.log("Fetched Products:", response);
-    if (response[0]?.success) {
-      setBestSellers(response[0].dataProducts);
-      setProducts(response[0].dataProducts);
+    setIsLoading(true);
+    try {
+      const response = await Promise.all([
+        apiGetProducts({ sort: "-sold" }),
+        apiGetProducts({ sort: "-createdAt" }),
+      ]);
+      
+      if (response[0]?.success) {
+        setBestSellers(response[0].dataProducts || []);
+        setProducts(response[0].dataProducts || []);
+      } else {
+        setBestSellers([]);
+        console.error("Failed to fetch best sellers:", response[0]?.message);
+      }
+      
+      if (response[1]?.success) {
+        setNewProducts(response[1].dataProducts || []);
+      } else {
+        setNewProducts([]);
+        console.error("Failed to fetch new products:", response[1]?.message);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setBestSellers([]);
+      setNewProducts([]);
+      setProducts([]);
+    } finally {
+      setIsLoading(false);
     }
-    if (response[1]?.success) setNewProducts(response[1].dataProducts);
-    setProducts(response[0].dataProducts);
   };
+  
   useEffect(() => {
     fetchProducts();
   }, []);
+  
   useEffect(() => {
-    if (activeTab === 1) setProducts(bestSellers);
-    if (activeTab === 2) setProducts(newProducts);
+    if (activeTab === 1) setProducts(bestSellers || []);
+    if (activeTab === 2) setProducts(newProducts || []);
   }, [activeTab, bestSellers, newProducts]);
+
   return (
-    <div>
-      <div className="flex text-[20px] gap-8 pb-4 border-b-2 relative">
-        {tabs.map((el) => (
+    <div className="w-full">
+      <div className="flex text-[20px] border-b-2 border-main pb-4 ml-[-32px]">
+        {tabs.map((tab) => (
           <span
-            key={el.id}
-            className={`font-semibold uppercase cursor-pointer text-gray-400 ${
-              activeTab === el.id ? "text-gray-900" : ""
+            key={tab.id}
+            className={`capitalize font-semibold px-8 border-r cursor-pointer ${
+              activeTab === tab.id ? "text-main" : "text-gray-400"
             }`}
-            onClick={() => setActiveTab(el.id)}
+            onClick={() => setActiveTab(tab.id)}
           >
-            {el.name}
-            {activeTab === el.id && (
-              <div
-                className={`absolute bottom-[-8px] left-0 w-full h-[3px] ${
-                  activeTab === 1 ? "bg-blue-500" : "bg-yellow-400"
-                }`}
-              ></div>
-            )}
+            {tab.name}
           </span>
         ))}
       </div>
-      <div className="mt-4 mx-[-10px] pt-2">
-        <Slider {...settings}>
-          {products?.map((el) => (
-            <Product
-              key={el.id}
-              pid={el.id}
-              productData={el}
-              isNew={activeTab === 1 ? false : true}
-            />
-          ))}
-        </Slider>
+      <div className="mt-4">
+        {isLoading ? (
+          <div className="min-h-[200px] flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-main"></div>
+          </div>
+        ) : (
+          products && products.length > 0 ? (
+            <Slider {...settings}>
+              {products.map((el) => (
+                <Product
+                  key={el._id}
+                  pid={el._id}
+                  productData={el}
+                  isNew={activeTab === 2}
+                />
+              ))}
+            </Slider>
+          ) : (
+            <div className="min-h-[200px] flex items-center justify-center text-gray-500">
+              No products found
+            </div>
+          )
+        )}
       </div>
       <div className="w-full flex gap-4 mt-8 ">
         <img 

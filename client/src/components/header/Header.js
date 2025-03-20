@@ -1,4 +1,4 @@
-import React, { memo, Fragment } from "react";
+import React, { memo, useState, useEffect } from "react";
 import logo from "assets/logo.png";
 import icons from "utils/icons";
 import { Link } from "react-router-dom";
@@ -6,42 +6,105 @@ import path from "utils/path";
 import { useSelector } from "react-redux";
 
 const Header = () => {
-  const { FaPhoneAlt, MdEmail, IoBagHandle, FaUserAlt } = icons;
+  const { 
+    IoBagHandle, 
+    FaUserAlt, 
+    FaSearch,
+    FaRegHeart,
+    FaMapMarkerAlt,
+  } = icons;
   const { current } = useSelector(state => state.user);
+  // const [showSearch, setShowSearch] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [searchFocused, setSearchFocused] = useState(false);
+  
+  // Determine if user is admin
+  const isAdmin = current?.role === 2010;
+  console.log('Is admin?', isAdmin);
+  
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 20;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [scrolled]);
+  
+  
   return (
-    <div>
-      <div className="w-main flex justify-between h-[120px] py-[35px]">
-        <Link to={`/${path.HOME}`}>
-          <img src={logo} alt="logo" className="w-[220px] object-contain " />
+    <div className={`sticky top-0 w-full z-30 bg-white transition-all duration-300 ${scrolled ? 'shadow-lg' : 'shadow-sm'}`}>
+      {/* Main header */}
+      <div className="w-full max-w-[1440px] mx-auto px-6 py-4 flex items-center justify-between">
+        {/* Logo */}
+        <Link to={`/${path.HOME}`} className="flex-shrink-0 relative z-10">
+          <img 
+            src={logo} 
+            alt="Marseille" 
+            className="h-16 object-contain transform hover:scale-105 transition-transform duration-300" 
+          />
         </Link>
-        <div className="flex text-[13px]">
-          <div className="flex flex-col px-8 items-center">
-            <span className="flex gap-4 items-center">
-              <FaPhoneAlt color="red" />
-              <span className="font-semibold">(+84) 000 8386 008</span>
-            </span>
-            <span>Mon-Sun 8:00AM - 10:00PM</span>
+        
+        {/* Search bar - larger screens */}
+        <div className={` md:flex items-center max-w-xl w-full mx-8 relative ${searchFocused ? 'ring-2 ring-red-400' : ''}`}>
+          <input 
+            type="text" 
+            placeholder="Search for products..." 
+            className="w-full border border-gray-300 rounded-full py-2.5 px-6 focus:outline-none text-gray-700"
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
+          />
+          <button className="absolute right-1 top-1/2 transform -translate-y-1/2 text-white w-8 h-8 flex items-center justify-center bg-red-600 rounded-full hover:bg-red-700 transition-colors">
+            <FaSearch size={14} />
+          </button>
+        </div>
+        
+        {/* Action buttons */}
+        <div className="flex items-center gap-3">
+          {/* Location - Desktop */}
+          <div className="hidden lg:flex items-center gap-2 pr-4 border-r border-gray-200">
+            <FaMapMarkerAlt size={16} className="text-red-600" />
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-600">Your Location</span>
+              <span className="text-sm font-medium text-gray-800">Da Nang City</span>
+            </div>
           </div>
-          <div className="flex flex-col px-8 items-center">
-            <span className="flex gap-4 items-center">
-              <MdEmail size={15} color="red" />
-              <span className="font-semibold">support@digishop.com</span>
-            </span>
-            <span>Online Support 24/7</span>
-          </div>
-          {/* {current && <Fragment> */}
-              <div className="flex items-center justify-center gap-2 px-8 cursor-pointer">
-                <IoBagHandle size={25} color="red" />
-                <span> 0 item(s)</span>
-              </div>
-              <Link
-                className="flex items-center justify-center px-8 gap-2 cursor-pointer"
-                to={ +current?.role === 2010 ? `/${path.ADMIN}/${path.DASHBOARD}` : `/${path.MEMBER}/${path.PERSONAL}`}>
-                <FaUserAlt size={24} color="red" />
-                <span>Profile</span>
-              </Link>
-            {/* </Fragment>
-          } */}
+          
+          {/* Wishlist button */}
+          <Link 
+            to="/wishlist" 
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors relative"
+            aria-label="Wishlist"
+          >
+            <FaRegHeart size={18} className="text-gray-700" />
+            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-xs rounded-full flex items-center justify-center">0</span>
+          </Link>
+          
+          {/* Cart button */}
+          <Link 
+            to="/cart" 
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors relative"
+            aria-label="Shopping Cart"
+          >
+            <IoBagHandle size={20} className="text-gray-700" />
+            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-xs rounded-full flex items-center justify-center">0</span>
+          </Link>
+          
+          {/* Profile/Account button */}
+          <Link
+            to={isAdmin ? `/${path.ADMIN}/${path.DASHBOARD}` : `/${path.MEMBER}/${path.PERSONAL}`}
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors"
+            aria-label="My Account"
+          >
+            <FaUserAlt size={18} className="text-gray-700" />
+          </Link>
         </div>
       </div>
     </div>

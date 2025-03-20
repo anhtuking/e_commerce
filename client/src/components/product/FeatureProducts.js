@@ -4,34 +4,63 @@ import { apiGetProducts } from "api/product";
 
 const FeatureProducts = () => {
   const [products, setProducts] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  
   const fetchProducts = async () => {
-    const response = await apiGetProducts({
-      limit: 9,
-      //  page: Math.round(Math.random() * 7),
-      totalRatings: 5,
-    });
-    // console.log(response);
-    if (response.success) setProducts(response.dataProducts);
+    setIsLoading(true);
+    try {
+      const response = await apiGetProducts({
+        limit: 9,
+        //  page: Math.round(Math.random() * 7),
+        totalRatings: 5,
+      });
+      
+      if (response && response.success) {
+        setProducts(response.dataProducts || []);
+      } else {
+        console.error("Failed to fetch featured products:", response?.message);
+        setProducts([]);
+      }
+    } catch (error) {
+      console.error("Error fetching featured products:", error);
+      setProducts([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
+  
   useEffect(() => {
     fetchProducts();
   }, []);
+  
   return (
     <div className="w-full">
       <h3 className="text-[20px] font-semibold py-[15px] border-b-2 border-main">
         FEATURED PRODUCTS
       </h3>
-      <div className="flex flex-wrap mt-[15px]">
-        {products?.map((el) => (
-          <ProductCard
-            key={el._id}
-            image={el.thumb}
-            title={el.title}
-            totalRatings={el.totalRatings}
-            price={el.price}
-          />
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="min-h-[200px] flex items-center justify-center mt-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-main"></div>
+        </div>
+      ) : (
+        <div className="flex flex-wrap mt-[15px]">
+          {products && products.length > 0 ? (
+            products.map((el) => (
+              <ProductCard
+                key={el._id}
+                image={el.thumb}
+                title={el.title}
+                totalRatings={el.totalRatings}
+                price={el.price}
+              />
+            ))
+          ) : (
+            <div className="w-full min-h-[200px] flex items-center justify-center text-gray-500">
+              No featured products found
+            </div>
+          )}
+        </div>
+      )}
       <div className="flex gap-4 mt-5">
         <img
           src="https://digital-world-2.myshopify.com/cdn/shop/files/banner1-bottom-home2_b96bc752-67d4-45a5-ac32-49dc691b1958_600x.jpg?v=1613166661"

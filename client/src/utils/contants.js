@@ -221,6 +221,37 @@ export const adminSidebar = [
   },
 ];
 
+export const memberSidebar = [
+  {
+    id: 1,
+    type: "SINGLE",
+    text: "My account",
+    path: `/${path.MEMBER}/${path.PERSONAL}`,
+    icon: <RxDashboard />,
+  },
+  {
+    id: 2,
+    type: "SINGLE",
+    text: "My cart",
+    path: `/${path.MEMBER}/${path.MY_CART}`,
+    icon: <RiGroupLine />,
+  },
+  {
+    id: 3,
+    type: "SINGLE",
+    text: "Wishlist",
+    path: `/${path.MEMBER}/${path.WISHLIST}`,
+    icon: <RiBillLine  />,
+  },
+  {
+    id: 4,
+    type: "SINGLE",
+    text: "My oders",
+    path: `/${path.MEMBER}/${path.MY_ODER}`,
+    icon: <RiBillLine  />,
+  },
+];
+
 export const roles = [
   {
     code: 2010,

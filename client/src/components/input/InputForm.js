@@ -4,7 +4,7 @@ import React, { memo } from 'react'
 const InputForm = ({label, disabled, register, errors, id, validate, type="text", placeholder, fullWidth, styleClass, defaultValue, readOnly}) => {
   return (
     <div className={clsx('flex flex-col gap-2', styleClass)}>
-        {label && <label htmlFor={id}>{label}</label>}
+        {label && <label className='font-medium' htmlFor={id}>{label}:</label>}
         <input 
             type={type} 
             id={id} 

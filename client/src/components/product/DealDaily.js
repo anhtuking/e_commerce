@@ -15,21 +15,28 @@ const DealDaily = () => {
   const [expireTime, setExpireTime] = useState(false);
 
   const fetchDealDaily = async () => {
-    const response = await apiGetProducts({
-      limit: 1,
-      page: Math.round(Math.random() * 10),
-      totalRatings: 5,
-    });
-    if (response.success) {
-      setDealDaily(response.dataProducts[0]);
-      const today = `${moment().format('MM/DD/YYYY')} 2:00:00`
-      const seconds = new Date(today).getTime() -new Date().getTime() + 24 * 3600 * 1000
-      const number = secondsToHms(seconds)
-      
-      setHour(number.h);
-      setMinute(number.m);
-      setSecond(number.s);
-    } else {
+    try {
+      const response = await apiGetProducts({
+        limit: 1,
+        page: Math.round(Math.random() * 10),
+        totalRatings: 5,
+      });
+      if (response && response.success) {
+        setDealDaily(response.dataProducts[0]);
+        const today = `${moment().format('MM/DD/YYYY')} 2:00:00`
+        const seconds = new Date(today).getTime() -new Date().getTime() + 24 * 3600 * 1000
+        const number = secondsToHms(seconds)
+        
+        setHour(number.h);
+        setMinute(number.m);
+        setSecond(number.s);
+      } else {
+        setHour(0);
+        setMinute(59);
+        setSecond(59);
+      }
+    } catch (error) {
+      console.error("Error fetching deal daily:", error);
       setHour(0);
       setMinute(59);
       setSecond(59);
@@ -108,7 +115,7 @@ const DealDaily = () => {
         <span className="line-clamp-1 text-center pt-4">{dealDaily?.title}</span>
         <span className="pt-4">{`${formatPrice(dealDaily?.price)} VND`}</span>
       </div>
-      <div className="px-4 mt-4 mb-8 pt-10">
+      <div className="px-4 pt-10">
         <div className="flex justify-center items-center gap-2 mb-4">
           <Countdown unit={"Hours"} number={hour} />
           <Countdown unit={"Minutes"} number={minute} />

@@ -17,7 +17,7 @@ import icons from "utils/icons";
 import { validate } from "utils/helpers";
 import { Link } from "react-router-dom";
 import { showModal } from "store/app/appSlice";
-import logo from "assets/logo.png";
+import logo2 from "assets/logo2.png";
 
 const { FaEye, FaEyeSlash } = icons;
 
@@ -83,21 +83,52 @@ const Login = () => {
         }
       } else {
         dispatch(showModal({isShowModal: true, modalChildren: <Loading />}))
-        const result = await apiLogin(data);
-        dispatch(showModal({isShowModal: false, modalChildren: null}))
-        if (result.success) {
-          dispatch(
-            login({
-              isLoggedIn: true,
-              token: result.accessToken,
-              userData: result.userData,
-            })
-          );
-          navigate(`/${path.HOME}`);
-        } else {
+        try {
+          // Log the data being sent to the server
+          console.log('Sending login data:', data);
+          
+          const result = await apiLogin(data);
+          dispatch(showModal({isShowModal: false, modalChildren: null}))
+          
+          console.log('Full login response:', JSON.stringify(result));
+          
+          if (result && result.success) {
+            // Check if all required properties exist in the response
+            if (!result.accessToken) {
+              console.error('Missing accessToken in successful response');
+            }
+            
+            if (!result.userData) {
+              console.error('Missing userData in successful response');
+            }
+            
+            const userData = result.userData || {};
+            console.log('User data:', userData);
+            
+            dispatch(
+              login({
+                isLoggedIn: true,
+                token: result.accessToken,
+                userData: userData,
+              })
+            );
+            navigate(`/${path.HOME}`);
+          } else {
+            console.log('Login failed reason:', result?.mes || 'No error message');
+            
+            Swal.fire({
+              title: "Login Failed",
+              text: result?.mes || "Invalid email or password. Please try again.",
+              icon: "error",
+              confirmButtonText: "OK",
+            });
+          }
+        } catch (error) {
+          console.error('Login error details:', error);
+          dispatch(showModal({isShowModal: false, modalChildren: null}));
           Swal.fire({
-            title: "Oops!",
-            text: result?.mes,
+            title: "Connection Error",
+            text: "Could not connect to the server. Please check your connection and try again.",
             icon: "error",
             confirmButtonText: "OK",
           });
@@ -131,78 +162,100 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-start justify-center min-h-screen mt-0 pt-0 relative font-main2">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-slate-100 to-slate-200 font-main2">
       {isVerifiedEmail && (
         <div className="absolute top-0 left-0 right-0 bottom-0 bg-overlay z-50 flex flex-col items-center justify-center">
-          <div className="bg-white w-[500px] rounded-md p-8 text-justify">
-            <h4>
+          <div className="bg-white w-[500px] rounded-lg shadow-xl p-8 text-justify">
+            <h4 className="text-gray-800 font-medium mb-4">
               We have sent your registration code to your email. Please check
               your email and enter your code.
             </h4>
-            <input
-              type="text"
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-              className="p-2 w-[310px] border rounded-md outline-none mt-4"
-              placeholder="Enter code"
-            />
-            <button
-              type="button"
-              className="px-4 py-2 bg-blue-500 font-semibold text-white rounded-md ml-10"
-              onClick={finalRegister}
-            >
-              Submit
-            </button>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={token}
+                onChange={(e) => setToken(e.target.value)}
+                className="p-3 w-full border border-gray-300 rounded-md outline-none mt-4 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all"
+                placeholder="Enter code"
+              />
+              <button
+                type="button"
+                className="px-6 py-3 bg-red-900 hover:bg-red-700 font-semibold text-white rounded-md mt-4 transition-all shadow-md"
+                onClick={finalRegister}
+              >
+                Submit
+              </button>
+            </div>
           </div>
         </div>
       )}
       {isForgotPassword && (
-        <div className="absolute animate-slide-right top-0 left-0 bottom-0 right-0 bg-white flex flex-col items-center py-6 z-50">
-          <div className="flex flex-col gap-4 font-main2">
-            <label htmlFor="email">Enter your email:</label>
-            <div className="relative w-[800px]">
+        <div className="absolute animate-slide-right top-0 left-0 bottom-0 right-0 bg-white flex flex-col items-center justify-center py-6 z-50">
+          <div className="flex flex-col gap-4 font-main2 w-[600px] bg-white p-8 rounded-xl shadow-xl">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Password Recovery</h2>
+            <p className="text-gray-600 mb-4">Enter your email address and we'll send you a link to reset your password.</p>
+            <label htmlFor="email" className="text-gray-700 font-medium">Your Email Address:</label>
+            <div className="relative w-full">
               <input
-                type={showPassword ? "text" : "password"}
+                type="email"
                 id="email"
-                className="w-[800px] pb-2 border-b outline-none placeholder:text-sm font-main2 bg-[#c5c5c5] rounded-[10px] pt-2"
-                placeholder=" Exp: email@gmail.com"
+                className="w-full p-3 border border-gray-300 rounded-lg outline-none placeholder:text-sm font-main2 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all"
+                placeholder="Enter your email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div className="flex items-center justify-end w-full gap-4 font-main2">
+            <div className="flex items-center justify-end w-full gap-4 font-main2 mt-4">
               <Button
                 name="Submit"
                 handleOnClick={handleForgotPassword}
-                style="px-4 py-2 rounded-md text-white bg-blue-500 my-2"
+                style="px-6 py-3 rounded-lg text-white bg-red-600 hover:bg-red-700 transition-all shadow-md"
               />
               <Button
                 className="animate-slide-left"
                 name="Back"
                 handleOnClick={() => setIsForgotPassword(false)}
-                style="px-4 py-2 rounded-md text-white bg-main my-2"
+                style="px-6 py-3 rounded-lg text-white bg-gray-600 hover:bg-gray-700 transition-all shadow-md"
               />
             </div>
           </div>
         </div>
       )}
-      {/* <img src="" alt="" className="w-full h-full object-contain" /> */}
-      <div className="absolute top-0 bottom-0 left-0 right-0 flex flex-col items-center justify-center font-main2">
-        <div className="flex items-center justify-center mb-0">
-          <img src={logo} alt="Logo" className="logo" />
+      <div className="p-0 flex flex-col md:flex-row items-stretch bg-white rounded-2xl shadow-2xl overflow-hidden w-[900px]">
+        <div className="w-0 md:w-2/5 bg-gradient-to-br from-red-600 to-indigo-800 flex flex-col items-center justify-center p-8 relative">
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute top-0 left-0 w-full h-full bg-pattern-dots"></div>
+          </div>
+          <div className="relative z-10 text-white text-center">
+          <img
+            src={logo2}
+            alt="Admin Logo"
+            className="w-[300px] h-[100px] "
+          />
+            <p className="text-sm opacity-80 mt-6 max-w-xs">Discover a world of premium products with exceptional shopping experience</p>
+            <p className="text-sm opacity-80 mt-6 max-w-xs">Wish customers have the best service experience in Marseille.</p>
+          </div>
         </div>
-        <div className="p-8 bg-white flex flex-col items-center rounded-md min-w-[500px]">
-          <h1 className="text-[28px] font-semibold text-main mb-8">
-            {isRegister ? "REGISTER" : "LOGIN"}
+        <div className="w-full md:w-3/5 p-10">
+          <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+            {isRegister ? "Create Account" : "Welcome Back"}
           </h1>
+          <p className="text-gray-600 text-center mb-8">
+            {isRegister 
+              ? "Fill in your details to create your account" 
+              : "Sign in to access your account and dashboard"}
+          </p>
+          
           {isRegister && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4 mb-2">
               <InputField
                 value={payload.firstname}
                 setValue={setPayload}
                 nameKey="firstname"
                 invalidFields={invalidFields}
                 setInvalidFields={setInvalidFields}
+                styleClass="border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all"
+                placeholder="First Name"
               />
               <InputField
                 value={payload.lastname}
@@ -210,6 +263,8 @@ const Login = () => {
                 nameKey="lastname"
                 invalidFields={invalidFields}
                 setInvalidFields={setInvalidFields}
+                styleClass="border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all"
+                placeholder="Last Name"
               />
             </div>
           )}
@@ -219,6 +274,8 @@ const Login = () => {
             nameKey="email"
             invalidFields={invalidFields}
             setInvalidFields={setInvalidFields}
+            styleClass="border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all"
+            placeholder="Email Address"
           />
           <div className="relative w-full">
             <InputField
@@ -228,13 +285,15 @@ const Login = () => {
               type={showPassword ? "text" : "password"}
               invalidFields={invalidFields}
               setInvalidFields={setInvalidFields}
+              styleClass="border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all"
+              placeholder="Password"
             />
             <button
               type="button"
-              className="absolute right-2 top-1/2 transform -translate-y-3"
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+              {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
             </button>
           </div>
           {isRegister && (
@@ -244,43 +303,59 @@ const Login = () => {
               nameKey="mobile"
               invalidFields={invalidFields}
               setInvalidFields={setInvalidFields}
+              styleClass="border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all"
+              placeholder="Mobile Number"
             />
           )}
-          <Button handleOnClick={handleSubmit} fw>
-            {isRegister ? "Sign Up" : "Sign In"}
-          </Button>
-          <div className="flex items-center justify-between my-2 w-full text-sm cursor-pointer">
+          
+          <button 
+            onClick={handleSubmit}
+            className="w-full bg-gradient-to-r from-red-600 to-indigo-700 hover:from-red-700 hover:to-indigo-800 text-white font-semibold py-3 px-4 rounded-lg mt-6 transition-all duration-300 shadow-md transform hover:-translate-y-1"
+          >
+            {isRegister ? "Create Account" : "Sign In"}
+          </button>
+          
+          <div className="flex items-center my-6">
+            <div className="flex-grow h-px bg-gray-300"></div>
+            <span className="mx-4 text-sm text-gray-500">OR</span>
+            <div className="flex-grow h-px bg-gray-300"></div>
+          </div>
+          
+          <div className="flex items-center justify-between mt-4 w-full text-sm">
             {!isRegister && (
-              <span
-                className="text-blue-500 hover:underline"
+              <button
+                className="text-red-600 hover:text-red-800 hover:underline transition-colors"
                 onClick={() => setIsRegister(true)}
               >
-                Register Account
-              </span>
+                Create an Account
+              </button>
             )}
             {!isRegister && (
-              <span
+              <button
                 onClick={() => setIsForgotPassword(true)}
-                className="text-blue-500 hover:underline"
+                className="text-red-600 hover:text-red-800 hover:underline transition-colors"
               >
-                Forgot password?
-              </span>
+                Forgot Password?
+              </button>
             )}
             {isRegister && (
-              <span
-                className="text-blue-500 hover:underline w-full text-center"
+              <button
+                className="text-red-600 hover:text-red-800 hover:underline w-full text-center transition-colors"
                 onClick={() => setIsRegister(false)}
               >
-                Login now!
-              </span>
+                Already have an account? Sign In
+              </button>
             )}
           </div>
-          <Link
-            className="text-blue-500 text-semibold font-main2 hover:uppercase hover:underline cursor-pointer"
-            to={`/${path.HOME}`}
-          >
-            our shop
-          </Link>
+          
+          <div className="text-center mt-8">
+            <Link
+              className="text-red-600 font-medium hover:text-red-800 hover:underline transition-colors inline-block"
+              to={`/${path.HOME}`}
+            >
+              Our Shop
+            </Link>
+          </div>
         </div>
       </div>
     </div>

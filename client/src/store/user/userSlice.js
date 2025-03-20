@@ -1,51 +1,49 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getCurrent } from "./asyncAction";
+import * as actions from './asyncAction'
 
-const userSlice = createSlice({
-  name: "user",
-  initialState: {
-    isLoggedIn: false,
-    current: null,
-    token: null,
-    mes: "",
-  },
-  reducers: {
-    login: (state, action) => {
-      // console.log(action);
-      state.isLoggedIn = action.payload.isLoggedIn;
-      state.token = action.payload.token;
+export const userSlice = createSlice({
+    name: 'user',
+    initialState: {
+        isLoggedIn: false,
+        current: null,
+        token: null,
+        isLoading: false,
+        message: ''
     },
-    logout: (state, action) => {
-      state.isLoggedIn = false;
-      state.isLoadings = false;
-      state.current = null;
-      state.token = null;
-      state.mes = "";
+    reducers: {
+        login: (state, action) => {
+            console.log('Login action payload:', action.payload);
+            state.isLoggedIn = action.payload.isLoggedIn;
+            state.token = action.payload.token;
+            state.current = action.payload.userData;
+        },
+        logout: (state) => {
+            state.isLoggedIn = false;
+            state.token = null;
+            state.current = null;
+        },
+        clearMessage: (state) => {
+            state.message = '';
+        },
     },
-    clearMessage: (state) => {
-      state.mes = "";
-    },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(getCurrent.pending, (state) => {
-        console.log(state);
-        state.isLoadings = true;
-      })
-      .addCase(getCurrent.fulfilled, (state, action) => {
-        state.isLoadings = false;
-        state.current = action.payload;
-        state.isLoggedIn = true;
-      })
-      .addCase(getCurrent.rejected, (state, action) => {
-        state.isLoadings = false;
-        state.current = null;
-        state.isLoggedIn = false;
-        state.token = null;
-        state.mes = "Your session has expired. Please log in again.";
-      });
-  },
-});
-export const { login, logout, clearMessage } = userSlice.actions;
+    extraReducers: (builder) => {
+        builder
+            .addCase(actions.getCurrent.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(actions.getCurrent.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.current = action.payload;
+            })
+            .addCase(actions.getCurrent.rejected, (state, action) => {
+                state.isLoading = false;
+                state.current = null;
+                state.isLoggedIn = false;
+                state.token = null;
+                state.message = 'Login session expired. Please login again.';
+            })
+    }
+})
 
-export default userSlice.reducer;
+export const {login, logout, clearMessage} = userSlice.actions
+export default userSlice.reducer
