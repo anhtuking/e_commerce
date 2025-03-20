@@ -32,6 +32,10 @@ import { RiGroupLine, RiProductHuntLine, RiBillLine } from "react-icons/ri";
 import { BsArrowRight } from 'react-icons/bs';
 import { FaPercentage, FaShippingFast, FaMapMarkerAlt } from 'react-icons/fa';
 import { FaCreditCard } from 'react-icons/fa';
+import { HiArrowSmLeft, HiArrowSmRight } from 'react-icons/hi';
+import { BsStarFill } from 'react-icons/bs';
+import { MdLocalFireDepartment } from 'react-icons/md';
+import { IoFlash } from 'react-icons/io5';
 
 const icons = {
   FaPhoneAlt,
@@ -73,7 +77,12 @@ const icons = {
   FaPercentage,
   FaShippingFast,
   FaCreditCard,
-  FaMapMarkerAlt
+  FaMapMarkerAlt,
+  HiArrowSmLeft,
+  HiArrowSmRight,
+  BsStarFill,
+  MdLocalFireDepartment,
+  IoFlash
 };
 
 export default icons;

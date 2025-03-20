@@ -50,9 +50,9 @@ function App() {
         </Route>
         <Route path={path.MEMBER} element={<MemberLayout/>}>
           <Route path={path.PERSONAL} element={<Personal/>}/>
-          <Route path={path.MY_CART} element={<MyCart/>}/>
-          <Route path={path.WISHLIST} element={<Wishlist/>}/>
-          <Route path={path.MY_ODER} element={<MyOders/>}/>
+          <Route path={path.MY_CART} element={<MyCart id='cart'/>}/>
+          <Route path={path.WISHLIST} element={<Wishlist id='wishlist'/>}/>
+          <Route path={path.MY_ODER} element={<MyOders id='order'/>}/>
         </Route>
         <Route path={path.FINAL_REGISTER} element={<FinalRegister />}/>
         <Route path={path.LOGIN} element={<Login />}/>
