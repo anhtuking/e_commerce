@@ -84,7 +84,7 @@ const Header = () => {
             aria-label="Wishlist"
           >
             <FaRegHeart size={18} className="text-gray-700" />
-            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-xs rounded-full flex items-center justify-center">0</span>
+            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-xs rounded-full flex items-center justify-center">{`${current?.wishlist?.length || 0}`}</span>
           </Link>
           
           {/* Cart button */}
@@ -94,7 +94,7 @@ const Header = () => {
             aria-label="Shopping Cart"
           >
             <IoBagHandle size={20} className="text-gray-700" />
-            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-xs rounded-full flex items-center justify-center">0</span>
+            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-xs rounded-full flex items-center justify-center">{`${current?.cart?.length || 0}`}</span>
           </Link>
           
           {/* Profile/Account button */}

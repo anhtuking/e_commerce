@@ -11,7 +11,8 @@ import {
   FaEyeSlash,
   FaChevronDown,
   FaSearch,
-  FaRegHeart
+  FaRegHeart,
+  FaCartPlus 
 } from "react-icons/fa";
 import { MdEmail, MdOutlineStar, MdOutlineStarBorder, MdMenu } from "react-icons/md";
 import { IoBagHandle, IoLogOutOutline } from "react-icons/io5";
@@ -25,7 +26,6 @@ import {
   FaShieldHalved,
   FaTty,
 } from "react-icons/fa6";
-import { TiThMenuOutline } from "react-icons/ti";
 import { GiPositionMarker } from "react-icons/gi";
 import { RxDashboard } from "react-icons/rx";
 import { RiGroupLine, RiProductHuntLine, RiBillLine } from "react-icons/ri";
@@ -38,6 +38,7 @@ import { MdLocalFireDepartment } from 'react-icons/md';
 import { IoFlash } from 'react-icons/io5';
 import { IoClose } from 'react-icons/io5';
 import { FaMinus, FaPlus } from 'react-icons/fa';
+import { TiThMenuOutline } from "react-icons/ti";
 
 const icons = {
   FaPhoneAlt,
@@ -56,7 +57,7 @@ const icons = {
   FaEye,
   FaEyeSlash,
   FaHeart,
-  TiThMenuOutline,
+  FaCartPlus,
   IoMdArrowDropright,
   GiPositionMarker,
   IoLogOutOutline,
@@ -87,7 +88,8 @@ const icons = {
   IoFlash,
   IoClose,
   FaMinus,
-  FaPlus
+  FaPlus,
+  TiThMenuOutline
 };
 
 export default icons;
