@@ -7,12 +7,12 @@ import {
 } from "react-router-dom";
 import {
   Breadcrumb,
-  Product,
   SearchItems,
   InputSelect,
   Pagination
-} from "../../components";
-import { apiGetProducts } from "../../api";
+} from "components";
+import Product from "components/product/Product";
+import { apiGetProducts } from "api/product";
 import { useEffect, useState, useCallback } from "react";
 import Masonry from "react-masonry-css";
 import { sorts } from "../../utils/contants";

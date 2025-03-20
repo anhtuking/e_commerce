@@ -1,6 +1,9 @@
 import React, { memo, useState } from 'react';
 import { productInfoTabs } from 'utils/contants';
-import {Button, Votebar, VoteOption, Comment} from '..';
+import Button from 'components/common/Button';
+import Votebar from 'components/review/Votebar';
+import VoteOption from 'components/review/VoteOption';
+import Comment from 'components/review/Comment';
 import { renderStarFromNumber } from 'utils/helpers';
 import { apiRatings } from 'api';
 import { useDispatch, useSelector } from 'react-redux';

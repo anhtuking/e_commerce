@@ -2,9 +2,10 @@ import React, { memo, useEffect, useState } from "react";
 import { apiGetProducts } from "api/product";
 import Product from "./Product";
 import Slider from "react-slick";
-import icons from "utils/icons";
-
-const { HiArrowSmRight, HiArrowSmLeft, BsStarFill, MdLocalFireDepartment, IoFlash } = icons;
+import { HiArrowSmRight, HiArrowSmLeft } from 'react-icons/hi';
+import { BsStarFill } from 'react-icons/bs';
+import { MdLocalFireDepartment } from 'react-icons/md';
+import { IoFlash } from 'react-icons/io5';
 
 const tabs = [
   { id: 1, name: "Best Sellers", icon: <MdLocalFireDepartment className="text-orange-500" size={20} /> },

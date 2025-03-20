@@ -36,6 +36,8 @@ import { HiArrowSmLeft, HiArrowSmRight } from 'react-icons/hi';
 import { BsStarFill } from 'react-icons/bs';
 import { MdLocalFireDepartment } from 'react-icons/md';
 import { IoFlash } from 'react-icons/io5';
+import { IoClose } from 'react-icons/io5';
+import { FaMinus, FaPlus } from 'react-icons/fa';
 
 const icons = {
   FaPhoneAlt,
@@ -82,7 +84,10 @@ const icons = {
   HiArrowSmRight,
   BsStarFill,
   MdLocalFireDepartment,
-  IoFlash
+  IoFlash,
+  IoClose,
+  FaMinus,
+  FaPlus
 };
 
 export default icons;

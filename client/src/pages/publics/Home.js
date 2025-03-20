@@ -1,14 +1,11 @@
 import React from "react";
-import {
-  Sidebar,
-  Banner,
-  BestSellers,
-  DealDaily,
-  FeatureProducts,
-  // CustomSlider,
-} from "../../components";
+import BestSellers from "components/product/BestSellers";
+import Sidebar from "components/sidebar/Sidebar";
+import Banner from "components/common/Banner";
+import DealDaily from "components/product/DealDaily";
+import FeatureProducts from "components/product/FeatureProducts";
 import { useSelector } from "react-redux";
-import icons from "../../utils/icons";
+import icons from "utils/icons";
 
 const { IoMdArrowDropright } = icons;
 

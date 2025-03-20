@@ -3,27 +3,41 @@ import { formatPrice, renderStarFromNumber } from "utils/helpers";
 import tagnew from "assets/tagnew.png";
 import trending from "assets/trending.png";
 import icons from 'utils/icons';
-import { SelectOption } from '..'
-import { Link } from "react-router-dom";
-
+import SelectOption from '../search/SelectOption'
+import withBase from "hocs/withBase";
+import { showModal } from "store/app/appSlice";
+import QuickView from "./QuickView";
 const {FaEye, TiThMenuOutline, FaHeart} = icons
 
-const Product = ({ productData, isNew, normal }) => {
+const Product = ({ productData, isNew, normal, navigate, dispatch }) => {
   const [isShowOption, setIsShowOption] = useState(false)
+  const handleClickOption = (e, flag) => {
+    e.stopPropagation()
+    if (flag === 'MENU') navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData?.title}`)
+    if (flag === 'WISHLIST') {
+      console.log('WISHLIST')
+    }
+    if (flag === 'VIEW') {
+      dispatch(showModal({
+        isShowModal: true, 
+        modalChildren: <QuickView data={productData} />
+      }))
+    }
+  }
   return (
     <div className="w-full text-base px-[10px] font-main2">
-      <Link 
+      <div 
         className="w-full border p-[15px] flex flex-col items-center" 
-        to={`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData?.title}`}
+        onClick={e => navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData?.title}`)}
         onMouseEnter={e => {e.stopPropagation() 
           setIsShowOption(true)}} 
         onMouseLeave={e => {e.stopPropagation() 
           setIsShowOption(false)}}>
         <div className="w-full relative">
           {isShowOption && <div className="absolute bottom-[-10px] left-0 right-0 flex justify-center gap-2 animate-slide-top">
-            <SelectOption icon={<FaEye/>}/>
-            <SelectOption icon={<TiThMenuOutline/>}/>
-            <SelectOption icon={<FaHeart/>}/>
+            <span title="Quick View" onClick={(e) => handleClickOption(e, 'VIEW')}><SelectOption icon={<FaEye/>}/></span>
+            <span title="More options" onClick={(e) => handleClickOption(e, 'MENU')}><SelectOption icon={<TiThMenuOutline/>}/></span>
+            <span title="Wishlist" onClick={(e) => handleClickOption(e, 'WISHLIST')}><SelectOption icon={<FaHeart/>}/></span>
           </div>}
           <img
             src={
@@ -45,9 +59,9 @@ const Product = ({ productData, isNew, normal }) => {
           <span className="line-clamp-1">{productData?.title}</span>
           <span>{`${formatPrice(productData?.price)} VND`}</span>
         </div>
-      </Link>
+      </div>
     </div>
   );
 };
 
-export default memo(Product);
+export default withBase(memo(Product));

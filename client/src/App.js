@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import {
   Login,
-  Home,
   PublicLayout,
   FAQs,
   DetailProduct,
@@ -12,6 +11,7 @@ import {
   FinalRegister,
   ResetPassword,
 } from "pages/publics";
+import Home from "pages/publics/Home";
 import { AdminLayout, CreateProduct, Dashboard, ManageProduct, ManageOrder, ManageUser  } from "pages/admin";
 import { MemberLayout, Personal, MyCart, Wishlist, MyOders } from "pages/member";
 import path from "utils/path";
@@ -28,7 +28,7 @@ function App() {
     dispatch(getCategories());
   }, [dispatch]);
   return (
-    <div className="font-main relative">
+    <div className="font-main h-screen">
       {isShowModal && <Modal>{modalChildren}</Modal>}
       <Routes>
         <Route path={path.PUBLIC} element={<PublicLayout />}>
