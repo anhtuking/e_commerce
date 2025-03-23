@@ -10,6 +10,7 @@ import {
   Products,
   FinalRegister,
   ResetPassword,
+  DetailCart,
 } from "pages/publics";
 import Home from "pages/publics/Home";
 import { AdminLayout, CreateProduct, Dashboard, ManageProduct, ManageOrder, ManageUser  } from "pages/admin";
@@ -43,6 +44,7 @@ function App() {
           <Route path={path.FAQ} element={<FAQs />}/>
           <Route path={path.PRODUCTS} element={<Products />}/>
           <Route path={path.RESET_PASSWORD} element={<ResetPassword />}/>
+          <Route path={path.DETAIL_CART} element={<DetailCart />}/>
           <Route path={path.ALL} element={<Home />} />
         </Route>
         <Route path={path.ADMIN} element={<AdminLayout/>}>
@@ -54,7 +56,7 @@ function App() {
         </Route>
         <Route path={path.MEMBER} element={<MemberLayout/>}>
           <Route path={path.PERSONAL} element={<Personal/>}/>
-          <Route path={path.MY_CART} element={<Cart />}/>
+          <Route path={path.MY_CART} element={<Cart id='cart'/>}/>
           <Route path={path.WISHLIST} element={<Wishlist id='wishlist'/>}/>
           <Route path={path.MY_ORDER} element={<MyOders id='order'/>}/>
         </Route>

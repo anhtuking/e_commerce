@@ -47,7 +47,6 @@ const Product = ({ productData, isNew, normal, navigate, dispatch }) => {
       } else {
         toast.error(response.mes)
       }
-
     }
     if (flag === 'WISHLIST') {
       console.log('WISHLIST')

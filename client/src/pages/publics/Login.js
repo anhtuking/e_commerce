@@ -8,7 +8,7 @@ import {
   apiFinalRegister,
 } from "api/user";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import path from "utils/path";
 import { login } from "store/user/userSlice";
 import { useDispatch } from "react-redux";
@@ -24,7 +24,6 @@ const { FaEye, FaEyeSlash } = icons;
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const location = useLocation()
   const [payload, setPayload] = useState({
     firstname: "",
     lastname: "",
@@ -37,6 +36,7 @@ const Login = () => {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [searchParams] = useSearchParams();
   const resetPayload = () => {
     setPayload({
       firstname: "",
@@ -90,8 +90,6 @@ const Login = () => {
           const result = await apiLogin(data);
           dispatch(showModal({isShowModal: false, modalChildren: null}))
           
-          console.log('Full login response:', JSON.stringify(result));
-          
           if (result && result.success) {
             // Check if all required properties exist in the response
             if (!result.accessToken) {
@@ -112,10 +110,8 @@ const Login = () => {
                 userData: userData,
               })
             );
-            navigate(`/${path.HOME}`);
-          } else {
-            console.log('Login failed reason:', result?.mes || 'No error message');
-            
+            searchParams.get('redirect') ? navigate(searchParams.get('redirect')) : navigate(`/${path.HOME}`);
+          } else {   
             Swal.fire({
               title: "Login Failed",
               text: result?.mes || "Invalid email or password. Please try again.",

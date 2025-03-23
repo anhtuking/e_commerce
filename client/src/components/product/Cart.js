@@ -14,8 +14,8 @@ import path from 'utils/path';
 const Cart = ({ dispatch, navigate }) => {
     const { current } = useSelector(state => state.user);
 
-    const handleRemoveFromCart = async (pid) => {
-        const response = await apiRemoveCart(pid)
+    const handleRemoveFromCart = async (pid, color) => {
+        const response = await apiRemoveCart(pid, color)
         if (response.success) {
             dispatch(getCurrent())
         } else {
@@ -35,7 +35,7 @@ const Cart = ({ dispatch, navigate }) => {
         navigate(`/${path.DETAIL_CART}`);
     };
 
-  return (
+    return (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-[50000] flex justify-end transition-all duration-300 backdrop-blur-sm">
             <div
                 className="w-full max-w-md h-screen bg-white shadow-xl grid grid-rows-[auto_1fr_auto] animate-slide-left relative"
@@ -45,7 +45,7 @@ const Cart = ({ dispatch, navigate }) => {
                 <div className="sticky top-0 z-10 bg-gradient-to-r from-red-600 to-pink-600 text-white px-6 py-4 flex items-center justify-between">
                     <div className="flex items-center">
                         <div className="bg-white bg-opacity-20 p-2 rounded-full mr-3">
-                            <FiShoppingCart className="text-xl" size={25}/>
+                            <FiShoppingCart className="text-xl" size={25} />
                         </div>
                         <div>
                             <h2 className="font-bold text-lg flex">YOUR CART
@@ -53,7 +53,7 @@ const Cart = ({ dispatch, navigate }) => {
                                     {current?.cart?.length || 0}
                                 </div>
                             </h2>
-                            
+
                             <p className="text-xs text-red-100">Product information has been added to your cart.</p>
                         </div>
                     </div>
@@ -102,28 +102,28 @@ const Cart = ({ dispatch, navigate }) => {
                                 {/* Product Image */}
                                 <div className="relative rounded-md overflow-hidden">
                                     <img
-                                        src={item.product?.thumb || "https://via.placeholder.com/80"}
-                                        alt={item.product?.title}
+                                        src={item.thumbnail || "https://via.placeholder.com/80"}
+                                        alt={item.title}
                                         className="w-20 h-20 object-cover group-hover:scale-110 transition-transform duration-300"
                                     />
                                 </div>
 
                                 {/* Product Details */}
                                 <div className="flex-1">
-                                    <h3 className="font-medium text-gray-800 line-clamp-1 group-hover:text-red-600 transition-colors duration-200">{item.product?.title}</h3>
+                                    <h3 className="font-medium text-gray-800 line-clamp-1 group-hover:text-red-600 transition-colors duration-200">{item.title}</h3>
                                     <div className="flex items-center text-xs text-gray-500 mt-1">
                                         <span className="px-2 py-0.5 bg-gray-100 rounded-full">Color: {item.color || 'Default'}</span>
                                     </div>
                                     <div className="flex items-center justify-end mt-3">
                                         <div className="text-red-600 font-bold">
-                                            {formatPrice(item.product?.price)} VND
+                                            {formatPrice(item.price)} VND
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Remove Button */}
                                 <span
-                                    onClick={() => handleRemoveFromCart(item.product?._id)}
+                                    onClick={() => handleRemoveFromCart(item.product?._id, item.color)}
                                     className="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition-colors duration-200 p-1 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 cursor-pointer"
                                 >
                                     <FiTrash2 size={16} />

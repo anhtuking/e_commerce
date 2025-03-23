@@ -221,34 +221,35 @@ export const adminSidebar = [
   },
 ];
 
+const { FaHeartCircleCheck, RiAccountCircleFill, RiShoppingCartFill, RiBillFill } = icons;
 export const memberSidebar = [
   {
     id: 1,
     type: "SINGLE",
     text: "My account",
     path: `/${path.MEMBER}/${path.PERSONAL}`,
-    icon: <RxDashboard />,
+    icon: <RiAccountCircleFill />,
   },
   {
     id: 2,
     type: "SINGLE",
     text: "My cart",
     path: `/${path.MEMBER}/${path.MY_CART}`,
-    icon: <RiGroupLine />,
+    icon: <RiShoppingCartFill />,
   },
   {
     id: 3,
     type: "SINGLE",
     text: "Wishlist",
     path: `/${path.MEMBER}/${path.WISHLIST}`,
-    icon: <RiBillLine  />,
+    icon: <FaHeartCircleCheck  />,
   },
   {
     id: 4,
     type: "SINGLE",
     text: "My oders",
     path: `/${path.MEMBER}/${path.MY_ODER}`,
-    icon: <RiBillLine  />,
+    icon: <RiBillFill  />,
   },
 ];
 

@@ -43,7 +43,7 @@ const TopHeader = () => {
    }, [mes, navigate, dispatch])
    
   return (
-    <div className=" w-full bg-gradient-to-r from-red-900 via-red-800 to-red-700 text-white backdrop-blur-sm shadow-lg relative z-50">
+    <div className=" w-full bg-gradient-to-r from-red-900 via-red-800 to-pink-800 text-white backdrop-blur-sm shadow-lg relative z-50">
       {/* Decorative elements */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-[-50%] left-[-10%] w-[50%] h-[200%] bg-gradient-to-br from-yellow-200 to-transparent rounded-full blur-3xl"></div>
