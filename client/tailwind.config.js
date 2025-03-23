@@ -22,6 +22,13 @@ module.exports = {
         main2: "#363636",
         overlay: "rgba(0,0,0,0.3)",
       },
+      gridTemplateRows: {
+        // Simple 8 row grid
+        '10': 'repeat(10, minmax(0, 1fr))',
+
+        // Complex site-specific row configuration
+        'layout': '200px minmax(900px, 1fr) 100px',
+      },
       flex: {
         2: "2 2 0%",
         3: "3 3 0%",

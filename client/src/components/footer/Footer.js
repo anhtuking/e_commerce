@@ -14,7 +14,7 @@ const {
 const Footer = () => {
   return (
     <div className="w-full ">
-      <div className="h-[103px] bg-black w-full flex items-center justify-center">
+      <div className="h-[103px] bg-gradient-to-r from-red-700 to-pink-600 w-full flex items-center justify-center">
         <div className="w-main flex items-center justify-between">
           <div className="flex flex-col flex-1">
             <span className="text-[22px] text-white">

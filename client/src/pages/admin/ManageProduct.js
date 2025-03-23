@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import { CustomVarriant, InputForm, Pagination, Loading } from "components";
 import { useForm } from "react-hook-form";
 import { apiDeleteProduct, apiGetProducts } from "api";
@@ -33,23 +33,46 @@ const ManageProduct = () => {
   const [editProduct, setEditProduct] = useState(null)
   const [update, setUpdate] = useState(false)
   const [customVarriant, setCustomVarriant] = useState(null)
+  const [isLoading, setIsLoading] = useState(false);
+  const cacheRef = useRef({});
 
   const render = useCallback(() => {
     setUpdate(prev => !prev);
   }, []);  
  
   const fetchProducts = async (searchParams = {}) => {
+    const cacheKey = JSON.stringify(searchParams);
     
-    dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }));
-    const response = await apiGetProducts({
-      ...searchParams,
-      limit: process.env.REACT_APP_LIMIT || 10,
-    });
-    dispatch(showModal({ isShowModal: false, modalChildren: null }));
-
-    if (response.success) {
-      setProducts(response.dataProducts);
-      setCounts(response.counts);
+    // Kiểm tra trong cache
+    if (cacheRef.current[cacheKey]) {
+      setProducts(cacheRef.current[cacheKey].products);
+      setCounts(cacheRef.current[cacheKey].counts);
+      return;
+    }
+    
+    // Hiển thị loading nhưng không dùng modal
+    setIsLoading(true);
+    
+    try {
+      const response = await apiGetProducts({
+        ...searchParams,
+        limit: process.env.REACT_APP_LIMIT || 10,
+      });
+      
+      if (response.success) {
+        setProducts(response.dataProducts);
+        setCounts(response.counts);
+        
+        // Lưu vào cache
+        cacheRef.current[cacheKey] = {
+          products: response.dataProducts,
+          counts: response.counts
+        };
+      }
+    } catch (error) {
+      toast.error("Không thể tải danh sách sản phẩm.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -71,7 +94,7 @@ const ManageProduct = () => {
   useEffect(() => {
     const searchParams = Object.fromEntries([...params]);
     fetchProducts(searchParams);
-  }, [params, queryDebounce]);
+  }, [params, update]);
 
   const handleDeleteProduct = (pid) => { 
     Swal.fire({
@@ -82,8 +105,16 @@ const ManageProduct = () => {
     }).then(async (result) => { 
       if (result.isConfirmed){
         const response = await apiDeleteProduct(pid)
-        if (response.success) toast.success(response.mes)
-          else toast.error(response.mes)
+        if (response.success) {
+          toast.success(response.mes);
+          // Xóa cache khi xóa sản phẩm
+          cacheRef.current = {};
+          // Tải lại dữ liệu
+          const searchParams = Object.fromEntries([...params]);
+          fetchProducts(searchParams);
+        } else {
+          toast.error(response.mes)
+        }
       }
      })
    }
@@ -91,10 +122,26 @@ const ManageProduct = () => {
   return (
     <div className="p-6 bg-gray-100 min-h-screen relative">
       {editProduct && <div className="absolute inset-0 bg-gray-100 z-50">
-        <UpdateProduct editProduct={editProduct} render={render} setEditProduct={setEditProduct}/>
+        <UpdateProduct 
+          editProduct={editProduct} 
+          render={render} 
+          setEditProduct={setEditProduct}
+          onSuccess={() => {
+            // Xóa cache khi cập nhật sản phẩm
+            cacheRef.current = {};
+          }}
+        />
       </div>}
       {customVarriant && <div className="absolute inset-0 bg-gray-100 z-50">
-        <CustomVarriant customVarriant={customVarriant} render={render} setCustomVarriant={setCustomVarriant}/>
+        <CustomVarriant 
+          customVarriant={customVarriant} 
+          render={render} 
+          setCustomVarriant={setCustomVarriant}
+          onSuccess={() => {
+            // Xóa cache khi cập nhật variant
+            cacheRef.current = {};
+          }}
+        />
       </div>}
       <h1 className="text-2xl font-bold text-gray-800 mb-4">Manage Product</h1>
       <div className="flex w-full justify-end items-center px-4">
@@ -110,9 +157,14 @@ const ManageProduct = () => {
       </div>
       <div className="h-[20px] w-full"></div>
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
+        {isLoading && (
+          <div className="flex justify-center items-center py-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500"></div>
+          </div>
+        )}
         <table className="table-auto w-full border-collapse border border-gray-300">
           <thead>
-            <tr className="bg-sky-900 text-white text-sm">
+            <tr className="bg-gradient-to-r from-red-600 to-pink-600 text-white text-sm">
               <th className="p-3 border">#</th>
               <th className="p-3 border">Thumb</th>
               <th className="p-3 border">Title</th>
@@ -128,7 +180,7 @@ const ManageProduct = () => {
               <th className="p-3 border">Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className={isLoading ? "opacity-50" : ""}>
             {products?.map((el, index) => (
               <tr
                 key={el._id}

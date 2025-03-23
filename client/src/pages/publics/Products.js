@@ -33,7 +33,7 @@ const Products = () => {
   const { category } = useParams();
 
   const fetchProductsByCategory = async (queries) => {
-    const response = await apiGetProducts(queries);
+    const response = await apiGetProducts({ ...queries, category });
     if (response.success) setProducts(response);
   };
   useEffect(() => {
@@ -127,12 +127,11 @@ const Products = () => {
           className="my-masonry-grid flex"
           columnClassName="my-masonry-grid_column"
         >
-          {products?.dataProducts.map((el) => (
+          {products?.dataProducts?.map((el) => (
             <Product key={el._id} pid={el._id} productData={el} normal={true} />
           ))}
         </Masonry>
       </div>
-      {products?.dataProducts?.length}
       <div className="w-full text-right justify-end my-4 jb">
         <Pagination 
         totalCount = {products?.counts}

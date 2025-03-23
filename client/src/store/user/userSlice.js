@@ -8,14 +8,12 @@ export const userSlice = createSlice({
         current: null,
         token: null,
         isLoading: false,
-        message: ''
+        mes: ''
     },
     reducers: {
         login: (state, action) => {
-            console.log('Login action payload:', action.payload);
             state.isLoggedIn = action.payload.isLoggedIn;
             state.token = action.payload.token;
-            state.current = action.payload.userData;
         },
         logout: (state) => {
             state.isLoggedIn = false;
@@ -23,7 +21,7 @@ export const userSlice = createSlice({
             state.current = null;
         },
         clearMessage: (state) => {
-            state.message = '';
+            state.mes = '';
         },
     },
     extraReducers: (builder) => {

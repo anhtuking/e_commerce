@@ -130,7 +130,7 @@ const ManageUser = () => {
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
         <form onSubmit={handleSubmit(handleUpdate)}>
           <table className="w-full table-auto text-left border-collapse">
-            <thead className="bg-sky-900 text-white text-sm uppercase">
+            <thead className="bg-gradient-to-r from-red-600 to-pink-600 text-white text-sm uppercase">
               <tr>
                 <th className="px-4 py-3 text-center border">#</th>
                 <th className="px-4 py-3 w-[365px] border">Email</th>

@@ -13,22 +13,26 @@ import {
 } from "pages/publics";
 import Home from "pages/publics/Home";
 import { AdminLayout, CreateProduct, Dashboard, ManageProduct, ManageOrder, ManageUser  } from "pages/admin";
-import { MemberLayout, Personal, MyCart, Wishlist, MyOders } from "pages/member";
+import { MemberLayout, Personal, Wishlist, MyOders } from "pages/member";
 import path from "utils/path";
 import { getCategories } from "store/app/asyncAction";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'
-import { Modal } from "components";
+import { Cart, Modal } from "components";
+import { showCart } from "store/app/appSlice";
 
 function App() {
   const dispatch = useDispatch();
-  const {isShowModal, modalChildren} = useSelector(state => state.app)
+  const {isShowModal, modalChildren, isShowCart} = useSelector(state => state.app)
   useEffect(() => {
     dispatch(getCategories());
   }, [dispatch]);
   return (
-    <div className="font-main h-screen">
+    <div className="font-main h-screen relative">
+      {isShowCart && <div onClick={() => dispatch(showCart({signal: false}))} className="absolute inset-0 bg-overlay z-[50000] flex justify-end">
+        <Cart />
+      </div>}
       {isShowModal && <Modal>{modalChildren}</Modal>}
       <Routes>
         <Route path={path.PUBLIC} element={<PublicLayout />}>
@@ -50,9 +54,9 @@ function App() {
         </Route>
         <Route path={path.MEMBER} element={<MemberLayout/>}>
           <Route path={path.PERSONAL} element={<Personal/>}/>
-          <Route path={path.MY_CART} element={<MyCart id='cart'/>}/>
+          <Route path={path.MY_CART} element={<Cart />}/>
           <Route path={path.WISHLIST} element={<Wishlist id='wishlist'/>}/>
-          <Route path={path.MY_ODER} element={<MyOders id='order'/>}/>
+          <Route path={path.MY_ORDER} element={<MyOders id='order'/>}/>
         </Route>
         <Route path={path.FINAL_REGISTER} element={<FinalRegister />}/>
         <Route path={path.LOGIN} element={<Login />}/>

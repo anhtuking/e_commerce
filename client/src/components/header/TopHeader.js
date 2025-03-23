@@ -83,7 +83,7 @@ const TopHeader = () => {
             <div className="relative group">
               <div className="flex items-center gap-2 cursor-pointer bg-white/10 hover:bg-white/20 transition-all px-4 py-1.5 rounded-full backdrop-blur-sm">
                 <span className="text-sm font-medium">{`${current?.firstname} ${current?.lastname}`}</span>
-                {current?.role === 2010 && (
+                {current?.role == 2010 && (
                   <span className="bg-blue-500 text-gray-200 text-xs px-1.5 py-0.5 rounded ml-1">Admin</span>
                 )}
                 <FaChevronDown size={12} className="text-yellow-200 transition-transform group-hover:rotate-180 duration-300" />
@@ -99,18 +99,18 @@ const TopHeader = () => {
                   </div>
                   
                   {/* Menu links */}
-                  {current?.role === 2010 ? (
+                  {current?.role == 2010 ? (
                     <>
                       <div className="px-4 py-2 text-xs text-red-600 font-semibold uppercase">Admin Panel</div>
                       <Link to={`/${path.ADMIN}/${path.DASHBOARD}`} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
                         <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xs">D</span>
                         Dashboard
                       </Link>
-                      <Link to={`/${path.ADMIN}/manage-products`} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
+                      <Link to={`/${path.ADMIN}/manage-product`} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
                         <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xs">P</span>
                         Manage Products
                       </Link>
-                      <Link to={`/${path.ADMIN}/manage-users`} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
+                      <Link to={`/${path.ADMIN}/manage-user`} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
                         <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xs">U</span>
                         Manage Users
                       </Link>
@@ -121,7 +121,7 @@ const TopHeader = () => {
                         <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xs">A</span>
                         My Account
                       </Link>
-                      <Link to="/orders" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
+                      <Link to="/my-order" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
                         <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xs">O</span>
                         My Orders
                       </Link>
@@ -145,7 +145,7 @@ const TopHeader = () => {
           ) : (
             <Link className='bg-white/10 hover:bg-white/20 transition-all px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium' to={`/${path.LOGIN}`}>
               Login / Register
-            </Link>
+        </Link>
           )}
           
           {/* Social Media Icons */}

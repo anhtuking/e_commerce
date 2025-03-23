@@ -3,7 +3,7 @@ import axios from 'axios'
 const instance = axios.create({
     baseURL: process.env.REACT_APP_API_URI,
     withCredentials: true,
-    timeout: 10000
+    timeout: 15000
   });
   
 // Add a request interceptor

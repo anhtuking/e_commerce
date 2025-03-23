@@ -3,8 +3,15 @@ import { generateRange } from "../utils/helpers";
 
 const usePagination = (totalProductCount, currentPage, siblingCount = 1) => {
   const paginationArray = useMemo(() => {
+    // Nếu không có sản phẩm, trả về mảng rỗng
+    if (!totalProductCount || totalProductCount <= 0) return [];
+    
     const pageSize = Number(process.env.REACT_APP_LIMIT) || 10;
     const totalPageCount = Math.ceil(totalProductCount / pageSize);
+    
+    // Nếu chỉ có 1 trang, trả về [1]
+    if (totalPageCount === 1) return [1];
+    
     const totalPageNumbers = siblingCount + 5;
 
     // Nếu tổng số trang nhỏ hơn số phần tử phân trang cần hiển thị thì hiển thị hết

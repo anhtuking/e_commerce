@@ -18,7 +18,7 @@ const QuickView = ({ data, dispatch, navigate }) => {
 
   const handleClose = (e) => {
     e.stopPropagation()
-    showModal({ isShowModal: false, modalChildren: null })
+    dispatch(showModal({ isShowModal: false, modalChildren: null }))
   }
 
   const handleViewDetail = () => {
