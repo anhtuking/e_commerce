@@ -13,13 +13,13 @@ router.get("/logout", ctrls.logout);
 router.post("/forgotPassword", ctrls.forgotPassword);
 router.put("/resetPassword", ctrls.resetPassword);
 router.get("/", [verifyAccessToken, isAdmin], ctrls.getUsers);
-router.delete("/:uid", [verifyAccessToken, isAdmin], ctrls.deleteUser);
 router.put("/current", [verifyAccessToken], uploader.single("avatar"), ctrls.updateUser);
 router.put("/address", [verifyAccessToken], ctrls.updateUserAddress);
 router.put("/cart", [verifyAccessToken], ctrls.updateCart);
 router.delete("/remove-cart/:pid/:color", [verifyAccessToken], ctrls.removeCart);
+router.delete("/:uid", [verifyAccessToken, isAdmin], ctrls.deleteUser);
 router.put("/:uid", [verifyAccessToken, isAdmin], ctrls.updateUserByAdmin);
-
+router.put("/wishlist/:pid", [verifyAccessToken], ctrls.updateWishlist);
 module.exports = router;
 //   CRUD | Create - Read - Update - Delete
 // Method | POST - GET - PUT - DELETE

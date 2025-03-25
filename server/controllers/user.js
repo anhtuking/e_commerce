@@ -456,6 +456,34 @@ const removeCart = asyncHandler(async (req, res) => {
 //   })
 //  })
 
+const updateWishlist = asyncHandler(async (req,res) => { 
+  const {pid} = req.params
+  const {id} = req.user
+  const user = await User.findById(id)
+  const alreadyWishlist = user.wishlist?.find(el => el.toString() === pid)
+  if (alreadyWishlist) {
+    const response = await User.findByIdAndUpdate(
+      id,
+      { $pull: { wishlist: { $in: [pid] } } },
+      { new: true }
+    )
+    return res.status(200).json({
+      success: response ? true : false,
+      mes: response ? "Add your wishlist" : "Some thing went wrong"
+    })
+  } else {
+    const response = await User.findByIdAndUpdate(
+      id,
+      { $push: { wishlist: pid } },
+      { new: true }
+    )
+    return res.status(200).json({
+      success: response ? true : false,
+      mes: response ? "Add your wishlist" : "Some thing went wrong"
+    })
+  }
+ })
+
 module.exports = {
   register,
   finalRegister,
@@ -471,6 +499,7 @@ module.exports = {
   updateUserByAdmin,
   updateUserAddress,
   updateCart,
-  removeCart
+  removeCart,
   // createUsers
+  updateWishlist
 };
