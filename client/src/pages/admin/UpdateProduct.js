@@ -48,7 +48,8 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
       images: editProduct?.images || [],
     });
   }, [editProduct, reset]);
-  const [isFocusDescription, setIsFocusDescription] = useState(false)
+  
+  const [isFocusDescription, setIsFocusDescription] = useState(false);
 
   const changValue = useCallback(
     (e) => {

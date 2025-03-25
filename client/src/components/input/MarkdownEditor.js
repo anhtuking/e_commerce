@@ -51,9 +51,9 @@ const MarkdownEditor = ({
         }
         onFocus={() => {
           setInvalidFields && setInvalidFields([])
-          setIsFocusDescription(true)
+          setIsFocusDescription && setIsFocusDescription(true)
         }}
-        onBlur={() => setIsFocusDescription(false)}
+        onBlur={() => setIsFocusDescription && setIsFocusDescription(false)}
       />
       {invalidFields?.some((el) => el.name === name) && (
         <small className="text-main text-sm">

@@ -81,7 +81,7 @@ const Header = ({dispatch}) => {
           
           {/* Wishlist button */}
           <Link 
-            to="/wishlist" 
+            to={`/${path.MEMBER}/${path.WISHLIST}`} 
             className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors relative"
             aria-label="Wishlist"
           >
@@ -99,15 +99,6 @@ const Header = ({dispatch}) => {
             <IoBagHandle size={20} className="text-gray-700" />
             <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-xs rounded-full flex items-center justify-center">{`${current?.cart?.length || 0}`}</span>
           </div>
-          
-          {/* Profile/Account button */}
-          <Link
-            to={isAdmin ? `/${path.ADMIN}/${path.DASHBOARD}` : `/${path.MEMBER}/${path.PERSONAL}`}
-            className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors"
-            aria-label="My Account"
-          >
-            <FaUserAlt size={18} className="text-gray-700" />
-          </Link>
         </div>
       </div>
     </div>

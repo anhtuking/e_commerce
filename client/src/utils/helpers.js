@@ -114,3 +114,29 @@ export function getBase64(file) {
     reader.onerror = error => reject(error);
   });
 }
+
+export const addToCartUtil = (product, quantity = 1, variant = null) => {
+  // Xử lý dữ liệu khi có biến thể
+  let color = product?.color || 'Default';
+  let price = product?.price;
+  let thumb = product?.thumb;
+  let title = product?.title;
+
+  // Nếu có biến thể được chọn
+  if (variant) {
+    color = variant.color || color;
+    price = variant.price || price;
+    thumb = variant.thumb || thumb;
+    title = variant.title || title;
+  }
+
+  // Trả về đối tượng dữ liệu cho API
+  return {
+    pid: product?._id,
+    color,
+    quantity,
+    price,
+    thumbnail: thumb,
+    title
+  };
+};

@@ -71,7 +71,7 @@ const DealDaily = () => {
     };
   }, [hour, minute, second, expireTime]);
   return (
-    <div className="w-full h-[50px] border-item flex-auto p-4">
+    <div className="w-full h-full border-item flex-auto p-4">
       <div className="flex items-center justify-between">
         <div className="flex space-x-2">
           <span>
@@ -113,17 +113,17 @@ const DealDaily = () => {
         ))}
         </span>
         <span className="line-clamp-1 text-center pt-4">{dealDaily?.title}</span>
-        <span className="pt-4">{`${formatPrice(dealDaily?.price)} VND`}</span>
+        <span className="pt-4 text-red-500">{`${formatPrice(dealDaily?.price)} VND`}</span>
       </div>
       <div className="px-4 pt-10">
-        <div className="flex justify-center items-center gap-2 mb-4">
+        <div className="flex justify-center items-center gap-2 mb-8">
           <Countdown unit={"Hours"} number={hour} />
           <Countdown unit={"Minutes"} number={minute} />
           <Countdown unit={"Seconds"} number={second} />
         </div>
         <button
           type="button"
-          className="flex gap-2 items-center justify-center w-full bg-main hover:bg-gray-800 text-white font-medium py-2"
+          className="flex gap-2 items-center justify-center w-full bg-main hover:bg-gray-800 text-white font-medium py-4"
         >
           <TiThMenuOutline />
           <span>Options</span>

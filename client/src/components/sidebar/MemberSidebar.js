@@ -39,7 +39,7 @@ const MemberSidebar = () => {
   };
 
   return (
-    <div className={`bg-gradient-to-b from-gray-800 to-gray-900 h-full transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'} flex flex-col font-main2 shadow-xl relative overflow-hidden`}>
+    <div className={`bg-gradient-to-b from-gray-800 to-gray-900 h-full w-[327px] transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'} flex flex-col font-main2 shadow-xl relative overflow-hidden`}>
       {/* Collapse button */}
       <button
         onClick={toggleCollapse}

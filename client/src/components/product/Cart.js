@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 import path from 'utils/path';
 
 const Cart = ({ dispatch, navigate }) => {
-    const { current } = useSelector(state => state.user);
+    const { currentCart } = useSelector(state => state.user);
 
     const handleRemoveFromCart = async (pid, color) => {
         const response = await apiRemoveCart(pid, color)
@@ -24,15 +24,14 @@ const Cart = ({ dispatch, navigate }) => {
     };
 
     const getCartTotal = () => {
-        return current?.cart?.reduce((total, item) => {
+        return currentCart?.reduce((total, item) => {
             return total + (item.product?.price * item.quantity || 0);
         }, 0) || 0;
     };
-    console.log(current)
 
     const handleCheckout = () => {
         dispatch(showCart());
-        navigate(`/${path.DETAIL_CART}`);
+        navigate(`/${path.MEMBER}/${path.MY_CART}`);
     };
 
     return (
@@ -50,7 +49,7 @@ const Cart = ({ dispatch, navigate }) => {
                         <div>
                             <h2 className="font-bold text-lg flex">YOUR CART
                                 <div className="ml-3 bg-white text-red-600 rounded-full h-7 w-7 flex items-center justify-center text-xs font-bold shadow-md">
-                                    {current?.cart?.length || 0}
+                                    {currentCart?.length || 0}
                                 </div>
                             </h2>
 
@@ -78,7 +77,7 @@ const Cart = ({ dispatch, navigate }) => {
                             <span className="text-sm text-gray-700">Secure payment & money back guarantee</span>
                         </div>
                     </div>
-                    {(!current?.cart || current?.cart?.length === 0) && <span>
+                    {(!currentCart || currentCart?.length === 0) && <span>
                         <div className="h-full flex flex-col items-center justify-center text-gray-500 p-6">
                             <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
                                 <FiShoppingCart className="text-4xl text-gray-300" />
@@ -94,7 +93,7 @@ const Cart = ({ dispatch, navigate }) => {
                         </div>
                     </span>}
                     <div className="space-y-4">
-                        {current?.cart && current?.cart?.map((item) => (
+                        {currentCart && currentCart?.map((item) => (
                             <div
                                 key={item._id}
                                 className="bg-white rounded-lg shadow-sm p-4 flex gap-4 border border-gray-100 hover:border-red-200 transition-all duration-200 group relative"
@@ -134,11 +133,11 @@ const Cart = ({ dispatch, navigate }) => {
                 </div>
 
                 {/* Cart Footer */}
-                {current?.cart && current?.cart?.length > 0 && (
+                {currentCart && currentCart?.length > 0 && (
                     <div className="bg-white border-t border-gray-200 pt-4 pb-4 px-4 shadow-md">
                         <div className="mb-4">
                             <div className="flex items-center justify-between mb-1 text-sm">
-                                <span className="text-gray-500">Subtotal ({current?.cart?.length} items):</span>
+                                <span className="text-gray-500">Subtotal ({currentCart?.length} items):</span>
                                 <span className="font-medium text-gray-700">{formatPrice(getCartTotal())} VND</span>
                             </div>
 

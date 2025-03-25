@@ -1,15 +1,25 @@
 import React, { memo, useState } from 'react'
 import withBase from 'hocs/withBase'
-import { formatMoney, formatPrice, renderStarFromNumber } from 'utils/helpers'
+import { formatMoney, formatPrice, renderStarFromNumber, addToCartUtil } from 'utils/helpers'
 import icons from 'utils/icons'
 import Button from 'components/common/Button'
 import { showModal } from 'store/app/appSlice'
+import { apiUpdateCart } from 'api/user'
+import { toast } from 'react-toastify'
+import { getCurrent } from 'store/user/asyncAction'
+import Swal from 'sweetalert2'
+import path from 'utils/path'
+import { useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 
 const { IoClose, FaMinus, FaPlus } = icons
 
 const QuickView = ({ data, dispatch, navigate }) => {
   const [quantity, setQuantity] = useState(1)
   const [selectedColor, setSelectedColor] = useState(null)
+  const [isAddingToCart, setIsAddingToCart] = useState(false)
+  const { current } = useSelector(state => state.user)
+  const location = useLocation()
 
   const handleChangeQuantity = (type) => {
     if (type === 'minus' && quantity > 1) setQuantity(prev => prev - 1)
@@ -24,6 +34,44 @@ const QuickView = ({ data, dispatch, navigate }) => {
   const handleViewDetail = () => {
     dispatch(showModal({ isShowModal: false, modalChildren: null }))
     navigate(`/${data?.category?.toLowerCase()}/${data?._id}/${data?.title}`)
+  }
+
+  const handleAddToCart = async () => {
+    if (!current) return Swal.fire({
+      title: 'Wait...',
+      text: 'Please login to add to cart',
+      icon: 'info',
+      confirmButtonText: 'Login',
+      denyButtonText: 'Cancel',
+      showDenyButton: true,
+      confirmButtonColor: '#3085d6',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        handleClose({ stopPropagation: () => {} })
+        navigate(`/${path.LOGIN}?redirect=${location.pathname}`)
+      }
+    })
+
+    setIsAddingToCart(true)
+    
+    // Lấy thông tin biến thể được chọn (nếu có)
+    const selectedVariant = selectedColor ? data?.varriants?.find(el => el.sku === selectedColor) : null
+    
+    // Sử dụng hàm addToCartUtil để tạo dữ liệu giỏ hàng
+    const cartData = addToCartUtil(data, quantity, selectedVariant)
+    
+    const response = await apiUpdateCart(cartData)
+    
+    setIsAddingToCart(false)
+    
+    if (response.success) {
+      toast.success(response.mes)
+      dispatch(getCurrent())
+      // Đóng modal sau khi thêm thành công
+      handleClose({ stopPropagation: () => {} })
+    } else {
+      toast.error(response.mes)
+    }
   }
 
   return (
@@ -138,9 +186,11 @@ const QuickView = ({ data, dispatch, navigate }) => {
                 See details
               </Button>
               <Button
+                handleOnClick={handleAddToCart}
                 style="bg-red-900 hover:bg-red-600 text-white px-4 py-2 rounded-md"
+                disabled={isAddingToCart}
               >
-                Add to cart
+                {isAddingToCart ? 'Adding...' : 'Add to cart'}
               </Button>
             </div>
           </div>

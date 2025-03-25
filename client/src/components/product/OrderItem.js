@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SelectQuantity } from 'components'
 import { formatPrice } from 'utils/helpers'
 import { FaTrash, FaHeart } from 'react-icons/fa'
@@ -6,10 +6,10 @@ import { toast } from 'react-toastify'
 import withBase from 'hocs/withBase'
 import { apiRemoveCart } from 'api/user'
 import { getCurrent } from 'store/user/asyncAction'
+import { updateCart } from 'store/user/userSlice'
 
-const OrderItem = ({ el, dispatch }) => {
-    const [quantity, setQuantity] = useState(el.quantity)
-    const [isRemoving, setIsRemoving] = useState(false)
+const OrderItem = ({ el, dispatch, getCount, defaultQuantity = 1 }) => {
+    const [quantity, setQuantity] = useState(() => defaultQuantity)
 
     const handleQuantity = (number) => {
         if (+number > 1) setQuantity(number)
@@ -34,6 +34,10 @@ const OrderItem = ({ el, dispatch }) => {
         toast.info('Added to wishlist')
     }
 
+    useEffect(() => {
+        dispatch(updateCart({pid: el.product?._id, quantity, color: el.color}))
+    }, [quantity])
+
     return (
         <div className='w-full grid grid-cols-10 py-4 px-6 items-center hover:bg-gray-50 transition-colors duration-200'>
             <div className='col-span-6 w-full flex gap-4 items-center'>
@@ -43,12 +47,6 @@ const OrderItem = ({ el, dispatch }) => {
                         alt="thumb"
                         className='w-28 h-28 object-cover rounded-md border border-gray-200'
                     />
-                    {el.color && (
-                        <div
-                            className='absolute w-5 h-5 rounded-full border-2 border-white right-1 bottom-1 shadow-sm'
-                            style={{ backgroundColor: el.color }}
-                        ></div>
-                    )}
                 </div>
 
                 <div className='flex flex-col gap-1'>
@@ -87,7 +85,7 @@ const OrderItem = ({ el, dispatch }) => {
             </div>
 
             <div className='col-span-3 w-full flex justify-center items-center'>
-                <span className='font-semibold text-red-600'>{formatPrice(el.price)} VND</span>
+                <span className='font-semibold text-red-600'>{formatPrice(el.price * quantity)} VND</span>
             </div>
         </div>
     )

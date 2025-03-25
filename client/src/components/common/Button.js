@@ -4,7 +4,7 @@ const Button = ({children, handleOnClick, style, fw, type = 'button'}) => {
     return (
         <button
             type={type}
-            className={style ? style : `px-4 py-4 rounded-md text-white bg-main text-semibold my-2 ${fw ? 'w-full' : 'w-fix'}`}
+            className={style ? style : `px-4 py-4 rounded-md text-white bg-main text-semibold my-2 ${fw ? 'w-full' : 'w-fit'}`}
             onClick={() => {handleOnClick && handleOnClick()}}
         >
         {children}

@@ -1,10 +1,10 @@
 import React, { memo } from 'react';
-import banner from 'assets/banner.jpg';
+import largeThumbnail from 'assets/large-thumbnail.mp4';
 
 const Banner = () => {
-    return (
+    return (        
         <div className='w-full'>
-            <img src={banner} alt="banner" className="h-full w-full object-cover"/>
+            <video src={largeThumbnail} autoPlay muted loop className="h-[630px] w-full object-cover"/>
         </div>
     )
 }

@@ -49,15 +49,6 @@ const AdminSidebar = () => {
 
       {/* Header */}
       <div className="flex flex-col items-center pt-8 pb-6 border-b border-gray-700">
-        <div className="relative">
-          <img
-            src={avatarAdmin}
-            alt="Admin Avatar"
-            className="w-20 h-20 object-cover rounded-full border-2 border-red-500 shadow-xl transition-all duration-300"
-          />
-          <div className="absolute inset-0 rounded-full bg-red-500 opacity-0 hover:opacity-20 transition-opacity duration-300"></div>
-        </div>
-        
         <Link className={`flex items-center justify-center mt-4 transition-all duration-300 ${collapsed ? 'scale-75' : ''}`} to={'/'}>
           <img
             src={logo2}

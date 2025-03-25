@@ -140,7 +140,7 @@ const Blogs = () => {
     setSearchTerm(e.target.value);
   };
 
-  return (
+    return (
     <div className="w-full bg-gray-50 min-h-screen pb-16">
       {/* Header */}
       <div className="h-[81px] flex justify-start items-start bg-gray-100">

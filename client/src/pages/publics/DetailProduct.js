@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { createSearchParams, useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { apiGetProduct, apiGetProducts } from 'api/product';
 import { Breadcrumb, Button, ProductExtraInfoItem, SelectQuantity, ProductInformation } from 'components';
 import CustomSlider from 'components/common/CustomSlider';
 import Slider from "react-slick";
 import ReactImageMagnify from 'react-image-magnify';
-import { formatMoney, formatPrice, renderStarFromNumber } from 'utils/helpers';
+import { formatMoney, formatPrice, renderStarFromNumber, addToCartUtil } from 'utils/helpers';
 import { productExtraInformation } from 'utils/contants';
 import DOMPurify from 'dompurify';
 import clsx from 'clsx';
@@ -16,6 +16,7 @@ import path from 'utils/path';
 import { apiUpdateCart } from 'api';
 import { toast } from 'react-toastify';
 import { getCurrent } from 'store/user/asyncAction';
+import { FaHeart, FaShoppingCart, FaShippingFast, FaRegCheckCircle, FaArrowLeft, FaClock, FaEye, FaTag, FaStore, FaShieldAlt, FaInfoCircle, FaGift, FaHeadset } from 'react-icons/fa';
 
 var settings = {
     dots: false,
@@ -23,6 +24,20 @@ var settings = {
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
+    responsive: [
+        {
+            breakpoint: 1024,
+            settings: {
+                slidesToShow: 3,
+            }
+        },
+        {
+            breakpoint: 768,
+            settings: {
+                slidesToShow: 2,
+            }
+        }
+    ]
 };
 
 const DetailProduct = ({navigate, dispatch}) => {
@@ -35,6 +50,8 @@ const DetailProduct = ({navigate, dispatch}) => {
     const [relatedProduct, setRelatedProduct] = useState(null)
     const [update, setUpdate] = useState(false)
     const [varriant, setVarriant] = useState(null)
+    const [isAddingToCart, setIsAddingToCart] = useState(false)
+    const [activeTab, setActiveTab] = useState('description')
     const [currentProduct, setCurrentProduct] = useState({
         title: '',
         thumb: '',
@@ -95,7 +112,6 @@ const DetailProduct = ({navigate, dispatch}) => {
     }, [update])
 
     const handleQuantity = useCallback((number) => {
-        console.log(number);
         if (!Number(number) || Number(number) < 1) {
             return
         } else setQuantity(number)
@@ -128,128 +144,442 @@ const DetailProduct = ({navigate, dispatch}) => {
         }).then( async (result) => {
           if (result.isConfirmed) navigate(`/${path.LOGIN}?redirect=${location.pathname}`);
         })
-        const response = await apiUpdateCart({
-            pid: product?._id,
-            color: currentProduct?.color || product?.color,
-            quantity,
-            price: currentProduct?.price || product?.price,
-            thumbnail: currentProduct?.thumb || product?.thumb,
-            title: currentProduct?.title || product?.title
-        });
-      if (response.success) {
-        toast.success(response.mes)
-        dispatch(getCurrent())
-      } else {
-        toast.error(response.mes)
-      }
+        
+        setIsAddingToCart(true);
+        
+        const currentVariant = varriant ? product?.varriants?.find(el => el.sku === varriant) : null;
+        const cartData = addToCartUtil(product, quantity, currentVariant);
+        
+        const response = await apiUpdateCart(cartData);
+        
+        setIsAddingToCart(false);
+        
+        if (response.success) {
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Added to Cart!',
+                text: `${quantity} item(s) have been added to your cart`,
+                showConfirmButton: false,
+                timer: 1500,
+                backdrop: 'rgba(0,0,0,0.4)'
+            });
+            dispatch(getCurrent())
+        } else {
+            toast.error(response.mes)
+        }
     }
+    
+    // Calculate discount if there's original price
+    const calculateDiscount = () => {
+        if (product?.originalPrice && product?.price) {
+            const originalPrice = Number(product.originalPrice);
+            const currentPrice = Number(product.price);
+            if (originalPrice > currentPrice) {
+                return Math.round((1 - currentPrice / originalPrice) * 100);
+            }
+        }
+        return 0;
+    }
+    
+    const discount = calculateDiscount();
+    
     return (
-        <div className='w-full'><div className='h-[81px] flex justify-center items-center bg-gray-100'>
-            <div className='w-main font-semibold'>
-                <h3>{currentProduct?.title || product?.title.toUpperCase()}</h3>
-                <Breadcrumb title={currentProduct?.title || product?.title} category={category} />
-            </div>
-        </div>
-            <div className='w-main m-auto mt-6 flex'>
-                <div className=' flex flex-col gap-4 w-2/5'>
-                    <div className='h-[458px] w-[458px] border flex items-center overflow-hidden'>
-                        <ReactImageMagnify {...{
-                            smallImage: {
-                                alt: '',
-                                isFluidWidth: true,
-                                src: currentProduct?.thumb || currentImage
-                            },
-                            largeImage: {
-                                src: currentProduct?.thumb || currentImage,
-                                width: 1800,
-                                height: 1500
-                            }
-                        }} />
+        <div className='w-full bg-gray-50'>
+            {/* Header & Breadcrumb */}
+            <div className='bg-gradient-to-r from-gray-100 to-gray-200 shadow-sm'>
+                <div className='w-main mx-auto px-4 py-6'>
+                    <div className='flex items-center gap-2 mb-3'>
+                        <button 
+                            onClick={() => navigate(-1)}
+                            className='flex items-center text-gray-600 hover:text-main transition-all text-sm font-medium'
+                        >
+                            <FaArrowLeft className='mr-2' /> Back
+                        </button>
                     </div>
-                    <div className='w-[458px]'>
-                        <Slider {...settings}>
-                            {currentProduct.images.length === 0 && product?.images?.map((el, index) => (
-                                <div className='flex w-full gap-2 cursor-pointer' key={el}>
-                                    <img onClick={e => handleClickImages(e, el)} src={el} alt={`sub-product-${index}`} className='h-[140px] w-[140px] object-cover border-items' />
-                                </div>
-                            ))}
-                            {currentProduct.images.length > 0 && currentProduct.images?.map((el, index) => (
-                                <div className='flex w-full gap-2 cursor-pointer' key={el}>
-                                    <img onClick={e => handleClickImages(e, el)} src={el} alt={`sub-product-${index}`} className='h-[140px] w-[140px] object-cover border-items' />
-                                </div>
-                            ))}
-                        </Slider>
+                    <h1 className='text-2xl md:text-3xl font-bold text-gray-800 mb-2'>
+                        {currentProduct?.title || product?.title}
+                    </h1>
+                    <div className='flex items-center flex-wrap gap-4 mb-2'>
+                        <Breadcrumb title={currentProduct?.title || product?.title} category={category} />
+                        <div className='flex items-center gap-2 text-sm text-gray-500'>
+                            <FaStore className='text-gray-400' />
+                            <span>Official Store</span>
+                        </div>
                     </div>
                 </div>
-                <div className='w-2/5 text-[30px] flex flex-col gap-4'>
-                    <div className='flex items-center justify-between font-semibold'>
-                        <h2>
-                            {`${formatPrice(formatMoney(currentProduct.price || product?.price))} VND`}
-                        </h2>
-                    </div>
-                    <div className='flex items-center gap-1'>
-                        {renderStarFromNumber(product?.totalRatings)?.map((el, index) => (
-                            <span key={index} >
-                                {el}
-                            </span>
-                        ))}
-                        <span className='text-sm font-main2 text-main ml-4'>
-                            {`Sold: ${product?.sold} /`}
-                        </span>
+            </div>
+            
+            {/* Main Product Content */}
+            <div className='w-main mx-auto px-4 py-8'>
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8'>
+                    {/* Product Images */}
+                    <div className='lg:col-span-5 flex flex-col gap-4'>
+                        <div className='bg-white rounded-lg shadow-sm overflow-hidden'>
+                            <div className='relative border hover:border-main transition-all rounded-lg overflow-hidden group'>
+                                {discount > 0 && (
+                                    <div className='absolute top-2 left-2 z-10 bg-main text-white text-xs font-bold px-2 py-1 rounded-md flex items-center shadow-lg'>
+                                        <FaTag className='mr-1' /> {discount}% OFF
+                                    </div>
+                                )}
+                                <div className='absolute top-2 right-2 z-10 bg-white bg-opacity-80 text-main text-xs font-medium px-2 py-1 rounded-full flex items-center shadow-sm'>
+                                    <FaEye className='mr-1' /> {Math.floor(Math.random() * 20) + 5} watching
+                                </div>
+                                <ReactImageMagnify {...{
+                                    smallImage: {
+                                        alt: currentProduct?.title || product?.title,
+                                        isFluidWidth: true,
+                                        src: currentProduct?.thumb || currentImage
+                                    },
+                                    largeImage: {
+                                        src: currentProduct?.thumb || currentImage,
+                                        width: 1800,
+                                        height: 1500
+                                    },
+                                    enlargedImagePosition: 'over',
+                                    isHintEnabled: true,
+                                    shouldHideHintAfterFirstActivation: false,
+                                    hintTextMouse: 'Hover to zoom'
+                                }} />
+                            </div>
+                        </div>
+                        <div className='mt-4'>
+                            <Slider {...settings} className='product-thumbnails'>
+                                {currentProduct.images.length === 0 && product?.images?.map((el, index) => (
+                                    <div className='px-1' key={el}>
+                                        <div 
+                                            onClick={e => handleClickImages(e, el)} 
+                                            className={`cursor-pointer border-2 rounded-lg overflow-hidden hover:shadow-md transform transition-transform hover:scale-105 ${currentImage === el ? 'border-main ring-2 ring-red-200' : 'border-gray-200'}`}
+                                        >
+                                            <img src={el} alt={`sub-product-${index}`} className='h-[100px] w-full object-cover' />
+                                        </div>
+                                    </div>
+                                ))}
+                                {currentProduct.images.length > 0 && currentProduct.images?.map((el, index) => (
+                                    <div className='px-1' key={el}>
+                                        <div 
+                                            onClick={e => handleClickImages(e, el)} 
+                                            className={`cursor-pointer border-2 rounded-lg overflow-hidden hover:shadow-md transform transition-transform hover:scale-105 ${currentImage === el ? 'border-main ring-2 ring-red-200' : 'border-gray-200'}`}
+                                        >
+                                            <img src={el} alt={`sub-product-${index}`} className='h-[100px] w-full object-cover' />
+                                        </div>
+                                    </div>
+                                ))}
+                            </Slider>
+                        </div>
+                        
+                        {/* Product Tabs */}
+                        <div className='bg-white rounded-lg shadow-sm mb-6'>
+                            <div className='flex border-b'>
+                                <button 
+                                    onClick={() => setActiveTab('description')}
+                                    className={`flex-1 py-3 px-4 text-center font-medium text-sm transition-colors ${activeTab === 'description' ? 'text-main border-b-2 border-main' : 'text-gray-500 hover:text-gray-700'}`}
+                                >
+                                    Description
+                                </button>
+                                <button 
+                                    onClick={() => setActiveTab('features')}
+                                    className={`flex-1 py-3 px-4 text-center font-medium text-sm transition-colors ${activeTab === 'features' ? 'text-main border-b-2 border-main' : 'text-gray-500 hover:text-gray-700'}`}
+                                >
+                                    Features
+                                </button>
+                            </div>
+                            
+                            {/* Tab Content */}
+                            <div className='p-6'>
+                                {activeTab === 'description' && (
+                                    <div className='space-y-2'>
+                                        {product?.description?.length > 1 && product?.description?.map((el) => (
+                                            <p key={el} className='text-sm leading-6 text-gray-600'>{el}</p>
+                                        ))}
+                                        {product?.description?.length === 1 && 
+                                            <div 
+                                                className='text-sm leading-6 text-gray-600 line-clamp-[8]' 
+                                                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product?.description[0]) }}
+                                            ></div>
+                                        }
+                                    </div>
+                                )}
 
-                        <span className='text-sm font-main2 text-main'>
-                            {`Stock: ${product?.quantity}`}
-                        </span>
+                                {activeTab === 'features' && (
+                                    <div className='space-y-4'>
+                                        <div className='flex items-start space-x-3'>
+                                            <FaShieldAlt className='text-green-500 mt-1 flex-shrink-0' />
+                                            <div>
+                                                <h4 className='text-sm font-medium'>Premium Quality</h4>
+                                                <p className='text-sm text-gray-600'>Made with high-quality materials for durability</p>
+                                            </div>
+                                        </div>
+                                        <div className='flex items-start space-x-3'>
+                                            <FaShippingFast className='text-blue-500 mt-1 flex-shrink-0' />
+                                            <div>
+                                                <h4 className='text-sm font-medium'>Fast Delivery</h4>
+                                                <p className='text-sm text-gray-600'>Quick shipping to your doorstep</p>
+                                            </div>
+                                        </div>
+                                        <div className='flex items-start space-x-3'>
+                                            <FaGift className='text-red-500 mt-1 flex-shrink-0' />
+                                            <div>
+                                                <h4 className='text-sm font-medium'>Special Gift Packaging</h4>
+                                                <p className='text-sm text-gray-600'>Perfect for gifting to your loved ones</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
-                    <ul className='list-disc pl-5 text-sm font-main2 text-gray-800'>
-                        {product?.description?.length > 1 && product?.description?.map((el) => (<li key={el} className='leading-8'>{el}</li>))}
-                        {product?.description?.length === 1 && <div className='text-sm line-clamp-[15] mb-8' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product?.description[0]) }}></div>}
-                    </ul>
-                    <div className='my-4 flex gap-4'>
-                        <span className='font-bold'>Color</span>
-                        <div className='flex flex-wrap gap-4 items-center w-full'>
-                            <div onClick={() => setVarriant(null)} className={clsx('flex items-center gap-2 p-2 border cursor-pointer', !varriant && 'border-red-500')}>
-                                <img src={product?.thumb} alt='thumb' className='w-8 h-8 object-cover rounded-md' />
-                                <span className='flex flex-col'>
-                                    <span className='text-xs'>{product?.color}</span>
-                                    <span className='text-sm'>{product?.price}</span>
+                    
+                    {/* Product Details */}
+                    <div className='lg:col-span-4 flex flex-col'>
+                        {/* Price & Rating */}
+                        <div className='bg-white rounded-lg shadow-sm p-6 mb-6'>
+                            <div className='flex justify-between items-center mb-4'>
+                                <div>
+                                    <h2 className='text-2xl md:text-3xl font-bold text-main'>
+                                        {`${formatPrice(formatMoney(currentProduct.price || product?.price))} VND`}
+                                    </h2>
+                                    {discount > 0 && (
+                                        <div className='flex items-center mt-1 gap-2'>
+                                            <span className='text-sm text-gray-500 line-through'>
+                                                {`${formatPrice(formatMoney(product?.originalPrice))} VND`}
+                                            </span>
+                                            <span className='text-sm font-semibold text-green-600'>
+                                                Save {discount}%
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            
+                            <div className='flex items-center gap-2 mb-4'>
+                                <div className='flex items-center gap-1 text-yellow-400 mr-2'>
+                                    {renderStarFromNumber(product?.totalRatings)?.map((el, index) => (
+                                        <span key={index}>{el}</span>
+                                    ))}
+                                </div>
+                                <span className='text-sm text-gray-500 border-r border-gray-300 pr-2'>
+                                    {`${product?.ratings?.length || 0} Reviews`}
+                                </span>
+                                <span className='text-sm text-gray-500 border-r border-gray-300 pr-2'>
+                                    {`Sold: ${product?.sold || 0}`}
+                                </span>
+                                <span className='text-sm text-gray-500'>
+                                    {`Stock: ${product?.quantity || 0}`}
                                 </span>
                             </div>
-                            {product?.varriants?.map(el => (
-                                <div key={el.sku} onClick={() => setVarriant(el.sku)} className={clsx('flex items-center gap-2 p-2 border cursor-pointer', varriant === el.sku && 'border-red-500')}>
-                                    <img src={el.thumb} alt='thumb' className='w-8 h-8 object-cover rounded-md' />
-                                    <span className='flex flex-col'>
-                                        <span className='text-xs'>{el.color}</span>
-                                        <span className='text-sm'>{el.price}</span>
-                                    </span>
+                            
+                            {/* Limited Time Offer */}
+                            {discount > 0 && (
+                                <div className='mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg'>
+                                    <div className='flex items-center justify-between mb-2'>
+                                        <span className='text-sm font-medium text-orange-700 flex items-center'>
+                                            <FaClock className='mr-1' /> Limited Time Offer
+                                        </span>
+                                        <span className='text-xs font-medium bg-orange-100 text-orange-700 px-2 py-1 rounded'>
+                                            Ends in 2 days
+                                        </span>
+                                    </div>
+                                    <div className='flex justify-between'>
+                                        <div className='flex items-center gap-1'>
+                                            <div className='w-8 h-8 bg-orange-600 text-white rounded flex items-center justify-center font-bold'>00</div>
+                                            <span>:</span>
+                                            <div className='w-8 h-8 bg-orange-600 text-white rounded flex items-center justify-center font-bold'>12</div>
+                                            <span>:</span>
+                                            <div className='w-8 h-8 bg-orange-600 text-white rounded flex items-center justify-center font-bold'>33</div>
+                                        </div>
+                                        <span className='text-sm text-orange-700'>Hours : Mins : Secs</span>
+                                    </div>
                                 </div>
-                            ))}
+                            )}
+                            
+                            {/* Status */}
+                            <div className='flex items-center gap-2 mb-4'>
+                                <span className='text-sm font-medium text-gray-600'>Status:</span>
+                                <span className='flex items-center gap-1 text-green-600'>
+                                    <FaRegCheckCircle size={14} />
+                                    <span className='text-sm font-medium'>In Stock</span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        {/* Color Variants */}
+                        <div className='bg-white rounded-lg shadow-sm p-6 mb-6'>
+                            <h3 className='text-lg font-semibold mb-4 text-gray-800'>Color Options</h3>
+                            <div className='flex flex-wrap gap-3'>
+                                <div 
+                                    onClick={() => setVarriant(null)} 
+                                    className={clsx(
+                                        'flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-all transform hover:shadow-md',
+                                        !varriant ? 'border-main bg-red-50 scale-105' : 'border-gray-200 hover:border-main hover:scale-105'
+                                    )}
+                                >
+                                    <div className='relative w-10 h-10 rounded-md overflow-hidden border border-gray-200'>
+                                        <img 
+                                            src={product?.thumb} 
+                                            alt='thumb' 
+                                            className='w-full h-full object-cover' 
+                                        />
+                                    </div>
+                                    <div className='flex flex-col'>
+                                        <span className='text-sm font-medium'>{product?.color}</span>
+                                        <span className='text-xs text-gray-500'>{formatPrice(formatMoney(product?.price))} VND</span>
+                                    </div>
+                                </div>
+                                
+                                {product?.varriants?.map(el => (
+                                    <div 
+                                        key={el.sku} 
+                                        onClick={() => setVarriant(el.sku)} 
+                                        className={clsx(
+                                            'flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-all transform hover:shadow-md',
+                                            varriant === el.sku ? 'border-main bg-red-50 scale-105' : 'border-gray-200 hover:border-main hover:scale-105'
+                                        )}
+                                    >
+                                        <div className='relative w-10 h-10 rounded-md overflow-hidden border border-gray-200'>
+                                            <img 
+                                                src={el.thumb} 
+                                                alt='thumb' 
+                                                className='w-full h-full object-cover' 
+                                            />
+                                        </div>
+                                        <div className='flex flex-col'>
+                                            <span className='text-sm font-medium'>{el.color}</span>
+                                            <span className='text-xs text-gray-500'>{formatPrice(formatMoney(el.price))} VND</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        
+                        {/* Quantity & Add to Cart */}
+                        <div className='bg-white rounded-lg shadow-sm p-6 mb-6 sticky top-4'>
+                            <div className='mb-4'>
+                                <h3 className='text-lg font-semibold mb-2 text-gray-800'>Quantity</h3>
+                                <div className='flex items-center'>
+                                    <SelectQuantity 
+                                        quantity={quantity} 
+                                        handleQuantity={handleQuantity} 
+                                        handleChangeQuantity={handleChangeQuantity} 
+                                    />
+                                </div>
+                            </div>
+                            
+                            <div className='flex flex-col space-y-3'>
+                                <Button 
+                                    handleOnClick={handleAddToCart} 
+                                    className={`w-full ${isAddingToCart ? 'bg-gray-500' : 'bg-main hover:bg-red-700'} text-white py-4 rounded-lg flex items-center justify-center gap-2 transition-all transform hover:shadow-lg hover:scale-105`}
+                                    disabled={isAddingToCart}
+                                >
+                                    {isAddingToCart ? (
+                                        <>
+                                            <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
+                                            <span>Adding...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FaShoppingCart />
+                                            Add to cart
+                                        </>
+                                    )}
+                                </Button>
+                                
+                                <button 
+                                    className='w-full border border-main text-main hover:bg-red-50 py-3 rounded-lg flex items-center justify-center gap-2 transition-all transform hover:shadow-md'
+                                >
+                                    <FaHeart />
+                                    Add to wishlist
+                                </button>
+                            </div>
+                            
+                            {/* Promotion Info */}
+                            <div className='mt-4 pt-4 border-t border-gray-100'>
+                                <div className='flex items-center gap-2 mb-2'>
+                                    <FaInfoCircle className='text-blue-500' />
+                                    <span className='text-xs font-medium text-gray-700'>Secure payment guaranteed</span>
+                                </div>
+                                <div className='flex items-center gap-2'>
+                                    <FaGift className='text-red-500' />
+                                    <span className='text-xs font-medium text-gray-700'>Free gift wrapping on request</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div className='flex flex-col gap-8 font-main2'>
-                        <div className='flex items-center gap-4'>
-                            <span className='font-semibold'>Quantity</span>
-                            <SelectQuantity quantity={quantity} handleQuantity={handleQuantity} handleChangeQuantity={handleChangeQuantity} />
+                    
+                    {/* Product Info & Shipping */}
+                    <div className='lg:col-span-3'>
+                        <div className='bg-white rounded-lg shadow-sm p-6 mb-6'>
+                            <div className='space-y-4'>
+                                {productExtraInformation.map(el => (
+                                    <ProductExtraInfoItem key={el.id} title={el.title} sub={el.sub} icon={el.icon} />
+                                ))}
+                            </div>
                         </div>
-                        <Button handleOnClick={handleAddToCart} fw>
-                            Add to cart
-                        </Button>
+                        
+                        {/* Customer Support */}
+                        <div className='bg-white rounded-lg shadow-sm p-6 mb-6'>
+                            <h3 className='text-lg font-semibold mb-4 text-gray-800 border-b pb-2'>Need Help?</h3>
+                            <div className='flex flex-col items-center text-center'>
+                                <div className='w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mb-3'>
+                                    <FaHeadset size={24} />
+                                </div>
+                                <h4 className='font-medium mb-1'>Customer Support</h4>
+                                <p className='text-sm text-gray-600 mb-3'>Our team is here to help you</p>
+                                <button className='bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded hover:bg-blue-700 transition-colors'>
+                                    Contact Us
+                                </button>
+                            </div>
+                        </div>
+                        
+                        {/* Buyer Protection */}
+                        <div className='bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg shadow-sm p-6'>
+                            <div className='flex items-center gap-3 mb-3'>
+                                <div className='w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600'>
+                                    <FaShieldAlt size={18} />
+                                </div>
+                                <h3 className='text-lg font-semibold text-gray-800'>Buyer Protection</h3>
+                            </div>
+                            <ul className='space-y-2 text-sm'>
+                                <li className='flex items-center gap-2'>
+                                    <FaRegCheckCircle className='text-green-500' />
+                                    <span>Money back guarantee</span>
+                                </li>
+                                <li className='flex items-center gap-2'>
+                                    <FaRegCheckCircle className='text-green-500' />
+                                    <span>Authentic products</span>
+                                </li>
+                                <li className='flex items-center gap-2'>
+                                    <FaRegCheckCircle className='text-green-500' />
+                                    <span>Secure transactions</span>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                </div><div className='w-1/5'>
-                    {productExtraInformation.map(el => (
-                        <ProductExtraInfoItem key={el.id} title={el.title} sub={el.sub} icon={el.icon} />
-                    ))}
                 </div>
-            </div><div className='w-main m-auto mt-8'>
-                <ProductInformation totalRatings={product?.totalRatings} ratings={product?.ratings} nameProduct={product?.title} pid={product?._id} rerender={rerender} />
             </div>
-            <div className='w-main m-auto mt-8'>
-                <h3 className='text-[20px] font-semibold py-[15px] border-b-2 border-main'>OTHER CUSTOMER ALSO BUY</h3>
-                <CustomSlider products={relatedProduct} normal={true} />
+            
+            {/* Product Information Tabs */}
+            <div className='w-main mx-auto px-4 mt-10'>
+                <div className='bg-white rounded-lg shadow-sm'>
+                    <ProductInformation 
+                        totalRatings={product?.totalRatings} 
+                        ratings={product?.ratings} 
+                        nameProduct={product?.title} 
+                        pid={product?._id} 
+                        rerender={rerender} 
+                    />
+                </div>
             </div>
-            <div className='h-[100px] w-full'></div>
+            
+            {/* Related Products */}
+            <div className='w-main mx-auto px-4 mt-10 mb-20'>
+                <div className='bg-white rounded-lg shadow-sm p-6'>
+                    <h3 className='text-xl font-bold text-gray-800 mb-6 pb-2 border-b'>You Might Also Like</h3>
+                    <CustomSlider products={relatedProduct} normal={true} />
+                </div>
+            </div>
         </div>
-    )
-}
+    );
+};
 
-export default withBase(DetailProduct)
+export default withBase(DetailProduct);

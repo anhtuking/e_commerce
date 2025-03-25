@@ -27,6 +27,7 @@ const CreateProduct = () => {
     thumb: null,
     images: [],
   });
+  const [isFocusDescription, setIsFocusDescription] = useState(false);
 
   const changValue = useCallback(
     (e) => {
@@ -204,6 +205,7 @@ const CreateProduct = () => {
             label="Description"
             invalidFields={invalidFields}
             setInvalidFields={setInvalidFields}
+            setIsFocusDescription={setIsFocusDescription}
           />
           <div className="flex flex-col gap-2 mt-8">
             <label className="font-semibold" htmlFor="thumb">

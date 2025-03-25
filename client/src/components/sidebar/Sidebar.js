@@ -9,7 +9,7 @@ const Sidebar = () => {
   return (
     
     <div className="flex flex-col border-item bg-white">
-      <div className="flex items-center bg-red-800 text-white font-bold text-lg px-4 py-1 uppercase">
+      <div className="flex items-center bg-red-800 text-white font-bold text-lg px-4 py-2 uppercase">
         <FaList className="mr-2" /> 
         ALL COLLECTIONS
       </div>
@@ -23,7 +23,7 @@ const Sidebar = () => {
               : "px-5 pt-[15px] pb-[14px] text-[15px] hover:text-gray-400"
           }
         >
-          {el.title}
+          {el.title.toUpperCase()}
         </NavLink>
       ))}
     </div>

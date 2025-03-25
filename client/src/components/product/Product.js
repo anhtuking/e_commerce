@@ -1,5 +1,5 @@
 import React, { memo, useState, useEffect } from "react";
-import { formatPrice, renderStarFromNumber } from "utils/helpers";
+import { formatPrice, renderStarFromNumber, formatMoney } from "utils/helpers";
 import tagnew from "assets/tagnew.png";
 import trending from "assets/trending.png";
 import icons from 'utils/icons';
@@ -8,14 +8,15 @@ import withBase from "hocs/withBase";
 import { showModal } from "store/app/appSlice";
 import QuickView from "./QuickView";
 import { toast } from "react-toastify";
-import { apiUpdateCart } from "api/user";
+import { apiUpdateCart, apiUpdateWishlist } from "api/user";
 import { getCurrent } from "store/user/asyncAction";
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { BsCartCheckFill } from "react-icons/bs";
+import { addToCartUtil } from "utils/helpers";
 
 const { FaEye, FaCartPlus, FaHeart } = icons
-const Product = ({ productData, isNew, normal, navigate, dispatch }) => {
+const Product = ({ productData, isNew, normal, navigate, dispatch, pid }) => {
   const [isShowOption, setIsShowOption] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const { current } = useSelector(state => state.user)
@@ -37,10 +38,8 @@ const Product = ({ productData, isNew, normal, navigate, dispatch }) => {
             navigate('/login')
           }
         })
-      const response = await apiUpdateCart({
-        pid: productData._id,
-        color: productData.color || 'Default',
-      })
+      const cartData = addToCartUtil(productData);
+      const response = await apiUpdateCart(cartData);
       if (response.success) {
         toast.success(response.mes)
         dispatch(getCurrent())
@@ -49,7 +48,13 @@ const Product = ({ productData, isNew, normal, navigate, dispatch }) => {
       }
     }
     if (flag === 'WISHLIST') {
-      console.log('WISHLIST')
+      const response = await apiUpdateWishlist(pid)
+      if (response.success) {
+        toast.success(response.mes)
+        dispatch(getCurrent())
+      } else {
+        toast.error(response.mes)
+      }
     }
     if (flag === 'VIEW') {
       dispatch(showModal({
@@ -85,7 +90,7 @@ const Product = ({ productData, isNew, normal, navigate, dispatch }) => {
                 ? <span title="Added to cart"><SelectOption icon={<BsCartCheckFill color="red" />} /></span>
                 : <span title="Add to cart" onClick={(e) => handleClickOption(e, 'CART')}><SelectOption icon={<FaCartPlus />} /></span>}
               <span title="Add to wishlist" onClick={(e) => handleClickOption(e, 'WISHLIST')}>
-                <SelectOption icon={<FaHeart />} />
+                <SelectOption icon={<FaHeart color={current?.wishlist?.some((i) => i === pid) ? 'red' : 'black'} />} />
               </span>
             </div>
           }
