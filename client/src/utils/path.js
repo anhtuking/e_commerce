@@ -11,7 +11,8 @@ const path = {
     FINAL_REGISTER: 'finalregister/:status',
     RESET_PASSWORD: 'reset-password/:token',
     DETAIL_CART: 'detail-cart',
-
+    CHECKOUT: 'checkout',
+    
     //Admin
     ADMIN: 'admin',
     CREATE_PRODUCT: 'create-product',
@@ -19,14 +20,13 @@ const path = {
     MANAGE_USER: 'manage-user',
     MANAGE_PRODUCT: 'manage-product',
     MANAGE_ORDER: 'manage-order',
-
+    
     //Member
     MEMBER: 'member',
     PERSONAL: 'personal',
     MY_CART: 'my-cart',
     WISHLIST: 'wishlist',
-    MY_ORDER: 'my-order'
-
+    MY_ORDER: 'my-order',
 }
 
 export default path

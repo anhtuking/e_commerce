@@ -1,5 +1,5 @@
 import withBase from 'hocs/withBase';
-import React, { useState, memo } from 'react';
+import React, { memo } from 'react';
 import { FiShoppingCart, FiX, FiTrash2, FiChevronRight, FiPackage } from 'react-icons/fi';
 import { BsTruck } from 'react-icons/bs';
 import { RiSecurePaymentLine } from 'react-icons/ri';

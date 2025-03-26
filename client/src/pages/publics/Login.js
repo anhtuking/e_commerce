@@ -131,7 +131,7 @@ const Login = () => {
         }
       }
     }
-  }, [payload, isRegister, navigate, dispatch]);
+  }, [payload, isRegister]);
 
   const finalRegister = async () => {
     const response = await apiFinalRegister(token);

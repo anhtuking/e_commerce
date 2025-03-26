@@ -1,10 +1,10 @@
-import { Breadcrumb, Button } from 'components'
+import { Button } from 'components'
 import OrderItem from 'components/product/OrderItem'
 import withBase from 'hocs/withBase'
 import { useSelector } from 'react-redux'
 import { formatPrice } from 'utils/helpers'
-import { BsCartCheck, BsArrowLeft, BsCartX, BsInfoCircle } from 'react-icons/bs'
-import { FaTruck, FaShieldAlt, FaMoneyBillWave, FaLock, FaGift, FaClipboardCheck, FaUndo, FaInfoCircle } from 'react-icons/fa'
+import { BsArrowLeft, BsCartX, BsInfoCircle } from 'react-icons/bs'
+import { FaTruck, FaShieldAlt, FaMoneyBillWave, FaGift, FaClipboardCheck, FaUndo, FaInfoCircle } from 'react-icons/fa'
 import path from 'utils/path'
 import { updateCart } from 'store/user/userSlice'
 import { Link } from 'react-router-dom'
@@ -177,11 +177,11 @@ const DetailCart = ({ location, navigate, dispatch }) => {
                   <p className="text-xs text-gray-500 mt-1">Tax included if applicable</p>
                 </div>
 
-                <Button
-                  fw
-                  className="bg-red-600 hover:bg-red-700 text-whiterounded-md font-semibold shadow-sm flex items-center justify-center gap-2 text-xl"
+                <Link
+                  to={`/${path.CHECKOUT}`}
+                  className="w-full h-12 bg-red-600 hover:bg-red-700 text-white rounded-md font-semibold shadow-sm flex items-center justify-center gap-2 text-xl"
                 > Proceed to checkout
-                </Button>
+                </Link>
 
                 <div className="mt-6 bg-gray-50 p-4 rounded-md">
                   <h5 className="font-medium text-gray-800 mb-3 flex items-center gap-2">
