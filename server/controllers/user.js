@@ -9,7 +9,7 @@ const jwt = require("jsonwebtoken");
 const sendMail = require("../ultils/sendMail");
 const crypto = require("crypto");
 const makeToken = require("uniqid");
-const {users} = require('../ultils/constant')
+// const {users} = require('../ultils/constant')
 
 // const register = asyncHandler(async (req, res) => {
 //   const { email, password, firstname, lastname } = req.body;
@@ -484,6 +484,61 @@ const updateWishlist = asyncHandler(async (req,res) => {
   }
  })
 
+ const getCart = async (req, res) => {
+  try {
+    // Lấy id của user từ req.user (đã được middleware xác thực)
+    const userId = req.user?._id;
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: 'User not authenticated'
+      });
+    }
+    
+    // Tìm user và chỉ lấy các trường cần thiết
+    const user = await User.findById(userId).select('cart firstname lastname');
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+    
+    // Lấy thông tin giỏ hàng trực tiếp từ user.cart (là mảng)
+    const cart = user.cart;
+    if (!cart || cart.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Cart is empty'
+      });
+    }
+    
+    // Tính tổng giá trị giỏ hàng
+    const total = cart.reduce((sum, item) => {
+      return sum + (item.price * item.quantity || 0);
+    }, 0);
+    
+    return res.status(200).json({
+      success: true,
+      cart: {
+        items: cart,
+        total,
+        userInfo: {
+          firstname: user.firstname,
+          lastname: user.lastname
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error in getCart: ', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+};
+
+
 module.exports = {
   register,
   finalRegister,
@@ -501,5 +556,6 @@ module.exports = {
   updateCart,
   removeCart,
   // createUsers
-  updateWishlist
+  updateWishlist,
+  getCart
 };
