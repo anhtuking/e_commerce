@@ -2,12 +2,14 @@ require('dotenv').config();
 const moment = require('moment');
 const querystring = require('qs');
 const crypto = require('crypto');
+const Payment = require("../models/order");
+const asyncHandler = require("express-async-handler");
 
 // VNPAY Config
 const vnp_TmnCode = "1KKD5I85";  // Terminal ID mới
 const vnp_HashSecret = "2GG49RWL9EL6WP3BFU14QC6SD9Z0JSPH";  // Secret Key mới
 const vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-const vnp_ReturnUrl = "http://localhost:3000/payment/vnpay_return";
+const vnp_ReturnUrl = "http://localhost:3000/payment-success";
 
 const createPaymentUrl = async (req, res) => {
     try {
@@ -75,4 +77,36 @@ function sortObject(obj) {
     return sorted;
 }
 
-module.exports = { createPaymentUrl }; 
+const createPaymentRecord = asyncHandler(async (req, res) => {
+    const { orderId } = req.body;
+    const existingPayment = await Payment.findOne({ orderId });
+    if (existingPayment) {
+      return res.status(200).json({ success: true, payment: existingPayment });
+    }
+    const payment = await Payment.create(req.body);
+    return res.status(200).json({
+      success: payment ? true : false,
+      payment: payment ? payment : "Có lỗi xảy ra khi lưu thông tin hóa đơn",
+    });
+});
+
+const createOrder = asyncHandler(async (req, res) => {
+    let { orderCode } = req.body;
+    if (!orderCode) {
+      orderCode = "ORDER" + Date.now(); // Sinh giá trị duy nhất
+      req.body.orderCode = orderCode;
+    }
+    // Kiểm tra trùng lặp nếu cần
+    const existingOrder = await Order.findOne({ orderCode });
+    if (existingOrder) {
+      return res.status(200).json({ success: true, order: existingOrder });
+    }
+    const order = await Order.create(req.body);
+    res.status(200).json({
+      success: order ? true : false,
+      order: order ? order : "Có lỗi xảy ra khi tạo order",
+    });
+  });
+  
+
+module.exports = { createPaymentUrl, createPaymentRecord }; 

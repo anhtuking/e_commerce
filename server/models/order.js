@@ -1,29 +1,64 @@
-const mongoose = require("mongoose"); // Erase if already required
+const mongoose = require('mongoose');
 
-// Declare the Schema of the Mongo model
-var orderSchema = new mongoose.Schema({
-  products: [
-    {
-      product: { type: mongoose.Types.ObjectId, ref: "Product" },
-      count: Number,
-      color: String,
+const orderSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
     },
-  ],
-  total: Number,
-  coupon: {
-    type: mongoose.Types.ObjectId,
-    ref: 'Coupon'
+    products: [
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Product',
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+        color: String,
+        price: {
+          type: Number,
+          required: true,
+        },
+        title: String,
+        thumbnail: String,
+      },
+    ],
+    email: {
+      type: String,
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+      default: "Đang xử lý",
+      enum: ["Đã hủy", "Đang xử lý", "Đã xác nhận", "Hoàn thành"],
+    },
+    amount: {
+      type: Number,
+      required: true,
+    },
+    typePayment: {
+      type: String,
+      enum: ['VNPAY'],
+      default: 'VNPAY',
+    },
+    paymentDate: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  orderBy: {
-    type: mongoose.Types.ObjectId,
-    ref: "User",
-  },
-  status: {
-    type: String,
-    default: "Processing",
-    enum: ["Canceled", "Processing", "Successful"],
-  },
-});
+  { timestamps: true }
+);
 
-//Export the model
-module.exports = mongoose.model("Order", orderSchema);
+module.exports = mongoose.model('Order', orderSchema);
