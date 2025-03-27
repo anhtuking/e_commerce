@@ -27,6 +27,7 @@ import {
   DetailCart,
   Checkout,
   MyOrders,
+  PaymentSuccess
 } from "pages/member";
 import path from "utils/path";
 import { getCategories } from "store/app/asyncAction";
@@ -56,6 +57,7 @@ function App() {
       )}
       {isShowModal && <Modal>{modalChildren}</Modal>}
       <Routes>
+        <Route path={path.PAYMENT_SUCCESS} element={<PaymentSuccess />} />
         <Route path={path.CHECKOUT} element={<Checkout />} />
         <Route path={path.PUBLIC} element={<PublicLayout />}>
           <Route path={path.HOME} element={<Home />} />

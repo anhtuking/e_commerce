@@ -1,3 +1,4 @@
+
 const path = {
     PUBLIC: '/',
     HOME: '',
@@ -12,6 +13,7 @@ const path = {
     RESET_PASSWORD: 'reset-password/:token',
     DETAIL_CART: 'detail-cart',
     CHECKOUT: 'checkout',
+    PAYMENT_SUCCESS: 'payment-success',
     
     //Admin
     ADMIN: 'admin',
