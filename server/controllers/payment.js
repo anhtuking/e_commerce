@@ -78,35 +78,36 @@ function sortObject(obj) {
 }
 
 const createPaymentRecord = asyncHandler(async (req, res) => {
-    const { orderId } = req.body;
-    const existingPayment = await Payment.findOne({ orderId });
-    if (existingPayment) {
-      return res.status(200).json({ success: true, payment: existingPayment });
-    }
-    const payment = await Payment.create(req.body);
-    return res.status(200).json({
-      success: payment ? true : false,
-      payment: payment ? payment : "Có lỗi xảy ra khi lưu thông tin hóa đơn",
-    });
-});
-
-const createOrder = asyncHandler(async (req, res) => {
-    let { orderCode } = req.body;
-    if (!orderCode) {
-      orderCode = "ORDER" + Date.now(); // Sinh giá trị duy nhất
-      req.body.orderCode = orderCode;
-    }
-    // Kiểm tra trùng lặp nếu cần
-    const existingOrder = await Order.findOne({ orderCode });
-    if (existingOrder) {
-      return res.status(200).json({ success: true, order: existingOrder });
-    }
-    const order = await Order.create(req.body);
-    res.status(200).json({
-      success: order ? true : false,
-      order: order ? order : "Có lỗi xảy ra khi tạo order",
-    });
-  });
+  // Giả sử bạn dùng orderCode làm định danh duy nhất cho đơn hàng
+  let { orderCode, transactionCode, note } = req.body;
   
+  // Tự sinh orderCode nếu không có
+  if (!orderCode) {
+    orderCode = "ORDER" + Date.now();
+    req.body.orderCode = orderCode;
+  }
+  // Tự sinh transactionCode nếu không có
+  if (!transactionCode) {
+    transactionCode = "TXN" + Date.now();
+    req.body.transactionCode = transactionCode;
+  }
+  // Xử lý note
+  if (!note) {
+    req.body.note = "";
+  }
+  
+  // Kiểm tra xem đã có đơn hàng với orderCode này chưa
+  const existingPayment = await Payment.findOne({ orderCode });
+  if (existingPayment) {
+    return res.status(200).json({ success: true, payment: existingPayment });
+  }
+  
+  // Nếu chưa có, tạo đơn hàng mới
+  const payment = await Payment.create(req.body);
+  return res.status(200).json({
+    success: payment ? true : false,
+    payment: payment ? payment : "Có lỗi xảy ra khi lưu thông tin hóa đơn",
+  });
+});
 
 module.exports = { createPaymentUrl, createPaymentRecord }; 

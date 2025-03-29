@@ -248,7 +248,7 @@ export const memberSidebar = [
     id: 4,
     type: "SINGLE",
     text: "My oders",
-    path: `/${path.MEMBER}/${path.MY_ODER}`,
+    path: `/${path.MEMBER}/${path.MY_ORDER}`,
     icon: <RiBillFill  />,
   },
 ];

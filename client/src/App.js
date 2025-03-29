@@ -27,7 +27,7 @@ import {
   DetailCart,
   Checkout,
   MyOrders,
-  PaymentSuccess
+  PaymentSuccess,
 } from "pages/member";
 import path from "utils/path";
 import { getCategories } from "store/app/asyncAction";

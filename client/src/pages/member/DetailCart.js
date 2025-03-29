@@ -199,7 +199,7 @@ const DetailCart = ({ location, navigate, dispatch }) => {
                     </div>
                     <div className='flex items-center gap-3 text-gray-600'>
                       <FaMoneyBillWave className='text-red-500 flex-shrink-0' />
-                      <span className='text-sm'>Secure payment via credit card, bank transfer</span>
+                      <span className='text-sm'>Secure payment via credit card, bank transfer, or cash on delivery</span>
                     </div>
                     <div className='flex items-center gap-3 text-gray-600'>
                       <FaUndo className='text-red-500 flex-shrink-0' />

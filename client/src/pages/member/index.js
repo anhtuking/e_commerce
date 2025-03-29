@@ -4,4 +4,4 @@ export {default as Wishlist} from './Wishlist'
 export {default as MyOrders} from './MyOrders'
 export {default as DetailCart} from './DetailCart'
 export {default as Checkout} from './Checkout'
-export { default as PaymentSuccess } from "../member/PaymentSuccess";
+export { default as PaymentSuccess } from "./PaymentSuccess";

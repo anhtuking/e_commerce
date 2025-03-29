@@ -121,7 +121,7 @@ const TopHeader = () => {
                         <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xs">A</span>
                         My Account
                       </Link>
-                      <Link to={`/${path.MEMBER}/${path.ORDER}`} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
+                      <Link to={`/${path.MEMBER}/${path.MY_ORDER}`} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
                         <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xs">O</span>
                         My Orders
                       </Link>

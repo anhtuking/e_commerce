@@ -42,9 +42,9 @@ const PaymentSuccess = () => {
   const transactionNo = searchParams.get("vnp_TransactionNo");
   const bankCode = searchParams.get("vnp_BankCode");
   const payDate = searchParams.get("vnp_PayDate");
-  
+
   // Định dạng ngày
-  const formatPayDate = payDate &&`
+  const formatPayDate = payDate && `
     ${payDate.slice(6, 8)}/
     ${payDate.slice(4, 6)}/
     ${payDate.slice(0, 4)} 
@@ -52,16 +52,16 @@ const PaymentSuccess = () => {
     ${payDate.slice(10, 12)}:
     ${payDate.slice(12, 14)}
   `;
-  
+
   useEffect(() => {
     if (checkoutData && responseCode === "00" && !requestSent.current) {
       requestSent.current = true; // Đánh dấu đã gửi request
 
       const paymentData = {
-        orderId,
+        orderCode: orderId,             // Mã đơn hàng
+        transactionCode: transactionNo, // Mã giao dịch
         amount,
         bankCode,
-        transactionNo,
         payDate: formatPayDate,
         userId: checkoutData?.user?._id,
         email: checkoutData?.user?.email,
@@ -76,8 +76,9 @@ const PaymentSuccess = () => {
           color: item.color || ""
         })),
         paymentInfo: checkoutData?.paymentInfo,
+        note: checkoutData?.paymentInfo.note || "",  // Lấy ghi chú nếu có
       };
-
+      
       apiSavePayment(paymentData)
         .then((res) => {
           if (res.data.success) {
@@ -88,7 +89,7 @@ const PaymentSuccess = () => {
         })
         .catch((err) => {
           console.error("Có lỗi khi lưu hóa đơn:", err);
-        });
+        });      
     }
   }, [checkoutData, responseCode]);
 
@@ -98,13 +99,13 @@ const PaymentSuccess = () => {
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
         {/* Thông báo thành công */}
-        <h1 className="text-2xl font-bold text-green-600 mb-6 text-center">
-          Thanh toán thành công!
+        <h1 className="text-2xl font-bold text-main mb-6 text-center">
+          THANH TOÁN THÀNH CÔNG!
         </h1>
 
         {/* Thông tin đơn hàng từ VNPAY */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Thông tin giao dịch</h2>
+          <h2 className="text-xl font-semibold mb-4 text-green-600">Thông tin giao dịch</h2>
           <div className="grid grid-cols-2 gap-4 text-gray-700">
             <p>
               <strong>Mã đơn hàng:</strong> {orderId}
@@ -126,15 +127,17 @@ const PaymentSuccess = () => {
 
         {/* Thông tin người dùng */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Thông tin người nhận</h2>
+          <h2 className="text-xl font-semibold mb-4 text-green-600">Thông tin người nhận</h2>
           <div className="space-y-2 text-gray-700">
-            <p>
-              <strong>Họ tên:</strong> {checkoutData.user?.firstname}{" "}
-              {checkoutData.user?.lastname}
-            </p>
-            <p>
-              <strong>Email:</strong> {checkoutData.user?.email}
-            </p>
+            <div className="flex gap-2">
+              <p>
+                <strong>Họ tên:</strong> {checkoutData.user?.firstname}{" "}
+                {checkoutData.user?.lastname}
+              </p>
+              <p>
+                <strong>Email:</strong> {checkoutData.user?.email}
+              </p>
+            </div>
             <p>
               <strong>Số điện thoại:</strong> {checkoutData.user?.mobile}
             </p>
@@ -149,7 +152,7 @@ const PaymentSuccess = () => {
 
         {/* Danh sách sản phẩm */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Sản phẩm đã mua</h2>
+          <h2 className="text-xl font-semibold mb-4 text-green-600">Sản phẩm đã mua</h2>
           <div className="space-y-4">
             {checkoutData.cart?.map((item) => (
               <div key={item._id} className="flex items-center border-b pb-4">
@@ -176,7 +179,7 @@ const PaymentSuccess = () => {
         <div className="text-center">
           <button
             onClick={() => navigate("/")}
-            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md transition-colors"
+            className="bg-main hover:bg-white hover:text-main text-white px-6 py-2 rounded-md transition-colors"
           >
             Quay về trang chủ
           </button>

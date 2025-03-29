@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Order = require("../models/order");
 const asyncHandler = require("express-async-handler");
 const { ObjectId } = require("mongodb");
 const {
@@ -484,7 +485,7 @@ const updateWishlist = asyncHandler(async (req,res) => {
   }
  })
 
- const getCart = async (req, res) => {
+ const getCart = asyncHandler(async (req, res) => {
   try {
     // Lấy id của user từ req.user (đã được middleware xác thực)
     const userId = req.user?._id;
@@ -535,8 +536,25 @@ const updateWishlist = asyncHandler(async (req,res) => {
       success: false,
       message: 'Internal server error'
     });
+  }   
+});
+
+const getUserOrder = asyncHandler(async (req, res) => {
+  const { id } = req.user;
+  try {
+    const response = await Order.find({ userId: id });
+    return res.status(200).json({
+      success: response.length > 0,
+      response: response.length > 0 ? response : [],
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
   }
-};
+});
+
 
 
 module.exports = {
@@ -557,5 +575,6 @@ module.exports = {
   removeCart,
   // createUsers
   updateWishlist,
-  getCart
+  getCart,
+  getUserOrder
 };

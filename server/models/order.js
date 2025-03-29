@@ -7,6 +7,14 @@ const orderSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    orderCode: { 
+      type: String, 
+      required: true 
+    },
+    transactionCode: { 
+      type: String, 
+      required: true 
+    },
     products: [
       {
         product: {
@@ -56,6 +64,10 @@ const orderSchema = new mongoose.Schema(
     paymentDate: {
       type: Date,
       default: Date.now,
+    },
+    note: { 
+      type: String, 
+      required: false // Không bắt buộc
     },
   },
   { timestamps: true }
