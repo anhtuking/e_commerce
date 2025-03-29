@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const Order = require("../models/order");
 const asyncHandler = require("express-async-handler");
+const mongoose = require('mongoose');
 const { ObjectId } = require("mongodb");
 const {
   generateAccessToken,
@@ -541,18 +542,11 @@ const updateWishlist = asyncHandler(async (req,res) => {
 
 const getUserOrder = asyncHandler(async (req, res) => {
   const { id } = req.user;
-  try {
-    const response = await Order.find({ userId: id });
-    return res.status(200).json({
-      success: response.length > 0,
-      response: response.length > 0 ? response : [],
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "Something went wrong",
-    });
-  }
+  const orders = await Order.find({ userId: new mongoose.Types.ObjectId(id) });
+  return res.status(200).json({
+    success: orders ? true : false,
+    response: orders || "Không tìm thấy đơn hàng",
+  });
 });
 
 

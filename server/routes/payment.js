@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const paymentController = require('../controllers/payment');
+const ctrls = require('../controllers/payment');
+
 
 router.get('/', function(req, res, next){
     res.render('orderlist', { title: 'Danh sách đơn hàng' })
@@ -22,7 +23,7 @@ router.get('/refund', function (req, res, next) {
     res.render('refund', {title: 'Hoàn tiền giao dịch thanh toán'})
 });
 
-router.post('/create_payment_url', paymentController.createPaymentUrl);
+router.post('/create_payment_url', ctrls.createPaymentUrl);
 
 router.get('/vnpay_return', function (req, res, next) {
     let vnp_Params = req.query;
@@ -251,6 +252,6 @@ function sortObject(obj) {
     }
     return sorted;
 }
-router.post("/save", paymentController.createPaymentRecord);
+router.post("/save", ctrls.createPaymentRecord);
 
 module.exports = router;
