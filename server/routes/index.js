@@ -7,6 +7,7 @@ const brand = require("./brand");
 const coupon = require("./coupon");
 const insert = require("./insert");
 const payment = require("./payment");
+const admin = require("./admin");
 const { notFound, errorHandler } = require("../middlewares/errorHandler");
 
 const initRoutes = (app) => {
@@ -19,6 +20,7 @@ const initRoutes = (app) => {
   app.use("/api/coupon", coupon);
   app.use("/api/insert", insert);
   app.use("/api/payment", payment);
+  app.use("/api/admin", admin);
 
   app.use(notFound);
   app.use(errorHandler);
