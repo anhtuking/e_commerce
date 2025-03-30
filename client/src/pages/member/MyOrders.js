@@ -21,9 +21,6 @@ const MyOrders = () => {
     setLoading(true);
     apiGetUserOrder()
       .then((res) => {
-        // Vì res.data là undefined, ta sẽ sử dụng res trực tiếp
-        console.log("Full response:", res);
-
         // Nếu res là một mảng, dùng nó trực tiếp. Nếu không, kiểm tra success.
         if (Array.isArray(res)) {
           setOrders(res);

@@ -109,7 +109,7 @@ const PaymentSuccess = () => {
           <div className="grid grid-cols-2 gap-4 text-gray-700">
             <p>
               <strong>Mã đơn hàng:</strong> {orderId}
-            </p>
+            </p>  
             <p>
               <strong>Mã giao dịch:</strong> {transactionNo}
             </p>
@@ -129,7 +129,7 @@ const PaymentSuccess = () => {
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4 text-green-600">Thông tin người nhận</h2>
           <div className="space-y-2 text-gray-700">
-            <div className="flex gap-2">
+            <div className="flex gap-8">
               <p>
                 <strong>Họ tên:</strong> {checkoutData.user?.firstname}{" "}
                 {checkoutData.user?.lastname}

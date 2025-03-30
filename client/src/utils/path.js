@@ -14,6 +14,7 @@ const path = {
     DETAIL_CART: 'detail-cart',
     CHECKOUT: 'checkout',
     PAYMENT_SUCCESS: 'payment-success',
+    CHATBOT_DETAILS: 'chatbot',
     
     //Admin
     ADMIN: 'admin',

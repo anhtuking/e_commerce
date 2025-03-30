@@ -9,7 +9,6 @@ import Swal from "sweetalert2";
 
 const { 
   FaFacebook, 
-  FaFacebookMessenger, 
   FaTwitter, 
   FaInstagramSquare, 
   FaGoogle, 
@@ -153,9 +152,6 @@ const TopHeader = () => {
             <a href="https://www.facebook.com/duongvan.anhtu.7" className="hover:text-yellow-300 transition-all transform hover:-translate-y-1 duration-300">
               <FaFacebook size={16} />
             </a>
-            <span className="hover:text-yellow-300 transition-all transform hover:-translate-y-1 duration-300 cursor-pointer">
-              <FaFacebookMessenger size={16} />
-            </span>
             <a href="https://x.com/marcuslouiss012" className="hover:text-yellow-300 transition-all transform hover:-translate-y-1 duration-300">
               <FaTwitter size={16} />
             </a>

@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import appReducer from "./app/appSlice"; 
 import productReducer from './product/productSlice'
 import userSlice from './user/userSlice'
+import chatReducer from './chat/chatSlice'
 import storage from 'redux-persist/lib/storage'
 import {
   persistStore,
@@ -27,7 +28,8 @@ export const store = configureStore({
   reducer: {
     app: appReducer,
     products: productReducer,
-    user: persistReducer(userConfig, userSlice)
+    user: persistReducer(userConfig, userSlice),
+    chat: chatReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

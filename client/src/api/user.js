@@ -75,9 +75,14 @@ export const apiUpdateWishlist = (pid) => axios({
     method: 'put',
 })
 
-export const apiGetUserOrder = (params) => axios({
+export const apiGetUserOrder = (data) => axios({
     url: `/user/orders`,
     method: 'get',
-    params
-  });
-  
+    data,
+    withCredentials: true
+})
+
+export const apiGetAllOrders = () => axios({
+    url: `/user/all-orders`,
+    method: 'get',
+});

@@ -10,10 +10,10 @@ import { showCart } from "store/app/appSlice";
 const Header = ({dispatch}) => {
   const { 
     IoBagHandle, 
-    FaUserAlt, 
     FaSearch,
     FaRegHeart,
     FaMapMarkerAlt,
+    SiChatbot
   } = icons;
   const { current } = useSelector(state => state.user);
   // const [showSearch, setShowSearch] = useState(false);
@@ -21,8 +21,8 @@ const Header = ({dispatch}) => {
   const [searchFocused, setSearchFocused] = useState(false);
   
   // Determine if user is admin
-  const isAdmin = current?.role === 2010;
-  console.log('Is admin?', isAdmin);
+  const isAdmin = Number(current?.role) === 2010;
+  console.log('Is admin?', isAdmin);  
   
   // Handle scroll effect
   useEffect(() => {
@@ -92,13 +92,21 @@ const Header = ({dispatch}) => {
           {/* Cart button */}
           <div 
             onClick={() => dispatch(showCart())}
-            // to={`/${path.MY_CART}`}
             className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors relative cursor-pointer"
             aria-label="Shopping Cart"
           >
             <IoBagHandle size={20} className="text-gray-700" />
             <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-xs rounded-full flex items-center justify-center">{`${current?.cart?.length || 0}`}</span>
           </div>
+
+          {/* Chatbot button */}
+          <Link 
+            to={`/${path.CHATBOT_DETAILS}`}
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors relative cursor-pointer"
+            aria-label="Shopping Cart"
+          >
+            <SiChatbot size={20} className="text-gray-700" />
+          </Link>
         </div>
       </div>
     </div>

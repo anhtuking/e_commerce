@@ -201,7 +201,7 @@ const DetailProduct = ({navigate, dispatch}) => {
                         {currentProduct?.title || product?.title}
                     </h1>
                     <div className='flex items-center flex-wrap gap-4 mb-2'>
-                        <Breadcrumb title={currentProduct?.title || product?.title} category={category} />
+                    <Breadcrumb title={currentProduct?.title || product?.title} category={category} />
                         <div className='flex items-center gap-2 text-sm text-gray-500'>
                             <FaStore className='text-gray-400' />
                             <span>Official Store</span>
@@ -225,27 +225,27 @@ const DetailProduct = ({navigate, dispatch}) => {
                                 <div className='absolute top-2 right-2 z-10 bg-white bg-opacity-80 text-main text-xs font-medium px-2 py-1 rounded-full flex items-center shadow-sm'>
                                     <FaEye className='mr-1' /> {Math.floor(Math.random() * 20) + 5} watching
                                 </div>
-                                <ReactImageMagnify {...{
-                                    smallImage: {
+                        <ReactImageMagnify {...{
+                            smallImage: {
                                         alt: currentProduct?.title || product?.title,
-                                        isFluidWidth: true,
-                                        src: currentProduct?.thumb || currentImage
-                                    },
-                                    largeImage: {
-                                        src: currentProduct?.thumb || currentImage,
-                                        width: 1800,
-                                        height: 1500
+                                isFluidWidth: true,
+                                src: currentProduct?.thumb || currentImage
+                            },
+                            largeImage: {
+                                src: currentProduct?.thumb || currentImage,
+                                width: 1800,
+                                height: 1500
                                     },
                                     enlargedImagePosition: 'over',
                                     isHintEnabled: true,
                                     shouldHideHintAfterFirstActivation: false,
                                     hintTextMouse: 'Hover to zoom'
-                                }} />
-                            </div>
+                        }} />
+                    </div>
                         </div>
                         <div className='mt-4'>
                             <Slider {...settings} className='product-thumbnails'>
-                                {currentProduct.images.length === 0 && product?.images?.map((el, index) => (
+                            {currentProduct.images.length === 0 && product?.images?.map((el, index) => (
                                     <div className='px-1' key={el}>
                                         <div 
                                             onClick={e => handleClickImages(e, el)} 
@@ -253,9 +253,9 @@ const DetailProduct = ({navigate, dispatch}) => {
                                         >
                                             <img src={el} alt={`sub-product-${index}`} className='h-[100px] w-full object-cover' />
                                         </div>
-                                    </div>
-                                ))}
-                                {currentProduct.images.length > 0 && currentProduct.images?.map((el, index) => (
+                                </div>
+                            ))}
+                            {currentProduct.images.length > 0 && currentProduct.images?.map((el, index) => (
                                     <div className='px-1' key={el}>
                                         <div 
                                             onClick={e => handleClickImages(e, el)} 
@@ -263,9 +263,9 @@ const DetailProduct = ({navigate, dispatch}) => {
                                         >
                                             <img src={el} alt={`sub-product-${index}`} className='h-[100px] w-full object-cover' />
                                         </div>
-                                    </div>
-                                ))}
-                            </Slider>
+                                </div>
+                            ))}
+                        </Slider>
                         </div>
                         
                         {/* Product Tabs */}
@@ -326,8 +326,8 @@ const DetailProduct = ({navigate, dispatch}) => {
                                         </div>
                                     </div>
                                 )}
-                            </div>
-                        </div>
+                    </div>
+                </div>
                     </div>
                     
                     {/* Product Details */}
@@ -354,7 +354,7 @@ const DetailProduct = ({navigate, dispatch}) => {
                             
                             <div className='flex items-center gap-2 mb-4'>
                                 <div className='flex items-center gap-1 text-yellow-400 mr-2'>
-                                    {renderStarFromNumber(product?.totalRatings)?.map((el, index) => (
+                        {renderStarFromNumber(product?.totalRatings)?.map((el, index) => (
                                         <span key={index}>{el}</span>
                                     ))}
                                 </div>
@@ -363,10 +363,10 @@ const DetailProduct = ({navigate, dispatch}) => {
                                 </span>
                                 <span className='text-sm text-gray-500 border-r border-gray-300 pr-2'>
                                     {`Sold: ${product?.sold || 0}`}
-                                </span>
+                            </span>
                                 <span className='text-sm text-gray-500'>
                                     {`Stock: ${product?.quantity || 0}`}
-                                </span>
+                        </span>
                             </div>
                             
                             {/* Limited Time Offer */}
@@ -378,8 +378,8 @@ const DetailProduct = ({navigate, dispatch}) => {
                                         </span>
                                         <span className='text-xs font-medium bg-orange-100 text-orange-700 px-2 py-1 rounded'>
                                             Ends in 2 days
-                                        </span>
-                                    </div>
+                        </span>
+                    </div>
                                     <div className='flex justify-between'>
                                         <div className='flex items-center gap-1'>
                                             <div className='w-8 h-8 bg-orange-600 text-white rounded flex items-center justify-center font-bold'>00</div>
@@ -427,7 +427,7 @@ const DetailProduct = ({navigate, dispatch}) => {
                                     </div>
                                 </div>
                                 
-                                {product?.varriants?.map(el => (
+                            {product?.varriants?.map(el => (
                                     <div 
                                         key={el.sku} 
                                         onClick={() => setVarriant(el.sku)} 

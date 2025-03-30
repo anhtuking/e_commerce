@@ -10,6 +10,7 @@ import {
   Products,
   FinalRegister,
   ResetPassword,
+  ChatbotDetails,
 } from "pages/publics";
 import Home from "pages/publics/Home";
 import {
@@ -34,7 +35,7 @@ import { getCategories } from "store/app/asyncAction";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Cart, Modal } from "components";
+import { Cart, Modal, ChatBotSidebar } from "components";
 import { showCart } from "store/app/appSlice";
 
 function App() {
@@ -42,11 +43,19 @@ function App() {
   const { isShowModal, modalChildren, isShowCart } = useSelector(
     (state) => state.app
   );
+
   useEffect(() => {
     dispatch(getCategories());
   }, [dispatch]);
+
   return (
     <div className="font-main h-screen relative">
+      <>
+      <div className="bg-primaryBg-default flex">
+        <ChatBotSidebar />
+        <ChatbotDetails />
+      </div>
+      </>
       {isShowCart && (
         <div
           onClick={() => dispatch(showCart({ signal: false }))}
@@ -57,6 +66,7 @@ function App() {
       )}
       {isShowModal && <Modal>{modalChildren}</Modal>}
       <Routes>
+        <Route path={path.CHATBOT_DETAILS} element={<ChatbotDetails />} />
         <Route path={path.PAYMENT_SUCCESS} element={<PaymentSuccess />} />
         <Route path={path.CHECKOUT} element={<Checkout />} />
         <Route path={path.PUBLIC} element={<PublicLayout />}>

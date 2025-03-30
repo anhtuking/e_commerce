@@ -21,6 +21,10 @@ module.exports = {
         main: "#991b1b",
         main2: "#363636",
         overlay: "rgba(0,0,0,0.3)",
+        primaryBg:{
+          default: '#131314',
+          sideBar: '#1e1f20'
+        }
       },
       gridTemplateRows: {
         // Simple 8 row grid

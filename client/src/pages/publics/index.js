@@ -8,3 +8,4 @@ export { default as Blogs } from "./Blogs";
 export { default as FAQs } from "./FAQs";
 export { default as FinalRegister } from "./FinalRegister";
 export { default as ResetPassword } from "./ResetPassword";
+export { default as ChatbotDetails } from "./ChatbotDetails";
