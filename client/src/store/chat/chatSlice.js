@@ -24,9 +24,12 @@ data:[
 */
 
 const chatSlice = createSlice({
-    name: 'chat',
-    initialState: initData,
+    name: 'chatbot',
+    initialState: {initData, isShowChat: false},
     reducers:{
+        showChat: (state) => {
+            state.isShowChat = state.isShowChat === false ? true : false;
+        },
         addChat: (state) =>{
             state.data.push({
                 id: uuidv4(),
@@ -45,10 +48,8 @@ const chatSlice = createSlice({
                     {id: uuidv4(), text: userMess, isBot: false },
                     {id: uuidv4(), text: safeChat, isBot: true },
                 ]
-
                 chat.messages = newMessage;
             }
-            
         },
         removeChat: (state, action) =>{
             state.data = state.data.filter((chat) => chat.id !== action.payload);
@@ -63,6 +64,6 @@ const chatSlice = createSlice({
     }
 })
 
-export const { addChat, removeChat, addMessage, setNameChat } = chatSlice.actions
+export const { showChat, addChat, removeChat, addMessage, setNameChat } = chatSlice.actions
 
 export default chatSlice.reducer

@@ -28,34 +28,36 @@ import {
   DetailCart,
   Checkout,
   MyOrders,
-  PaymentSuccess,
+  PaymentSuccess
 } from "pages/member";
 import path from "utils/path";
 import { getCategories } from "store/app/asyncAction";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Cart, Modal, ChatBotSidebar } from "components";
+import { Cart, Modal } from "components";
 import { showCart } from "store/app/appSlice";
+import { showChat } from "store/chat/chatSlice";
+
 
 function App() {
   const dispatch = useDispatch();
-  const { isShowModal, modalChildren, isShowCart } = useSelector(
+  const { isShowModal, modalChildren, isShowCart, isShowChat } = useSelector(
     (state) => state.app
   );
-
   useEffect(() => {
     dispatch(getCategories());
   }, [dispatch]);
-
   return (
     <div className="font-main h-screen relative">
-      <>
-      <div className="bg-primaryBg-default flex">
-        <ChatBotSidebar />
-        <ChatbotDetails />
-      </div>
-      </>
+      {isShowChat && (
+        <div
+          onClick={() => dispatch(showChat({ signal: false }))}
+          className="absolute inset-0 bg-overlay z-[50000] flex justify-end"
+        >
+          <ChatbotDetails />
+        </div>
+      )}
       {isShowCart && (
         <div
           onClick={() => dispatch(showCart({ signal: false }))}
@@ -66,9 +68,8 @@ function App() {
       )}
       {isShowModal && <Modal>{modalChildren}</Modal>}
       <Routes>
-        <Route path={path.CHATBOT_DETAILS} element={<ChatbotDetails />} />
-        <Route path={path.PAYMENT_SUCCESS} element={<PaymentSuccess />} />
         <Route path={path.CHECKOUT} element={<Checkout />} />
+        <Route path={path.PAYMENT_SUCCESS} element={<PaymentSuccess />} />
         <Route path={path.PUBLIC} element={<PublicLayout />}>
           <Route path={path.HOME} element={<Home />} />
           <Route path={path.BLOGS} element={<Blogs />} />

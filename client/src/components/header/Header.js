@@ -6,14 +6,14 @@ import path from "utils/path";
 import { useSelector } from "react-redux";
 import withBase from "hocs/withBase";
 import { showCart } from "store/app/appSlice";
-
+import { showChat } from "store/chat/chatSlice";
 const Header = ({dispatch}) => {
   const { 
     IoBagHandle, 
     FaSearch,
     FaRegHeart,
     FaMapMarkerAlt,
-    SiChatbot
+    SiProbot
   } = icons;
   const { current } = useSelector(state => state.user);
   // const [showSearch, setShowSearch] = useState(false);
@@ -98,15 +98,14 @@ const Header = ({dispatch}) => {
             <IoBagHandle size={20} className="text-gray-700" />
             <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-xs rounded-full flex items-center justify-center">{`${current?.cart?.length || 0}`}</span>
           </div>
-
           {/* Chatbot button */}
-          <Link 
-            to={`/${path.CHATBOT_DETAILS}`}
+          <div
+            onClick={() => dispatch(showChat({ signal: true }))}
             className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors relative cursor-pointer"
-            aria-label="Shopping Cart"
+            aria-label="Chatbot"
           >
-            <SiChatbot size={20} className="text-gray-700" />
-          </Link>
+            <SiProbot size={18} className="text-gray-700" />
+          </div>
         </div>
       </div>
     </div>

@@ -160,18 +160,12 @@ export const getConfig = () => {
 
 
 export const formatOrderStatus = (status) => {
-  switch (status) {
-    case 'Processing':
-      return 'Chờ xác nhận';
-    case 'Dispatched':
-      return 'Đang giao';
-    case 'Delivered':
-      return 'Đã giao';
-    case 'Cancelled':
-      return 'Đã hủy';
-    default:
-      return 'Đang xử lý';
-  }
+  const mapStatus = {
+    Processing: 'Đang xử lý',
+    Confirmed: 'Đã xác nhận',
+  };
+  
+  return mapStatus[status] || 'Đã hoàn thành';
 };
 
 export const truncateText = (text, length = 30) => {

@@ -49,7 +49,7 @@ const ChatbotDetail = ({dispatch}) => {
   };
 
   return (
-    <div className="text-white xl:w-[80%] w-full relative">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-[50000] flex justify-end transition-all duration-300 backdrop-blur-sm">
       <div className="flex items-center space-x-2 p-4">
         <button onClick={() => setMenuToggle(!menuToggle)}>
           <img src={IconMenu} alt="menu icon" className="w-8 h-8 xl:hidden" />

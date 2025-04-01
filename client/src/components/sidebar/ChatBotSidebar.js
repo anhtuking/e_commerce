@@ -3,13 +3,14 @@ import IconPlus from "assets/plusIcon.png";
 import IconChat from "assets/chat.png";
 import IconTrash from "assets/remove.png";
 import IconMenu from "assets/menu.png";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addChat, removeChat } from "store/chat/chatSlice";
-import withBase from "hocs/withBase";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const ChatBotSidebar = ({ onToggle, dispatch, navigate }) => {
+const SideBar = ({ onToggle }) => {
+  const dispatch = useDispatch();
   const { data } = useSelector((state) => state.chat);
+  const navigate = useNavigate();
 
   const handleNewChat = () => {
     dispatch(addChat());
@@ -61,8 +62,8 @@ const ChatBotSidebar = ({ onToggle, dispatch, navigate }) => {
   );
 };
 
-ChatBotSidebar.propTypes = {
+SideBar.propTypes = {
   onToggle: PropType.func,
 };
 
-export default withBase(ChatBotSidebar);
+export default SideBar;

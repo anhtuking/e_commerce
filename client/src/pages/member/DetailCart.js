@@ -6,6 +6,7 @@ import { formatPrice } from 'utils/helpers'
 import { BsArrowLeft, BsCartX, BsInfoCircle } from 'react-icons/bs'
 import { FaTruck, FaShieldAlt, FaMoneyBillWave, FaGift, FaClipboardCheck, FaUndo, FaInfoCircle } from 'react-icons/fa'
 import path from 'utils/path'
+import { updateCart } from 'store/user/userSlice'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
 
