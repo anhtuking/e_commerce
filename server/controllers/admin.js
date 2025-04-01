@@ -10,18 +10,17 @@ const User = require("../models/user");
  * - Tổng khách hàng (role = 'user').
  */
 const getStatistics = asyncHandler(async (req, res) => {
-  // Tổng doanh thu: chỉ tính các đơn hàng đã Delivered
   const revenueAgg = await Order.aggregate([
-    { $match: { status: 'Delivered' } },
-    { $group: { _id: null, total: { $sum: '$totalPrice' } } }
+    { $match: { status: 'Đã hoàn thành' } },
+    { $group: { _id: null, total: { $sum: '$amount' } } }
   ]);
   const totalRevenue = revenueAgg.length > 0 ? revenueAgg[0].total : 0;
 
   // Tổng đơn hàng
-  const totalOrders = await Order.countDocuments();
+  const totalOrders = await Order.countDocuments({ status: 'Đã hoàn thành' });
 
   // Tổng khách hàng (chỉ đếm những user có role là 'user')
-  const totalCustomers = await User.countDocuments({ role: 'user' });
+  const totalCustomers = await User.countDocuments({ role: "2607" });
 
   return res.status(200).json({
     success: true,
@@ -37,11 +36,10 @@ const getStatistics = asyncHandler(async (req, res) => {
 const getRevenueStats = asyncHandler(async (req, res) => {
   const currentYear = new Date().getFullYear();
 
-  // Doanh thu theo tháng (chỉ tính đơn hàng Delivered)
   const monthlyRevenueAgg = await Order.aggregate([
     {
       $match: {
-        status: 'Delivered',
+        status: 'Đã hoàn thành',
         createdAt: {
           $gte: new Date(currentYear, 0, 1),
           $lte: new Date(currentYear, 11, 31)
@@ -51,7 +49,7 @@ const getRevenueStats = asyncHandler(async (req, res) => {
     {
       $group: {
         _id: { $month: '$createdAt' },
-        total: { $sum: '$totalPrice' }
+        total: { $sum: '$amount' }
       }
     },
     { $sort: { _id: 1 } }
@@ -67,12 +65,24 @@ const getRevenueStats = asyncHandler(async (req, res) => {
   // Doanh thu theo danh mục: Giả sử mỗi đơn hàng chứa mảng sản phẩm và mỗi sản phẩm có trường category
   // Nếu trong Order không có trực tiếp category, bạn cần thực hiện lookup hoặc điều chỉnh theo mô hình của bạn.
   const categoryRevenueAgg = await Order.aggregate([
-    { $match: { status: 'Delivered' } },
+    { $match: { status: 'Đã hoàn thành' } },
     { $unwind: '$products' },
+    // Thực hiện phép nối để lấy thông tin từ bảng Product
+    {
+      $lookup: {
+        from: 'products',          // Tên bảng Product
+        localField: 'products.product', // Trường trong Order
+        foreignField: '_id',       // Trường trong Product
+        as: 'productDetails'       // Tên trường mới chứa kết quả
+      }
+    },
+    { $unwind: '$productDetails' }, // Dỡ bỏ mảng productDetails
     {
       $group: {
-        _id: '$products.category', // Giả sử products có trường category (có thể là ObjectId hoặc string)
-        total: { $sum: { $multiply: ['$products.quantity', '$products.price'] } }
+        _id: '$productDetails.category', // Lấy theo category từ bảng Product
+        total: { 
+          $sum: { $multiply: ['$products.quantity', '$productDetails.price'] } 
+        }
       }
     },
     { $sort: { total: -1 } },
@@ -129,11 +139,13 @@ const getRevenueStats = asyncHandler(async (req, res) => {
 const getTopProducts = asyncHandler(async (req, res) => {
   // Giả sử mỗi đơn hàng có mảng sản phẩm, mỗi sản phẩm chứa product id và quantity
   const topProductsAgg = await Order.aggregate([
-    { $match: { status: 'Delivered' } },
+    { $match: { status: 'Đã hoàn thành' } },
     { $unwind: '$products' },
     {
       $group: {
-        _id: '$products.product', // Sản phẩm được tham chiếu qua id
+        _id: '$products.product', 
+        name: { $first: '$products.title' },
+        avatar: { $first: '$products.thumbnail' },
         totalSold: { $sum: '$products.quantity' }
       }
     },
@@ -152,19 +164,20 @@ const getTopProducts = asyncHandler(async (req, res) => {
  * Lấy danh sách 10 đơn hàng gần đây
  */
 const getRecentOrders = asyncHandler(async (req, res) => {
-  const recentOrders = await Order.find()
+  const recentOrders = await Order.find({ status: 'Đã hoàn thành' })
     .sort({ createdAt: -1 })
     .limit(10)
     // Nếu đơn hàng lưu thông tin người đặt (ví dụ: orderBy) thì populate thông tin đó
-    .populate('orderBy', 'firstname lastname');
+    .populate('userId', 'firstname lastname');
     
   // Format lại dữ liệu cho phù hợp (tùy theo yêu cầu UI)
   const formattedOrders = recentOrders.map(order => ({
     id: order._id,
-    customer: order.orderBy ? `${order.orderBy.firstname} ${order.orderBy.lastname}` : order.email,
+    customer: order?.userId ? `${order.userId.firstname} ${order.userId.lastname}` : order.email,
     date: order.createdAt.toLocaleDateString('vi-VN'),
-    amount: order.totalPrice, // Giả sử order có trường totalPrice
-    status: order.status
+    amount: order?.amount.toLocaleString('vi-VN'),
+    status: order.status,
+    typePayment : order.typePayment
   }));
 
   return res.status(200).json({
