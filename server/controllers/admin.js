@@ -35,35 +35,81 @@ const getStatistics = asyncHandler(async (req, res) => {
  */
 const getRevenueStats = asyncHandler(async (req, res) => {
   const currentYear = new Date().getFullYear();
+  const { type = 'monthly' } = req.query; // Thêm tham số type để chọn loại thống kê
 
-  const monthlyRevenueAgg = await Order.aggregate([
-    {
-      $match: {
-        status: 'Đã hoàn thành',
-        createdAt: {
-          $gte: new Date(currentYear, 0, 1),
-          $lte: new Date(currentYear, 11, 31)
+  let revenueAgg;
+  let labels;
+  let datasets;
+
+  if (type === 'monthly') {
+    // Thống kê theo tháng
+    revenueAgg = await Order.aggregate([
+      {
+        $match: {
+          status: { $in: ['Đã hoàn thành'] },
+          createdAt: {
+            $gte: new Date(currentYear, 0, 1),
+            $lte: new Date(currentYear, 11, 31)
+          }
         }
-      }
-    },
-    {
-      $group: {
-        _id: { $month: '$createdAt' },
-        total: { $sum: '$amount' }
-      }
-    },
-    { $sort: { _id: 1 } }
-  ]);
+      },
+      {
+        $group: {
+          _id: { $month: '$createdAt' },
+          total: { $sum: '$amount' }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ]);
 
-  // Khởi tạo mảng doanh thu cho 12 tháng
-  const months = Array(12).fill(0);
-  monthlyRevenueAgg.forEach(item => {
-    // Ví dụ: đổi sang triệu đồng
-    months[item._id - 1] = Math.round(item.total / 1000000);
-  });
+    // Khởi tạo mảng doanh thu cho 12 tháng
+    const months = Array(12).fill(0);
+    revenueAgg.forEach(item => {
+      months[item._id - 1] = Math.round(item.total / 1000000);
+    });
 
-  // Doanh thu theo danh mục: Giả sử mỗi đơn hàng chứa mảng sản phẩm và mỗi sản phẩm có trường category
-  // Nếu trong Order không có trực tiếp category, bạn cần thực hiện lookup hoặc điều chỉnh theo mô hình của bạn.
+    labels = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
+    datasets = [{
+      label: 'Doanh thu (triệu đồng)',
+      data: months,
+      backgroundColor: 'rgba(54, 162, 235, 0.5)',
+      borderColor: 'rgba(54, 162, 235, 1)',
+      borderWidth: 1,
+    }];
+  } else {
+    // Thống kê theo quý
+    revenueAgg = await Order.aggregate([
+      {
+        $match: {
+          status: { $in: ['Đã hoàn thành'] },
+          createdAt: {
+            $gte: new Date(currentYear, 0, 1),
+            $lte: new Date(currentYear, 11, 31)
+          }
+        }
+      },
+      {
+        $group: {
+          _id: { $ceil: { $divide: [{ $month: '$createdAt' }, 3] } },
+          total: { $sum: '$amount' }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ]);
+
+    // Khởi tạo mảng doanh thu cho 4 quý
+    labels = revenueAgg.map(item => `Quý ${item._id}`);
+    const quarters = revenueAgg.map(item => Math.round(item.total / 1000000));
+    datasets = [{
+      label: 'Doanh thu (triệu đồng)',
+      data: quarters,
+      backgroundColor: 'rgba(54, 162, 235, 0.5)',
+      borderColor: 'rgba(54, 162, 235, 1)',
+      borderWidth: 1,
+    }];
+  }
+
+  // Doanh thu theo danh mục
   const categoryRevenueAgg = await Order.aggregate([
     { $match: { status: 'Đã hoàn thành' } },
     { $unwind: '$products' },
@@ -80,8 +126,8 @@ const getRevenueStats = asyncHandler(async (req, res) => {
     {
       $group: {
         _id: '$productDetails.category', // Lấy theo category từ bảng Product
-        total: { 
-          $sum: { $multiply: ['$products.quantity', '$productDetails.price'] } 
+        total: {
+          $sum: { $multiply: ['$products.quantity', '$productDetails.price'] }
         }
       }
     },
@@ -95,16 +141,9 @@ const getRevenueStats = asyncHandler(async (req, res) => {
   return res.status(200).json({
     success: true,
     revenueData: {
-      labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
-      datasets: [
-        {
-          label: 'Doanh thu (triệu đồng)',
-          data: months,
-          backgroundColor: 'rgba(54, 162, 235, 0.5)',
-          borderColor: 'rgba(54, 162, 235, 1)',
-          borderWidth: 1,
-        },
-      ],
+      labels,
+      datasets,
+      type // Thêm type vào response để client biết đang hiển thị loại nào
     },
     categoryData: {
       labels: categoryLabels,
@@ -143,7 +182,7 @@ const getTopProducts = asyncHandler(async (req, res) => {
     { $unwind: '$products' },
     {
       $group: {
-        _id: '$products.product', 
+        _id: '$products.product',
         name: { $first: '$products.title' },
         avatar: { $first: '$products.thumbnail' },
         totalSold: { $sum: '$products.quantity' }
@@ -169,7 +208,7 @@ const getRecentOrders = asyncHandler(async (req, res) => {
     .limit(10)
     // Nếu đơn hàng lưu thông tin người đặt (ví dụ: orderBy) thì populate thông tin đó
     .populate('userId', 'firstname lastname');
-    
+
   // Format lại dữ liệu cho phù hợp (tùy theo yêu cầu UI)
   const formattedOrders = recentOrders.map(order => ({
     id: order._id,
@@ -177,7 +216,7 @@ const getRecentOrders = asyncHandler(async (req, res) => {
     date: order.createdAt.toLocaleDateString('vi-VN'),
     amount: order?.amount.toLocaleString('vi-VN'),
     status: order.status,
-    typePayment : order.typePayment
+    typePayment: order.typePayment
   }));
 
   return res.status(200).json({
