@@ -37,27 +37,29 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Cart, Modal } from "components";
 import { showCart } from "store/app/appSlice";
-import { showChat } from "store/chat/chatSlice";
+// import { showChat } from "store/chat/chatSlice";
 
 
 function App() {
   const dispatch = useDispatch();
-  const { isShowModal, modalChildren, isShowCart, isShowChat } = useSelector(
+  const { isShowModal, modalChildren, isShowCart } = useSelector(
     (state) => state.app
   );
+  // const { isShowChat } = useSelector((state) => state.chat);
+  
   useEffect(() => {
     dispatch(getCategories());
   }, [dispatch]);
   return (
     <div className="font-main h-screen relative">
-      {isShowChat && (
+      {/* {isShowChat && (
         <div
-          onClick={() => dispatch(showChat({ signal: false }))}
+          onClick={() => dispatch(showChat())}
           className="absolute inset-0 bg-overlay z-[50000] flex justify-end"
         >
           <ChatbotDetails />
         </div>
-      )}
+      )} */}
       {isShowCart && (
         <div
           onClick={() => dispatch(showCart({ signal: false }))}
@@ -68,6 +70,8 @@ function App() {
       )}
       {isShowModal && <Modal>{modalChildren}</Modal>}
       <Routes>
+        <Route path={path.CHATBOT_DETAILS} element={<ChatbotDetails />} />
+        <Route path={path.CHATBOT_MESS} element={<ChatbotDetails />} />
         <Route path={path.CHECKOUT} element={<Checkout />} />
         <Route path={path.PAYMENT_SUCCESS} element={<PaymentSuccess />} />
         <Route path={path.PUBLIC} element={<PublicLayout />}>

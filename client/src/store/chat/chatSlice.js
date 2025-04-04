@@ -3,10 +3,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { marked } from "marked";
 import DOMPurify from 'dompurify';
 
-const initData = {
-    data: []
-}
 
+const initData = {
+    data: [],
+}
 /*
 
 data:[
@@ -21,15 +21,14 @@ data:[
     }
 ]
 
+
 */
 
-const chatSlice = createSlice({
-    name: 'chatbot',
-    initialState: {initData, isShowChat: false},
+
+const ChatSlice = createSlice({
+    name: 'chat',
+    initialState: initData,
     reducers:{
-        showChat: (state) => {
-            state.isShowChat = state.isShowChat === false ? true : false;
-        },
         addChat: (state) =>{
             state.data.push({
                 id: uuidv4(),
@@ -39,7 +38,7 @@ const chatSlice = createSlice({
         },
         addMessage: (state, action) =>{
             const {idChat, userMess, botMess} = action.payload;
-            const chat = state.data.find((chat) => chat.id === idChat);
+            const chat = state.data?.find((chat) => chat.id === idChat);
             if(chat){
                 const messageFormat = marked.parse(botMess);
                 const safeChat = DOMPurify.sanitize(messageFormat)
@@ -48,8 +47,10 @@ const chatSlice = createSlice({
                     {id: uuidv4(), text: userMess, isBot: false },
                     {id: uuidv4(), text: safeChat, isBot: true },
                 ]
+
                 chat.messages = newMessage;
             }
+            
         },
         removeChat: (state, action) =>{
             state.data = state.data.filter((chat) => chat.id !== action.payload);
@@ -64,6 +65,7 @@ const chatSlice = createSlice({
     }
 })
 
-export const { showChat, addChat, removeChat, addMessage, setNameChat } = chatSlice.actions
+export const { addChat, removeChat, addMessage, setNameChat } = ChatSlice.actions;
 
-export default chatSlice.reducer
+
+export default ChatSlice.reducer;

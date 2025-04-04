@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Bar, Pie } from 'react-chartjs-2';
+import { Bar, Pie, Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
-import { Card, Row, Col, Table, Typography, Statistic, Divider, List, Avatar, Spin, notification, Badge } from 'antd';
+import { Card, Row, Col, Table, Typography, Statistic, Divider, List, Avatar, Spin, notification, Badge, Radio } from 'antd';
 import { DollarOutlined, ShoppingOutlined, UserOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { getConfig, formatPrice, formatOrderStatus } from '../../utils/helpers';
@@ -10,8 +10,6 @@ import { Box, Button } from '@mui/material';
 import { FaRegArrowAltCircleUp , FaHistory } from "react-icons/fa";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
-
-const { Title: AntTitle } = Typography;
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -61,6 +59,7 @@ const Dashboard = () => {
   });
   const [topProducts, setTopProducts] = useState([]);
   const [recentOrders, setRecentOrders] = useState([]);
+  const [revenueType, setRevenueType] = useState('monthly');
 
   const fetchDashboardData = useCallback(async (isRefresh = false) => {
     try {
@@ -89,7 +88,7 @@ const Dashboard = () => {
       }
   
       // Lấy dữ liệu doanh thu theo tháng và doanh thu theo danh mục
-      const revenueRes = await apiGetRevenueStats(config);
+      const revenueRes = await apiGetRevenueStats({ ...config, params: { type: revenueType } });
       if (revenueRes?.success) {
         setRevenueData(revenueRes.revenueData);
         setCategoryData(revenueRes.categoryData);
@@ -118,7 +117,7 @@ const Dashboard = () => {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);  
+  }, [revenueType]);
 
   useEffect(() => {
     fetchDashboardData();
@@ -132,6 +131,11 @@ const Dashboard = () => {
   const handleRefresh = () => {
     fetchDashboardData(true);
   };  
+
+  // Xử lý khi thay đổi loại thống kê
+  const handleRevenueTypeChange = (e) => {
+    setRevenueType(e.target.value);
+  };
 
   // Format tiền hiển thị
   const formatCurrency = (value) => formatPrice(value);
@@ -161,9 +165,59 @@ const Dashboard = () => {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: 'top' },
-      title: { display: true, text: 'Doanh thu theo tháng' },
+      legend: { 
+        position: revenueType === 'quarterly' ? 'right' : 'top',
+        labels: {
+          font: {
+            size: 14
+          }
+        }
+      },
+      title: { 
+        display: true, 
+        text: revenueType === 'monthly' ? 'Doanh thu theo tháng' : 'Doanh thu theo quý',
+        font: {
+          size: 16
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            let label = context.dataset.label || '';
+            
+            if (revenueType === 'monthly') {
+              // Cho biểu đồ cột, giá trị nằm trong context.parsed.y
+              return `${label}: ${context.parsed.y} triệu đồng`;
+            } else {
+              // Cho biểu đồ tròn, cần hiển thị cả tên quý (từ labels) và giá trị
+              const quarterName = revenueData.labels[context.dataIndex] || context.label;
+              return `${quarterName}: ${context.raw} triệu đồng`;
+            }
+          },
+          // Thêm title callback để hiển thị đúng tiêu đề cho tooltip
+          title: function(context) {
+            if (revenueType === 'quarterly') {
+              // Không hiển thị title mặc định cho biểu đồ tròn
+              return '';
+            }
+            // Giữ nguyên title mặc định cho biểu đồ cột
+            return context[0].label;
+          }
+        }
+      }
     },
+    ...(revenueType === 'monthly' && {
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return value + ' triệu';
+            }
+          }
+        }
+      }
+    })
   };
 
   if (loading) {
@@ -216,7 +270,7 @@ const Dashboard = () => {
                 <span style={{ color: '#52c41a' }}>
                   <ArrowUpOutlined /> % so với tháng trước
                 </span>
-              </div>
+    </div>
             </Card>
           </Col>
         ))}
@@ -227,15 +281,127 @@ const Dashboard = () => {
       {/* Biểu đồ doanh thu */}
       <Row gutter={[16, 16]}>
         <Col span={16}>
-          <Card title="Doanh thu theo tháng">
-            <div style={{ height: '350px' }}>
-              <Bar data={revenueData} options={chartOptions} />
+          <Card 
+            title={
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>Doanh thu</span>
+                <Radio.Group 
+                  value={revenueType} 
+                  onChange={handleRevenueTypeChange}
+                  optionType="button"
+                  buttonStyle="solid"
+                >
+                  <Radio.Button value="monthly">Theo tháng</Radio.Button>
+                  <Radio.Button value="quarterly">Theo quý</Radio.Button>
+                </Radio.Group>
+              </Box>
+            }
+          >
+            <div style={{ height: '350px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              {revenueType === 'monthly' ? (
+                <Bar 
+                  data={revenueData}
+                  options={chartOptions} 
+                />
+              ) : (
+                <div style={{ width: '80%', height: '80%' }}>
+                  <Doughnut
+                    data={(() => {
+                      // Tính toán dữ liệu theo quý
+                      const quarterlyData = [
+                        // Quý 1: T1 + T2 + T3
+                        (revenueData.datasets[0].data[0] || 0) + 
+                        (revenueData.datasets[0].data[1] || 0) + 
+                        (revenueData.datasets[0].data[2] || 0),
+                        // Quý 2: T4 + T5 + T6
+                        (revenueData.datasets[0].data[3] || 0) + 
+                        (revenueData.datasets[0].data[4] || 0) + 
+                        (revenueData.datasets[0].data[5] || 0),
+                        // Quý 3: T7 + T8 + T9
+                        (revenueData.datasets[0].data[6] || 0) + 
+                        (revenueData.datasets[0].data[7] || 0) + 
+                        (revenueData.datasets[0].data[8] || 0),
+                        // Quý 4: T10 + T11 + T12
+                        (revenueData.datasets[0].data[9] || 0) + 
+                        (revenueData.datasets[0].data[10] || 0) + 
+                        (revenueData.datasets[0].data[11] || 0),
+                      ];
+
+                      // Lọc ra chỉ những quý có dữ liệu
+                      const quartersWithData = [];
+                      const labelsWithData = [];
+                      const backgroundColorsWithData = [];
+                      const borderColorsWithData = [];
+                      
+                      const allQuarterLabels = ['Quý 1', 'Quý 2', 'Quý 3', 'Quý 4'];
+                      const backgroundColors = [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                      ];
+                      const borderColors = [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                      ];
+                      
+                      // Chỉ lấy những quý có doanh thu > 0
+                      quarterlyData.forEach((value, index) => {
+                        if (value > 0) {
+                          quartersWithData.push(value);
+                          labelsWithData.push(allQuarterLabels[index]);
+                          backgroundColorsWithData.push(backgroundColors[index]);
+                          borderColorsWithData.push(borderColors[index]);
+                        }
+                      });
+                      
+                      // Nếu không có quý nào có dữ liệu, hiển thị thông báo "Không có dữ liệu"
+                      if (quartersWithData.length === 0) {
+                        return {
+                          labels: ['Không có dữ liệu'],
+                          datasets: [{
+                            label: 'Doanh thu (triệu đồng)',
+                            data: [1],
+                            backgroundColor: ['rgba(200, 200, 200, 0.7)'],
+                            borderColor: ['rgba(200, 200, 200, 1)'],
+                            borderWidth: 2,
+                          }]
+                        };
+                      }
+                      
+                      return {
+                        labels: labelsWithData,
+                        datasets: [{
+                          label: 'Doanh thu (triệu đồng)',
+                          data: quartersWithData,
+                          backgroundColor: backgroundColorsWithData,
+                          borderColor: borderColorsWithData,
+                          borderWidth: 2,
+                          hoverOffset: 15
+                        }]
+                      };
+                    })()}
+                    options={{
+                      ...chartOptions,
+                      cutout: '60%',
+                      plugins: {
+                        ...chartOptions.plugins,
+                        title: {
+                          display: false
+                        }
+                      }
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </Card>
         </Col>
         <Col span={8}>
           <Card title="Doanh thu theo danh mục">
-            <div style={{ height: '350px' }}>
+            <div style={{ height: '350px' }} className='w-full flex justify-center items-center'>
               <Pie data={categoryData} />
             </div>
           </Card>
@@ -246,66 +412,68 @@ const Dashboard = () => {
 
       {/* Top sản phẩm bán chạy và Đơn hàng gần đây */}
       <Row gutter={[16, 16]}>
-  <Col span={8}>
-    <Card
-      title={
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <FaRegArrowAltCircleUp style={{ marginRight: '8px' }} />
-          <Typography variant="h6" className='text-xl'>Top sản phẩm bán chạy</Typography>
-        </Box>
-      }
-      style={{ height: '450px', overflow: 'auto' }}
-    >
-      <List
-        itemLayout="horizontal"
-        dataSource={topProducts}
-        renderItem={(item) => (
-          <List.Item>
-            <List.Item.Meta
-              avatar={<Avatar src={item.avatar} size="large" />}
-              title={item.name}
+        <Col span={8}>
+          <Card
+            title={
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <FaRegArrowAltCircleUp style={{ marginRight: '8px' }} />
+                <Typography variant="h6" className='text-xl'>Top sản phẩm bán chạy</Typography>
+              </Box>
+            }
+            extra={<span style={{ fontSize: '12px', color: '#888' }}>*Từ đơn hàng đã thanh toán*</span>}
+            style={{ height: '450px', overflow: 'auto' }}
+          >
+            <List
+              itemLayout="horizontal"
+              dataSource={topProducts}
+              renderItem={(item) => (
+                <List.Item>
+                  <List.Item.Meta
+                    avatar={<Avatar src={item.avatar} size="large" />}
+                    title={item.name}
+                  />
+                  <div className="font-semibold text-main pl-2">
+                    Đã bán: {item.totalSold}
+                  </div>
+                </List.Item>
+              )}
             />
-            <div className="font-semibold text-main pl-2">
-              Đã bán: {item.totalSold}
-            </div>
-          </List.Item>
-        )}
-      />
-    </Card>
-  </Col>
-  <Col span={16}>
-    <Card
-      title={
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <FaHistory style={{ marginRight: '8px' }} />
-          <Typography variant="h6" className='text-xl'>Đơn hàng gần đây</Typography>
-        </Box>
-      }
-      style={{ height: '450px', overflow: 'auto' }}
-    >
-      <Table
-        columns={[
-          { title: 'Mã đơn', dataIndex: 'id', key: 'id', width: '25%' },
-          { title: 'Khách hàng', dataIndex: 'customer', key: 'customer', width: '20%' },
-          { title: 'Ngày đặt', dataIndex: 'date', key: 'date', width: '15%' },
-          { title: 'Tổng tiền', dataIndex: 'amount', key: 'amount', width: '15%' },
-          { title: 'Phương thức', dataIndex: 'typePayment', key: 'typePayment', width: '15%' },
-          {
-            title: 'Trạng thái',
-            dataIndex: 'status',
-            key: 'status',
-            width: '20%',
-            render: (status) => <span>{formatOrderStatus(status)}</span>,
-          },
-        ]}
-        dataSource={recentOrders}
-        rowKey="id"
-        pagination={false}
-        scroll={{ y: 350 }}
-      />
-    </Card>
-  </Col>
-</Row>
+          </Card>
+        </Col>
+        <Col span={16}>
+          <Card
+            title={
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <FaHistory style={{ marginRight: '8px' }} />
+                <Typography variant="h6" className='text-xl'>Đơn hàng gần đây</Typography>
+              </Box>
+            }
+            extra={<span style={{ fontSize: '12px', color: '#888' }}>*Từ khách hàng đã thanh toán*</span>}
+            style={{ height: '450px', overflow: 'auto' }}
+          >
+            <Table
+              columns={[
+                { title: 'Mã đơn', dataIndex: 'id', key: 'id', width: '25%' },
+                { title: 'Khách hàng', dataIndex: 'customer', key: 'customer', width: '20%' },
+                { title: 'Ngày đặt', dataIndex: 'date', key: 'date', width: '15%' },
+                { title: 'Tổng tiền', dataIndex: 'amount', key: 'amount', width: '15%' },
+                { title: 'Phương thức', dataIndex: 'typePayment', key: 'typePayment', width: '15%' },
+                {
+                  title: 'Trạng thái',
+                  dataIndex: 'status',
+                  key: 'status',
+                  width: '20%',
+                  render: (status) => <span>{formatOrderStatus(status)}</span>,
+                },
+              ]}
+              dataSource={recentOrders}
+              rowKey="id"
+              pagination={false}
+              scroll={{ y: 350 }}
+            />
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };

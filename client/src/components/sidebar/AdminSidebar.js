@@ -1,5 +1,4 @@
 import React, { Fragment, memo, useState, useEffect } from "react";
-import avatarAdmin from "assets/avatarAdmin.jpg";
 import { adminSidebar } from "utils/contants";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import clsx from "clsx";

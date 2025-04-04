@@ -99,13 +99,14 @@ const Header = ({dispatch}) => {
             <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-xs rounded-full flex items-center justify-center">{`${current?.cart?.length || 0}`}</span>
           </div>
           {/* Chatbot button */}
-          <div
-            onClick={() => dispatch(showChat({ signal: true }))}
+          <Link
+            to={`/${path.CHATBOT_DETAILS}`}
+            // onClick={() => dispatch(showChat({ signal: true }))}
             className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors relative cursor-pointer"
             aria-label="Chatbot"
           >
             <SiProbot size={18} className="text-gray-700" />
-          </div>
+          </Link>
         </div>
       </div>
     </div>
