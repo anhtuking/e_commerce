@@ -551,12 +551,58 @@ const getUserOrder = asyncHandler(async (req, res) => {
 });
 
 const getAllOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find(); // Lấy tất cả đơn hàng
+  const orders = await Order.aggregate([
+    {
+      $lookup: {
+        from: "users",       // tên collection chứa thông tin user
+        localField: "userId",  // trường trong order lưu user id
+        foreignField: "_id",   // trường trong users lưu id của user
+        as: "userInfo"         // trường kết quả chứa thông tin user
+      }
+    },
+    {
+      $unwind: { 
+        path: "$userInfo", 
+        preserveNullAndEmptyArrays: true  // nếu không tìm thấy user thì vẫn giữ order đó
+      }
+    }
+  ]);
   return res.status(200).json({
     success: orders ? true : false,
-    response: orders || "Không tìm thấy đơn hàng",
+    response: orders.length ? orders : "Không tìm thấy đơn hàng"
   });
 });
+
+const updateStatusOrder = asyncHandler(async (req, res) => {
+  const { orderId, status } = req.body;
+  console.log("orderId:", orderId, "status:", status); // Log dữ liệu nhận được
+  if (!orderId || !status) {
+    return res.status(400).json({
+      success: false,
+      mes: "Thiếu tham số orderId hoặc status"
+    });
+  }
+
+  // Cập nhật trạng thái đơn hàng, trả về đơn hàng đã được cập nhật
+  const updatedOrder = await Order.findByIdAndUpdate(
+    orderId,
+    { status },
+    { new: true }
+  );
+
+  if (!updatedOrder) {
+    return res.status(404).json({
+      success: false,
+      mes: "Không tìm thấy đơn hàng"
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    response: updatedOrder
+  });
+});
+
 
 module.exports = {
   register,
@@ -578,5 +624,6 @@ module.exports = {
   updateWishlist,
   getCart,
   getUserOrder,
-  getAllOrders
+  getAllOrders,
+  updateStatusOrder
 };

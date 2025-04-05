@@ -11,13 +11,13 @@ const User = require("../models/user");
  */
 const getStatistics = asyncHandler(async (req, res) => {
   const revenueAgg = await Order.aggregate([
-    { $match: { status: 'Đã hoàn thành' } },
+    { $match: { status: 'Hoàn thành' } },
     { $group: { _id: null, total: { $sum: '$amount' } } }
   ]);
   const totalRevenue = revenueAgg.length > 0 ? revenueAgg[0].total : 0;
 
   // Tổng đơn hàng
-  const totalOrders = await Order.countDocuments({ status: 'Đã hoàn thành' });
+  const totalOrders = await Order.countDocuments({ status: 'Hoàn thành' });
 
   // Tổng khách hàng (chỉ đếm những user có role là 'user')
   const totalCustomers = await User.countDocuments({ role: "2607" });
@@ -46,7 +46,7 @@ const getRevenueStats = asyncHandler(async (req, res) => {
     revenueAgg = await Order.aggregate([
       {
         $match: {
-          status: { $in: ['Đã hoàn thành'] },
+          status: { $in: ['Hoàn thành'] },
           createdAt: {
             $gte: new Date(currentYear, 0, 1),
             $lte: new Date(currentYear, 11, 31)
@@ -81,7 +81,7 @@ const getRevenueStats = asyncHandler(async (req, res) => {
     revenueAgg = await Order.aggregate([
       {
         $match: {
-          status: { $in: ['Đã hoàn thành'] },
+          status: { $in: ['Hoàn thành'] },
           createdAt: {
             $gte: new Date(currentYear, 0, 1),
             $lte: new Date(currentYear, 11, 31)
@@ -111,7 +111,7 @@ const getRevenueStats = asyncHandler(async (req, res) => {
 
   // Doanh thu theo danh mục
   const categoryRevenueAgg = await Order.aggregate([
-    { $match: { status: 'Đã hoàn thành' } },
+    { $match: { status: 'Hoàn thành' } },
     { $unwind: '$products' },
     // Thực hiện phép nối để lấy thông tin từ bảng Product
     {
@@ -178,7 +178,7 @@ const getRevenueStats = asyncHandler(async (req, res) => {
 const getTopProducts = asyncHandler(async (req, res) => {
   // Giả sử mỗi đơn hàng có mảng sản phẩm, mỗi sản phẩm chứa product id và quantity
   const topProductsAgg = await Order.aggregate([
-    { $match: { status: 'Đã hoàn thành' } },
+    { $match: { status: 'Hoàn thành' } },
     { $unwind: '$products' },
     {
       $group: {
@@ -203,7 +203,7 @@ const getTopProducts = asyncHandler(async (req, res) => {
  * Lấy danh sách 10 đơn hàng gần đây
  */
 const getRecentOrders = asyncHandler(async (req, res) => {
-  const recentOrders = await Order.find({ status: 'Đã hoàn thành' })
+  const recentOrders = await Order.find({ status: 'Hoàn thành' })
     .sort({ createdAt: -1 })
     .limit(10)
     // Nếu đơn hàng lưu thông tin người đặt (ví dụ: orderBy) thì populate thông tin đó
