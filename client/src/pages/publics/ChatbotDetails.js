@@ -148,11 +148,11 @@ const ChatDetail = ({ dispatch, navigate }) => {
                     <p className="text-gray-600 mb-6">Hãy đặt câu hỏi hoặc yêu cầu trợ giúp về bất cứ điều gì.</p>
                     <div className="flex flex-col gap-3 text-left">
                       <div className="bg-white p-3 rounded-lg border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
-                        onClick={() => setInputChat("Tôi cần giúp đỡ tìm laptop phù hợp cho công việc")}>
-                        "Tôi cần giúp đỡ tìm laptop phù hợp cho sinh viên IT "
+                        onClick={() => setInputChat("Tôi cần giúp đỡ tìm laptop phù hợp cho sinh viên IT")}>
+                        "Tôi cần giúp đỡ tìm laptop phù hợp cho sinh viên IT"
                       </div>
                       <div className="bg-white p-3 rounded-lg border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
-                        onClick={() => setInputChat("So sánh giúp tôi MacBook Pro và Dell XPS 15")}>
+                        onClick={() => setInputChat("So sánh Iphone 16 Promax và SS Galaxy S25 ultra")}>
                         "So sánh Iphone 16 Promax và SS Galaxy S25 ultra"
                       </div>
                     </div>

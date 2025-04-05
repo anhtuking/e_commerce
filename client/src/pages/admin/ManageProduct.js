@@ -17,6 +17,7 @@ import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { showModal } from "store/app/appSlice";
 import { useDispatch } from "react-redux";
+import { RiProductHuntLine } from "react-icons/ri";
 
 const ManageProduct = () => {
   const {
@@ -143,8 +144,22 @@ const ManageProduct = () => {
           }}
         />
       </div>}
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">Manage Product</h1>
-      <div className="flex w-full justify-end items-center px-4">
+      
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-center mb-2">
+          <div className="p-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl mr-4 shadow-lg">
+            <RiProductHuntLine className="text-white text-2xl" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-800">Manage Products</h1>
+            <p className="text-gray-500">Manage and maintain your product catalog</p>
+          </div>
+        </div>
+        <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
+      </div>
+      
+      <div className="flex w-full justify-end items-center px-4 mb-6">
         <form className="w-[45%]">
           <InputForm
             id="q"
@@ -155,7 +170,7 @@ const ManageProduct = () => {
           />
         </form>
       </div>
-      <div className="h-[20px] w-full"></div>
+      
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
         {isLoading && (
           <div className="flex justify-center items-center py-4">
@@ -164,7 +179,7 @@ const ManageProduct = () => {
         )}
         <table className="table-auto w-full border-collapse border border-gray-300">
           <thead>
-            <tr className="bg-gradient-to-r from-red-600 to-pink-600 text-white text-sm">
+            <tr className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm">
               <th className="p-3 border">#</th>
               <th className="p-3 border">Thumb</th>
               <th className="p-3 border">Title</th>

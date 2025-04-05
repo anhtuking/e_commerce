@@ -3,6 +3,7 @@ import { apiDeleteUsers, apiGetUsers, apiUpdateUsers } from "api";
 import { FaTrash, FaEdit, FaUserAlt, FaTimes } from "react-icons/fa";
 import { TiTick } from "react-icons/ti";
 import { MdAdminPanelSettings } from "react-icons/md";
+import { RiGroupLine } from "react-icons/ri";
 import moment from "moment";
 import { InputField, Pagination, InputForm, Select } from "components";
 import useDebounce from "hooks/useDebounce";
@@ -117,8 +118,21 @@ const ManageUser = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">Manage Users</h1>
-      <div className="flex justify-end py-4">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-center mb-2">
+          <div className="p-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl mr-4 shadow-lg">
+            <RiGroupLine className="text-white text-2xl" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-800">Manage Users</h1>
+            <p className="text-gray-500">Manage user accounts and access controls</p>
+          </div>
+        </div>
+        <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
+      </div>
+      
+      <div className="flex justify-end py-4 mb-4">
         <InputField
           nameKey={"search"}
           value={queries?.search}
@@ -127,10 +141,11 @@ const ManageUser = () => {
           placeholder="Search user..."
         />
       </div>
+      
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
         <form onSubmit={handleSubmit(handleUpdate)}>
           <table className="w-full table-auto text-left border-collapse">
-            <thead className="bg-gradient-to-r from-red-600 to-pink-600 text-white text-sm uppercase">
+            <thead className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm uppercase">
               <tr>
                 <th className="px-4 py-3 text-center border">#</th>
                 <th className="px-4 py-3 w-[365px] border">Email</th>

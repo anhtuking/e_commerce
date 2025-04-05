@@ -7,7 +7,8 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import { getConfig, formatPrice, formatOrderStatus } from '../../utils/helpers';
 import { apiGetRecentOrders, apiGetRevenueStats, apiGetStatistics, apiGetTopProducts } from 'api';
 import { Box, Button } from '@mui/material';
-import { FaRegArrowAltCircleUp , FaHistory } from "react-icons/fa";
+import { FaRegArrowAltCircleUp, FaHistory } from "react-icons/fa";
+import { RxDashboard } from "react-icons/rx";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 
@@ -22,7 +23,7 @@ const Dashboard = () => {
     totalCustomers: 0,
   });
   const [revenueData, setRevenueData] = useState({
-    labels: Array.from({length: 12}, (_, i) => `T${i + 1}`),
+    labels: Array.from({ length: 12 }, (_, i) => `T${i + 1}`),
     datasets: [
       {
         label: 'Doanh thu (triệu đồng)',
@@ -69,14 +70,14 @@ const Dashboard = () => {
         setLoading(true);
       }
       setError(null);
-      
+
       // Cập nhật thời gian refresh
       setLastUpdated(new Date());
-  
+
       // Lấy config có token và header
       const config = getConfig();
       config.withCredentials = true;
-  
+
       // Lấy thống kê tổng quan
       const statsRes = await apiGetStatistics(config);
       if (statsRes?.success) {
@@ -86,20 +87,20 @@ const Dashboard = () => {
           totalCustomers: statsRes.totalCustomers,
         });
       }
-  
+
       // Lấy dữ liệu doanh thu theo tháng và doanh thu theo danh mục
       const revenueRes = await apiGetRevenueStats({ ...config, params: { type: revenueType } });
       if (revenueRes?.success) {
         setRevenueData(revenueRes.revenueData);
         setCategoryData(revenueRes.categoryData);
       }
-  
+
       // Lấy top sản phẩm bán chạy
       const topProductsRes = await apiGetTopProducts(config);
       if (topProductsRes?.success) {
         setTopProducts(topProductsRes.data);
       }
-  
+
       // Lấy danh sách đơn hàng gần đây
       const recentOrdersRes = await apiGetRecentOrders(config);
       if (recentOrdersRes?.success) {
@@ -127,10 +128,10 @@ const Dashboard = () => {
     }, 60000);
     return () => clearInterval(refreshInterval);
   }, [fetchDashboardData]);
-  
+
   const handleRefresh = () => {
     fetchDashboardData(true);
-  };  
+  };
 
   // Xử lý khi thay đổi loại thống kê
   const handleRevenueTypeChange = (e) => {
@@ -141,23 +142,23 @@ const Dashboard = () => {
   const formatCurrency = (value) => formatPrice(value);
 
   const stats = [
-    { 
-      title: 'Tổng doanh thu', 
-      value: formatCurrency(statsData.totalRevenue), 
-      icon: <DollarOutlined />, 
-      color: '#1890ff' 
+    {
+      title: 'Tổng doanh thu',
+      value: formatCurrency(statsData.totalRevenue),
+      icon: <DollarOutlined />,
+      color: '#1890ff'
     },
-    { 
-      title: 'Tổng đơn hàng', 
-      value: statsData.totalOrders, 
-      icon: <ShoppingOutlined />, 
-      color: '#52c41a' 
+    {
+      title: 'Tổng đơn hàng',
+      value: statsData.totalOrders,
+      icon: <ShoppingOutlined />,
+      color: '#52c41a'
     },
-    { 
-      title: 'Tổng khách hàng', 
-      value: statsData.totalCustomers, 
-      icon: <UserOutlined />, 
-      color: '#722ed1' 
+    {
+      title: 'Tổng khách hàng',
+      value: statsData.totalCustomers,
+      icon: <UserOutlined />,
+      color: '#722ed1'
     },
   ];
 
@@ -165,7 +166,7 @@ const Dashboard = () => {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { 
+      legend: {
         position: revenueType === 'quarterly' ? 'right' : 'top',
         labels: {
           font: {
@@ -173,8 +174,8 @@ const Dashboard = () => {
           }
         }
       },
-      title: { 
-        display: true, 
+      title: {
+        display: true,
         text: revenueType === 'monthly' ? 'Doanh thu theo tháng' : 'Doanh thu theo quý',
         font: {
           size: 16
@@ -182,9 +183,9 @@ const Dashboard = () => {
       },
       tooltip: {
         callbacks: {
-          label: function(context) {
+          label: function (context) {
             let label = context.dataset.label || '';
-            
+
             if (revenueType === 'monthly') {
               // Cho biểu đồ cột, giá trị nằm trong context.parsed.y
               return `${label}: ${context.parsed.y} triệu đồng`;
@@ -195,7 +196,7 @@ const Dashboard = () => {
             }
           },
           // Thêm title callback để hiển thị đúng tiêu đề cho tooltip
-          title: function(context) {
+          title: function (context) {
             if (revenueType === 'quarterly') {
               // Không hiển thị title mặc định cho biểu đồ tròn
               return '';
@@ -211,7 +212,7 @@ const Dashboard = () => {
         y: {
           beginAtZero: true,
           ticks: {
-            callback: function(value) {
+            callback: function (value) {
               return value + ' triệu';
             }
           }
@@ -231,9 +232,19 @@ const Dashboard = () => {
   return (
     <div className="dashboard-container w-[1555px]" style={{ padding: '20px' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Dashboard
-        </Typography>
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center mb-2">
+            <div className="p-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl mr-4 shadow-lg">
+              <RxDashboard className="text-white text-2xl" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
+              <p className="text-gray-500">Overview of your store performance</p>
+            </div>
+          </div>
+          <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
+        </div>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {lastUpdated && (
             <Typography variant="caption" color="text.secondary" sx={{ mr: 2, marginRight: '8px' }}>
@@ -241,8 +252,8 @@ const Dashboard = () => {
             </Typography>
           )}
           <Badge color="secondary" variant="dot" invisible={!refreshing}>
-            <Button 
-              startIcon={<RefreshIcon />} 
+            <Button
+              startIcon={<RefreshIcon />}
               onClick={handleRefresh}
               disabled={refreshing}
               variant="outlined"
@@ -270,23 +281,22 @@ const Dashboard = () => {
                 <span style={{ color: '#52c41a' }}>
                   <ArrowUpOutlined /> % so với tháng trước
                 </span>
-    </div>
+              </div>
             </Card>
           </Col>
         ))}
       </Row>
-
       <Divider />
 
       {/* Biểu đồ doanh thu */}
       <Row gutter={[16, 16]}>
         <Col span={16}>
-          <Card 
+          <Card
             title={
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span>Doanh thu</span>
-                <Radio.Group 
-                  value={revenueType} 
+                <Radio.Group
+                  value={revenueType}
                   onChange={handleRevenueTypeChange}
                   optionType="button"
                   buttonStyle="solid"
@@ -299,9 +309,9 @@ const Dashboard = () => {
           >
             <div style={{ height: '350px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               {revenueType === 'monthly' ? (
-                <Bar 
+                <Bar
                   data={revenueData}
-                  options={chartOptions} 
+                  options={chartOptions}
                 />
               ) : (
                 <div style={{ width: '80%', height: '80%' }}>
@@ -310,20 +320,20 @@ const Dashboard = () => {
                       // Tính toán dữ liệu theo quý
                       const quarterlyData = [
                         // Quý 1: T1 + T2 + T3
-                        (revenueData.datasets[0].data[0] || 0) + 
-                        (revenueData.datasets[0].data[1] || 0) + 
+                        (revenueData.datasets[0].data[0] || 0) +
+                        (revenueData.datasets[0].data[1] || 0) +
                         (revenueData.datasets[0].data[2] || 0),
                         // Quý 2: T4 + T5 + T6
-                        (revenueData.datasets[0].data[3] || 0) + 
-                        (revenueData.datasets[0].data[4] || 0) + 
+                        (revenueData.datasets[0].data[3] || 0) +
+                        (revenueData.datasets[0].data[4] || 0) +
                         (revenueData.datasets[0].data[5] || 0),
                         // Quý 3: T7 + T8 + T9
-                        (revenueData.datasets[0].data[6] || 0) + 
-                        (revenueData.datasets[0].data[7] || 0) + 
+                        (revenueData.datasets[0].data[6] || 0) +
+                        (revenueData.datasets[0].data[7] || 0) +
                         (revenueData.datasets[0].data[8] || 0),
                         // Quý 4: T10 + T11 + T12
-                        (revenueData.datasets[0].data[9] || 0) + 
-                        (revenueData.datasets[0].data[10] || 0) + 
+                        (revenueData.datasets[0].data[9] || 0) +
+                        (revenueData.datasets[0].data[10] || 0) +
                         (revenueData.datasets[0].data[11] || 0),
                       ];
 
@@ -332,7 +342,7 @@ const Dashboard = () => {
                       const labelsWithData = [];
                       const backgroundColorsWithData = [];
                       const borderColorsWithData = [];
-                      
+
                       const allQuarterLabels = ['Quý 1', 'Quý 2', 'Quý 3', 'Quý 4'];
                       const backgroundColors = [
                         'rgba(255, 99, 132, 0.7)',
@@ -346,7 +356,7 @@ const Dashboard = () => {
                         'rgba(255, 206, 86, 1)',
                         'rgba(75, 192, 192, 1)',
                       ];
-                      
+
                       // Chỉ lấy những quý có doanh thu > 0
                       quarterlyData.forEach((value, index) => {
                         if (value > 0) {
@@ -356,7 +366,7 @@ const Dashboard = () => {
                           borderColorsWithData.push(borderColors[index]);
                         }
                       });
-                      
+
                       // Nếu không có quý nào có dữ liệu, hiển thị thông báo "Không có dữ liệu"
                       if (quartersWithData.length === 0) {
                         return {
@@ -370,7 +380,7 @@ const Dashboard = () => {
                           }]
                         };
                       }
-                      
+
                       return {
                         labels: labelsWithData,
                         datasets: [{
@@ -469,7 +479,6 @@ const Dashboard = () => {
               dataSource={recentOrders}
               rowKey="id"
               pagination={false}
-              scroll={{ y: 350 }}
             />
           </Card>
         </Col>

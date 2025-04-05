@@ -20,6 +20,10 @@ import {
   ManageProduct,
   ManageOrder,
   ManageUser,
+  ManageBlogs,
+  ManageDiscounts,
+  CreateBlogs,
+  CreateDiscount,
 } from "pages/admin";
 import {
   MemberLayout,
@@ -78,12 +82,9 @@ function App() {
           <Route path={path.HOME} element={<Home />} />
           <Route path={path.BLOGS} element={<Blogs />} />
           <Route path={path.OUR_SERVICES} element={<Services />} />
-          <Route
-            path={path.DETAIL_PRODUCT__CATEGORY__PID__TITLE}
-            element={<DetailProduct />}
-          />
+          <Route path={path.DETAIL_PRODUCT__CATEGORY__PID__TITLE} element={<DetailProduct />} />
           <Route path={path.FAQ} element={<FAQs />} />
-          <Route path={path.PRODUCTS} element={<Products />} />
+          <Route path={path.PRODUCTS__CATEGORY} element={<Products />} />
           <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
           <Route path={path.ALL} element={<Home />} />
         </Route>
@@ -93,6 +94,10 @@ function App() {
           <Route path={path.MANAGE_PRODUCT} element={<ManageProduct />} />
           <Route path={path.MANAGE_USER} element={<ManageUser />} />
           <Route path={path.CREATE_PRODUCT} element={<CreateProduct />} />
+          <Route path={path.MANAGE_BLOGS} element={<ManageBlogs />} />
+          <Route path={path.MANAGE_DISCOUNT} element={<ManageDiscounts />} />
+          <Route path={path.CREATE_BLOG} element={<CreateBlogs />} />
+          <Route path={path.CREATE_DISCOUNT} element={<CreateDiscount />} />
         </Route>
         <Route path={path.MEMBER} element={<MemberLayout />}>
           <Route path={path.PERSONAL} element={<Personal />} />

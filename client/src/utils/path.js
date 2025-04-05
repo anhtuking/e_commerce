@@ -1,10 +1,10 @@
-
 const path = {
     PUBLIC: '/',
     HOME: '',
     ALL: '*',
     LOGIN: 'login',
-    PRODUCTS: ':category',
+    PRODUCTS__CATEGORY: ':category',
+    PRODUCTS : 'products',
     BLOGS: 'blogs',
     OUR_SERVICES: 'services',
     FAQ: 'faqs',
@@ -24,6 +24,10 @@ const path = {
     MANAGE_USER: 'manage-user',
     MANAGE_PRODUCT: 'manage-product',
     MANAGE_ORDER: 'manage-order',
+    MANAGE_DISCOUNT: 'manage-discount',
+    CREATE_DISCOUNT: 'create-discount',
+    MANAGE_BLOGS: 'manage-blogs',
+    CREATE_BLOG: 'create-blog',
     
     //Member
     MEMBER: 'member',

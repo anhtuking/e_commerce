@@ -37,34 +37,44 @@ const AdminSidebar = () => {
   };
 
   return (
-    <div className={`bg-gradient-to-b from-gray-800 to-gray-900 h-full w-[327px] transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'} flex flex-col font-main2 shadow-xl relative overflow-hidden`}>
+    <div className={`bg-gradient-to-b from-gray-900 via-blue-900 to-gray-900 h-full transition-all duration-500 ease-in-out ${collapsed ? 'w-20' : 'w-[327px]'} flex flex-col font-main2 shadow-2xl relative overflow-hidden rounded-r-xl`}>
+      {/* Glass effect overlay */}
+      <div className="absolute inset-0 bg-white/5 backdrop-blur-sm z-0"></div>
+      
+      {/* Background patterns */}
+      <div className="absolute top-0 left-0 w-full h-full opacity-10 z-0">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-10 w-40 h-40 bg-blue-500 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-purple-500 rounded-full blur-3xl"></div>
+      </div>
+      
       {/* Collapse button */}
       <button
         onClick={toggleCollapse}
-        className="absolute top-4 right-4 p-1 bg-gray-700 hover:bg-gray-600 text-white rounded-full shadow-md z-10"
+        className="absolute top-4 right-4 p-1.5 bg-gray-800 hover:bg-gray-700 text-white rounded-full shadow-lg z-20 transition-all duration-300 hover:rotate-180 cursor-pointer"
       >
         <FiMenu className="w-5 h-5" />
       </button>
 
       {/* Header */}
-      <div className="flex flex-col items-center pt-8 pb-6 border-b border-gray-700">
+      <div className="flex flex-col items-center pt-8 pb-6 border-b border-white/10 relative z-10">
         <Link className={`flex items-center justify-center mt-4 transition-all duration-300 ${collapsed ? 'scale-75' : ''}`} to={'/'}>
           <img
             src={logo2}
             alt="Admin Logo"
-            className={`${collapsed ? 'w-10' : 'w-32'} transition-all duration-300`}
+            className={`${collapsed ? 'w-10' : 'w-32'} transition-all duration-300 drop-shadow-lg hover:scale-105`}
           />
         </Link>
         
-        <div className={`flex items-center mt-3 overflow-hidden transition-all duration-300 ${collapsed ? 'w-0' : 'w-full'}`}>
-          <small className="text-white font-semibold text-center whitespace-nowrap text-xl pl-20">
+        <div className={`flex items-center justify-center mt-3 overflow-hidden transition-all duration-300 ${collapsed ? 'opacity-0 w-0' : 'opacity-100 w-full'}`}>
+          <h2 className="text-white font-bold text-center whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-300 text-xl px-4">
             ADMIN WORKSPACE
-          </small>
+          </h2>
         </div>
       </div>
 
       {/* Navigation Menu */}
-      <div className="flex-1 overflow-y-auto py-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+      <div className="flex-1 overflow-y-auto py-4 px-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent relative z-10">
         {adminSidebar.map((el) => (
           <Fragment key={el.id}>
             {el.type === "SINGLE" && (
@@ -72,23 +82,23 @@ const AdminSidebar = () => {
                 to={el.path}
                 className={({ isActive }) => 
                   clsx(
-                    "group relative transition-all duration-200 my-1 mx-2 rounded-lg overflow-hidden",
+                    "group relative transition-all duration-300 my-2 mx-1 rounded-xl overflow-hidden",
                     isActive 
-                      ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-md"
-                      : "text-gray-300 hover:bg-gray-700"
+                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20"
+                      : "text-gray-300 hover:bg-gray-800/50 hover:text-white"
                   )
                 }
               >
-                <div className={`flex items-center px-4 py-3 ${collapsed ? 'justify-center' : ''}`}>
-                  <span className="text-xl">{el.icon}</span>
-                  <span className={`ml-3 whitespace-nowrap transition-all duration-300 ${collapsed ? 'opacity-0 w-0' : 'opacity-100'}`}>
+                <div className={`flex items-center px-4 py-3.5 ${collapsed ? 'justify-center' : ''}`}>
+                  <span className={`text-xl transition-transform duration-300 ${collapsed ? 'scale-125' : ''}`}>{el.icon}</span>
+                  <span className={`ml-3 whitespace-nowrap transition-all duration-300 font-medium ${collapsed ? 'opacity-0 w-0' : 'opacity-100'}`}>
                     {el.text}
                   </span>
                 </div>
                 
                 {/* Tooltip for collapsed menu */}
                 {collapsed && (
-                  <div className="absolute left-full top-0 ml-2 p-2 bg-gray-800 text-white text-sm rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 whitespace-nowrap z-20">
+                  <div className="absolute left-full top-0 ml-2 p-2 bg-gray-800 text-white text-sm rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 whitespace-nowrap z-20 shadow-lg">
                     {el.text}
                   </div>
                 )}
@@ -96,17 +106,19 @@ const AdminSidebar = () => {
             )}
             
             {el.type === "PARENT" && (
-              <div className="my-1 mx-2 rounded-lg overflow-hidden">
+              <div className="my-2 mx-1 rounded-xl overflow-hidden">
                 <div 
-                  className={`flex items-center justify-between px-2 py-3 cursor-pointer transition-all duration-200 rounded-lg
-                    ${actived.some(id => id === el.id) ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700'} 
+                  className={`flex items-center justify-between px-4 py-3.5 cursor-pointer transition-all duration-300 rounded-xl
+                    ${actived.some(id => id === el.id) 
+                      ? 'bg-gradient-to-r from-indigo-700 to-indigo-900 text-white shadow-lg' 
+                      : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'} 
                     ${collapsed ? 'justify-center' : ''}`
                   }
                   onClick={() => !collapsed && handleShowTabs(+el.id)}
                 >
                   <div className={`flex items-center ${collapsed ? 'justify-center' : ''}`}>
-                    <span className="text-xl">{el.icon}</span>
-                    <span className={`ml-3 whitespace-nowrap transition-all duration-300 ${collapsed ? 'opacity-0 w-0' : 'opacity-100'}`}>
+                    <span className={`text-xl transition-transform duration-300 ${collapsed ? 'scale-125' : ''}`}>{el.icon}</span>
+                    <span className={`ml-3 whitespace-nowrap transition-all duration-300 font-medium ${collapsed ? 'opacity-0 w-0' : 'opacity-100'}`}>
                       {el.text}
                     </span>
                   </div>
@@ -119,15 +131,22 @@ const AdminSidebar = () => {
                   
                   {/* Tooltip for collapsed menu */}
                   {collapsed && (
-                    <div className="absolute left-full top-0 ml-1 p-2 bg-gray-800 text-white text-sm rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 whitespace-nowrap z-20">
+                    <div className="absolute left-full top-0 ml-2 p-2 bg-gray-800 text-white text-sm rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 whitespace-nowrap z-20 shadow-lg">
                       {el.text}
+                      <div className="mt-2 flex flex-col space-y-1">
+                        {el.submenu.map((item) => (
+                          <Link key={item.text} to={item.path} className="text-xs text-gray-300 hover:text-white">
+                            - {item.text}
+                          </Link>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
                 
                 {actived.some(id => +id === +el.id) && !collapsed && (
-                  <div className="overflow-hidden transition-all duration-300 max-h-40">
-                    <div className="flex flex-col pl-10 pr-4 space-y-1">
+                  <div className="overflow-hidden transition-all duration-500 max-h-80 animate-fadeIn">
+                    <div className="flex flex-col pl-12 pr-4 space-y-1.5 py-2 bg-gray-800/30 rounded-b-xl">
                       {el.submenu.map((item) => (
                         <NavLink
                           key={item.text}
@@ -135,10 +154,10 @@ const AdminSidebar = () => {
                           onClick={(e) => e.stopPropagation()}
                           className={({ isActive }) => 
                             clsx(
-                              "px-3 py-2 rounded-md transition-all duration-200",
+                              "px-3 py-2.5 rounded-lg transition-all duration-300 text-sm",
                               isActive
-                                ? "bg-red-500 text-white font-medium"
-                                : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                                ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium shadow-md"
+                                : "text-gray-300 hover:bg-gray-700/50 hover:text-white hover:translate-x-1"
                             )
                           }
                         >
@@ -155,8 +174,12 @@ const AdminSidebar = () => {
       </div>
       
       {/* Footer */}
-      <div className={`p-4 border-t border-gray-700 text-center text-gray-400 text-xs ${collapsed ? 'hidden' : 'block'}`}>
-        <p>© {new Date().getFullYear()} Admin Panel</p>
+      <div className={`p-4 border-t border-white/10 text-center text-gray-400 text-xs transition-all duration-300 relative z-10 ${collapsed ? 'opacity-0' : 'opacity-100'}`}>
+        <div className="flex flex-col items-center space-y-1">
+          <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full mb-2"></div>
+          <p>© {new Date().getFullYear()} Admin Panel</p>
+          <p>Version 2.0</p>
+        </div>
       </div>
     </div>
   );

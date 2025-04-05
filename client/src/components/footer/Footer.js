@@ -13,132 +13,173 @@ const {
 } = icons;
 const Footer = () => {
   return (
-    <div className="w-full ">
-      <div className="h-[103px] bg-gradient-to-r from-red-700 to-pink-600 w-full flex items-center justify-center">
-        <div className="w-main flex items-center justify-between">
-          <div className="flex flex-col flex-1">
-            <span className="text-[22px] text-white">
-              SIGN UP TO NEWSLETTER
-            </span>
-            <small className="text-[15px] text-gray-300">
-              Subscribe now and receive weekly newsletter
-            </small>
-          </div>
-          <input
-            className="p-4 pr-0 rounded-l-full w-full flex-1 bg-gray-200 outline-none text-gray-800 h-[55px]
-          placeholder:text-sm placeholder:text-gray-800 placeholder:italic placeholder:opacity-50"
-            type="text"
-            placeholder="Email address"
-          />
-          <div className="h-[55px] w-[55px] bg-gray-200 rounded-r-full flex items-center justify-center text--gray-800 cursor-pointer">
-            <MdEmail size={16} />
+    <div className="w-full">
+      {/* Newsletter Section with Gradient Background */}
+      <div className="py-8 bg-gradient-to-r from-red-700 to-pink-600 w-full">
+        <div className="w-main mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex flex-col text-center md:text-left mb-4 md:mb-0">
+              <span className="text-2xl font-bold text-white tracking-wide">
+                SIGN UP TO NEWSLETTER
+              </span>
+              <span className="text-sm text-gray-200 mt-1">
+                Subscribe now and receive weekly newsletter with exclusive offers
+              </span>
+            </div>
+            <div className="flex w-full md:w-1/2 relative">
+              <input
+                className="p-4 rounded-l-full w-full bg-white bg-opacity-90 outline-none text-gray-800 h-[55px]
+                placeholder:text-sm placeholder:text-gray-600 placeholder:italic shadow-inner"
+                type="text"
+                placeholder="Email address"
+              />
+              <button className="h-[55px] px-6 bg-gray-900 hover:bg-black transition-colors duration-300 rounded-r-full flex items-center justify-center text-white cursor-pointer">
+                <MdEmail size={18} className="mr-2" />
+                <span className="hidden md:inline text-sm font-medium">Subscribe</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      <div className="h-[300px] w-full bg-[#363636] flex items-center justify-center text-white text-[13pX] font-main2 font-bold">
-        <div className="w-main flex items-center gap-x-16">
-          <div className="flex-22 flex flex-col gap-2">
-            <h3 className="mb-[20px] text-[15px] font-medium border-l-2 border-main pl-[15px] ">
+      
+      {/* Main Footer Content */}
+      <div className="py-12 w-full bg-gray-900 text-white">
+        <div className="w-main mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* About Us Section */}
+          <div className="flex flex-col gap-4">
+            <h3 className="text-lg font-bold border-l-4 border-red-500 pl-3 mb-5">
               ABOUT US
             </h3>
-            <p className="flex items-center gap-2">
-              <GiPositionMarker className="text-red-500" />
-              <strong>Address:</strong>
-              <span className="opacity-50">Da Nang, Viet Nam</span>
+            <p className="flex items-center gap-3 text-gray-300 hover:text-white transition duration-300">
+              <GiPositionMarker className="text-red-500 flex-shrink-0" />
+              <span><strong>Address:</strong> Da Nang, Viet Nam</span>
             </p>
-            <p className="flex items-center gap-2">
-              <FaPhoneAlt className="text-red-500" />
-              <strong>Phone:</strong>
-              <span className="opacity-50">(+84) 000 8386 008</span>
+            <p className="flex items-center gap-3 text-gray-300 hover:text-white transition duration-300">
+              <FaPhoneAlt className="text-red-500 flex-shrink-0" />
+              <span><strong>Phone:</strong> (+84) 000 8386 008</span>
             </p>
-            <p className="flex items-center gap-2">
-              <MdEmail className="text-red-500" />
-              <strong>Mail:</strong>
-              <span className="opacity-50">duonganhtu@gmail.com</span>
+            <p className="flex items-center gap-3 text-gray-300 hover:text-white transition duration-300">
+              <MdEmail className="text-red-500 flex-shrink-0" />
+              <span><strong>Mail:</strong> duonganhtu@gmail.com</span>
             </p>
+            
             {/* Social Icons */}
-            <div className="flex items-center mt-4 space-x-3">
+            <div className="flex items-center mt-4 gap-3 flex-wrap">
               <a
                 href="/"
-                className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition"
+                className="p-2.5 bg-gray-800 rounded-lg hover:bg-red-500 transition-all duration-300 hover:scale-110"
               >
                 <FaFacebook className="text-white text-lg" />
               </a>
               <a
                 href="/"
-                className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition"
+                className="p-2.5 bg-gray-800 rounded-lg hover:bg-red-500 transition-all duration-300 hover:scale-110"
               >
                 <FaTwitter className="text-white text-lg" />
               </a>
               <a
                 href="/"
-                className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition"
-              >
-                <FaFacebookMessenger className="text-white text-lg" />
-              </a>
-              <a
-                href="/"
-                className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition"
+                className="p-2.5 bg-gray-800 rounded-lg hover:bg-red-500 transition-all duration-300 hover:scale-110"
               >
                 <FaInstagramSquare className="text-white text-lg" />
               </a>
               <a
                 href="/"
-                className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition"
+                className="p-2.5 bg-gray-800 rounded-lg hover:bg-red-500 transition-all duration-300 hover:scale-110"
               >
                 <FaGoogle className="text-white text-lg" />
               </a>
               <a
                 href="/"
-                className="p-3 bg-gray-800 rounded-lg hover:bg-red-500 transition"
+                className="p-2.5 bg-gray-800 rounded-lg hover:bg-red-500 transition-all duration-300 hover:scale-110"
               >
                 <FaDiscord className="text-white text-lg" />
               </a>
             </div>
           </div>
-          <div className="flex-1 flex flex-col gap-2">
-            <h3 className="mb-[20px] text-[15px] font-medium border-l-2 border-main pl-[15px]">
+          
+          {/* Information Section */}
+          <div className="flex flex-col gap-3">
+            <h3 className="text-lg font-bold border-l-4 border-red-500 pl-3 mb-5">
               INFORMATION
             </h3>
-            <span className="opacity-50">Typography</span>
-            <span className="opacity-50">Gallery</span>
-            <span className="opacity-50">Store Location</span>
-            <span className="opacity-50">Today's Deals</span>
-            <span className="opacity-50">Contact</span>
+            <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Typography</span>
+            </a>
+            <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Gallery</span>
+            </a>
+            <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Store Location</span>
+            </a>
+            <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Today's Deals</span>
+            </a>
+            <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Contact</span>
+            </a>
           </div>
-          <div className="flex-1">
-            <div className="flex-1 flex flex-col gap-2">
-              <h3 className="mb-[20px] text-[15px] font-medium border-l-2 border-main pl-[15px]">
-                WHO WE ARE
-              </h3>
-              <span className="opacity-50">Help</span>
-              <span className="opacity-50">Free Shipping</span>
-              <span className="opacity-50">FAQs</span>
-              <span className="opacity-50">Return & Exchange</span>
-              <span className="opacity-50">Testimonials</span>
-            </div>
+          
+          {/* Who We Are Section */}
+          <div className="flex flex-col gap-3">
+            <h3 className="text-lg font-bold border-l-4 border-red-500 pl-3 mb-5">
+              WHO WE ARE
+            </h3>
+            <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Help</span>
+            </a>
+            <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Free Shipping</span>
+            </a>
+            <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
+              <span className="border-b border-transparent hover:border-red-500 pb-1">FAQs</span>
+            </a>
+            <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Return & Exchange</span>
+            </a>
+            <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Testimonials</span>
+            </a>
           </div>
-          <div className="flex-1 flex flex-col gap-2">
-            <h3 className="mb-[20px] text-[15px] font-medium border-l-2 border-main pl-[15px]">
+          
+          {/* Services Section */}
+          <div className="flex flex-col gap-3">
+            <h3 className="text-lg font-bold border-l-4 border-red-500 pl-3 mb-5">
               SERVICES OTHER
             </h3>
-            <span className="opacity-50">Business customers (B2B)</span>
-            <span className="opacity-50">Payment incentives</span>
-            <span className="opacity-50">Operating regulations</span>
-            <span className="opacity-50">Recruitment</span>
-            <span className="opacity-50">Warranty policy</span>
+            <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Business customers (B2B)</span>
+            </a>
+            <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Payment incentives</span>
+            </a>
+            <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Operating regulations</span>
+            </a>
+            <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Recruitment</span>
+            </a>
+            <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Warranty policy</span>
+            </a>
           </div>
         </div>
       </div>
-      <div className="bg-[#363636]">
-        <div className="text-white font-main2 flex flex-col items-center justify-center">
-          <img
-            src="https://xstore.b-cdn.net/elementor2/marseille04/wp-content/uploads/sites/2/elementor/thumbs/Icons-123-pzks3go5g30b2zz95xno9hgdw0h3o8xu97fbaqhtb6.png"
-            alt=""
-          />
-        </div>
-        <div className="text-gray-300 font-main2 flex items-center justify-center pt-1 pb-4">
-        Wish customers have the best service experience in Marseille. Copyright © 2025 ATKING theme. Created by ATKING
+      
+      {/* Footer Bottom */}
+      <div className="bg-gray-950 py-6">
+        <div className="w-main mx-auto px-4 flex flex-col items-center justify-center">
+          <div className="flex items-center justify-center mb-4">
+            <img
+              src="https://xstore.b-cdn.net/elementor2/marseille04/wp-content/uploads/sites/2/elementor/thumbs/Icons-123-pzks3go5g30b2zz95xno9hgdw0h3o8xu97fbaqhtb6.png"
+              alt="Payment methods"
+              className="h-8"
+            />
+          </div>
+          <div className="text-gray-400 text-center text-sm">
+            <p>Wish customers have the best service experience in Marseille</p>
+            <p className="mt-1">Copyright © 2025 ATKING theme. Created by ATKING</p>
+          </div>
         </div>
       </div>
     </div>

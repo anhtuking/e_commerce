@@ -93,17 +93,17 @@ export const productInfoTabs = [
     id: 3,
     name: "DELIVERY",
     content: `Purchasing & Delivery
-      Before you make your purchase, it’s helpful to know the measurements of the area you plan to place the furniture. You should also measure any doorways and hallways through which the furniture will pass to get to its final destination.
+      Before you make your purchase, it's helpful to know the measurements of the area you plan to place the furniture. You should also measure any doorways and hallways through which the furniture will pass to get to its final destination.
       Picking up at the store
-      Shopify Shop requires that all products are properly inspected BEFORE you take it home to insure there are no surprises. Our team is happy to open all packages and will assist in the inspection process. We will then reseal packages for safe transport. We encourage all customers to bring furniture pads or blankets to protect the items during transport as well as rope or tie downs. Shopify Shop will not be responsible for damage that occurs after leaving the store or during transit. It is the purchaser’s responsibility to make sure the correct items are picked up and in good condition.`,
+      Shopify Shop requires that all products are properly inspected BEFORE you take it home to insure there are no surprises. Our team is happy to open all packages and will assist in the inspection process. We will then reseal packages for safe transport. We encourage all customers to bring furniture pads or blankets to protect the items during transport as well as rope or tie downs. Shopify Shop will not be responsible for damage that occurs after leaving the store or during transit. It is the purchaser's responsibility to make sure the correct items are picked up and in good condition.`,
   },
   {
     id: 4,
     name: "PAYMENT",
     content: `Purchasing & Delivery
-      Before you make your purchase, it’s helpful to know the measurements of the area you plan to place the furniture. You should also measure any doorways and hallways through which the furniture will pass to get to its final destination.
+      Before you make your purchase, it's helpful to know the measurements of the area you plan to place the furniture. You should also measure any doorways and hallways through which the furniture will pass to get to its final destination.
       Picking up at the store
-      Shopify Shop requires that all products are properly inspected BEFORE you take it home to insure there are no surprises. Our team is happy to open all packages and will assist in the inspection process. We will then reseal packages for safe transport. We encourage all customers to bring furniture pads or blankets to protect the items during transport as well as rope or tie downs. Shopify Shop will not be responsible for damage that occurs after leaving the store or during transit. It is the purchaser’s responsibility to make sure the correct items are picked up and in good condition.`,
+      Shopify Shop requires that all products are properly inspected BEFORE you take it home to insure there are no surprises. Our team is happy to open all packages and will assist in the inspection process. We will then reseal packages for safe transport. We encourage all customers to bring furniture pads or blankets to protect the items during transport as well as rope or tie downs. Shopify Shop will not be responsible for damage that occurs after leaving the store or during transit. It is the purchaser's responsibility to make sure the correct items are picked up and in good condition.`,
   },
 ];
 export const colors = [
@@ -180,34 +180,34 @@ export const ratingOptions = [
   },
 ];
 
-const { RxDashboard, RiGroupLine, RiProductHuntLine, RiBillLine } = icons;
+const { RxDashboard, RiGroupLine, RiProductHuntLine, RiBillLine, FaPercentage, MdEmail } = icons;
 export const adminSidebar = [
   {
     id: 1,
     type: "SINGLE",
-    text: "Dashboard",
+    text: "Bảng điều khiển",
     path: `/${path.ADMIN}/${path.DASHBOARD}`,
     icon: <RxDashboard />,
   },
   {
     id: 2,
     type: "SINGLE",
-    text: "Manage User",
+    text: "Quản lý người dùng",
     path: `/${path.ADMIN}/${path.MANAGE_USER}`,
     icon: <RiGroupLine />,
   },
   {
     id: 3,
     type: "PARENT",
-    text: "Manage Product",
-    icon: <RiProductHuntLine  />,
+    text: "Sản phẩm",
+    icon: <RiProductHuntLine />,
     submenu: [
       {
-        text: "Manage Product",
+        text: "Quản lý sản phẩm",
         path: `/${path.ADMIN}/${path.MANAGE_PRODUCT}`,
       },
       {
-        text: "Create Product",
+        text: "Tạo mới sản phẩm",
         path: `/${path.ADMIN}/${path.CREATE_PRODUCT}`,
       },
     ],
@@ -215,9 +215,41 @@ export const adminSidebar = [
   {
     id: 4,
     type: "SINGLE",
-    text: "Manage Order",
+    text: "Quản lý đơn hàng",
     path: `/${path.ADMIN}/${path.MANAGE_ORDER}`,
-    icon: <RiBillLine  />,
+    icon: <RiBillLine />,
+  },
+  {
+    id: 5,
+    type: "PARENT",
+    text: "Mã khuyến mãi",
+    icon: <FaPercentage />,
+    submenu: [
+      {
+        text: "Quản lý giảm giá",
+        path: `/${path.ADMIN}/${path.MANAGE_DISCOUNT}`,
+      },
+      {
+        text: "Tạo mới giảm giá",
+        path: `/${path.ADMIN}/${path.CREATE_DISCOUNT}`,
+      },
+    ],
+  },
+  {
+    id: 6,
+    type: "PARENT",
+    text: "Quản lý Blog",
+    icon: <MdEmail />,
+    submenu: [
+      {
+        text: "Quản lý Blog",
+        path: `/${path.ADMIN}/${path.MANAGE_BLOGS}`,
+      },
+      {
+        text: "Tạo mới Blog",
+        path: `/${path.ADMIN}/${path.CREATE_BLOG}`,
+      },
+    ],
   },
 ];
 
@@ -242,14 +274,14 @@ export const memberSidebar = [
     type: "SINGLE",
     text: "Wishlist",
     path: `/${path.MEMBER}/${path.WISHLIST}`,
-    icon: <FaHeartCircleCheck  />,
+    icon: <FaHeartCircleCheck />,
   },
   {
     id: 4,
     type: "SINGLE",
     text: "My oders",
     path: `/${path.MEMBER}/${path.MY_ORDER}`,
-    icon: <RiBillFill  />,
+    icon: <RiBillFill />,
   },
 ];
 

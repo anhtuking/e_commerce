@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import { getBase64, validate } from "utils/helpers";
 import { toast } from "react-toastify";
-import { FaTrash, FaSave  } from "react-icons/fa";
+import { FaTrash, FaSave, FaPlusCircle } from "react-icons/fa";
 import { apiCreateProduct } from "api";
 import { showModal } from "store/app/appSlice";
 
@@ -114,7 +114,18 @@ const CreateProduct = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">Create Product</h1>
+      <div className="mb-8">
+        <div className="flex items-center mb-2">
+          <div className="p-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl mr-4 shadow-lg">
+            <FaPlusCircle className="text-white text-2xl" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-800">Create Product</h1>
+            <p className="text-gray-500">Add a new product to your store catalog</p>
+          </div>
+        </div>
+        <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
+      </div>
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg px-4">
         <form onSubmit={handleSubmit(handleCreateProduct)}>
           <InputForm

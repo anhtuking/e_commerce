@@ -86,3 +86,11 @@ export const apiGetAllOrders = () => axios({
     url: `/user/all-orders`,
     method: 'get',
 });
+
+export const apiUpdateOrderStatus = (data) => axios({
+    url: "/user/update-status",
+    method: 'put',
+    data,
+    withCredentials: true,
+  });
+  
