@@ -8,8 +8,9 @@ import { apiRemoveCart, apiUpdateWishlist } from 'api/user'
 import { getCurrent } from 'store/user/asyncAction'
 import { updateCart } from 'store/user/userSlice'
 import { useSelector } from 'react-redux'
+import { FiCheckCircle, FiCircle } from 'react-icons/fi'
 
-const OrderItem = ({ el, dispatch, getCount, defaultQuantity = 1 }) => {
+const OrderItem = ({ el, dispatch, getCount, defaultQuantity = 1, selected, onSelect }) => {
     const [quantity, setQuantity] = useState(() => defaultQuantity)
     const [isSaving, setIsSaving] = useState(false)
     const { current } = useSelector(state => state.user)
@@ -43,10 +44,10 @@ const OrderItem = ({ el, dispatch, getCount, defaultQuantity = 1 }) => {
         setIsSaving(true)
         try {
             const response = await apiUpdateWishlist(el.product?._id)
-            
+
             if (response.success) {
-                toast.success(isInWishlist 
-                    ? 'Đã xóa khỏi danh sách yêu thích' 
+                toast.success(isInWishlist
+                    ? 'Đã xóa khỏi danh sách yêu thích'
                     : 'Đã thêm vào danh sách yêu thích')
                 dispatch(getCurrent())
             } else {
@@ -60,12 +61,18 @@ const OrderItem = ({ el, dispatch, getCount, defaultQuantity = 1 }) => {
     }
 
     useEffect(() => {
-        dispatch(updateCart({pid: el.product?._id, quantity, color: el.color}))
+        dispatch(updateCart({ pid: el.product?._id, quantity, color: el.color }))
     }, [quantity])
 
     return (
         <div className='w-full grid grid-cols-10 py-4 px-6 items-center hover:bg-gray-50 transition-colors duration-200'>
             <div className='col-span-6 w-full flex gap-4 items-center'>
+                <div
+                    className="cursor-pointer text-2xl"
+                    onClick={onSelect}
+                >
+                    {selected ? <FiCheckCircle className="text-red-600" /> : <FiCircle className="text-gray-400" />}
+                </div>
                 <div className='relative flex-shrink-0'>
                     <img
                         src={el.thumbnail}

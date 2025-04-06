@@ -30,7 +30,7 @@ import {
 import { GiPositionMarker } from "react-icons/gi";
 import { RxDashboard } from "react-icons/rx";
 import { RiGroupLine, RiProductHuntLine, RiBillLine, RiAccountCircleFill, RiShoppingCartFill, RiBillFill } from "react-icons/ri";
-import { BsArrowRight } from 'react-icons/bs';
+import { BsArrowRight, BsChatDots } from 'react-icons/bs';
 import { FaPercentage, FaShippingFast, FaMapMarkerAlt } from 'react-icons/fa';
 import { FaCreditCard } from 'react-icons/fa';
 import { HiArrowSmLeft, HiArrowSmRight } from 'react-icons/hi';
@@ -41,6 +41,7 @@ import { IoClose } from 'react-icons/io5';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { TiThMenuOutline } from "react-icons/ti";
 import { SiProbot } from "react-icons/si";
+import { BiMessageRoundedDetail } from "react-icons/bi";
 
 const icons = {
   FaPhoneAlt,
@@ -96,7 +97,9 @@ const icons = {
   RiShoppingCartFill,
   RiBillFill,
   FaHeartCircleCheck,
-  SiProbot
+  SiProbot,
+  BsChatDots,
+  BiMessageRoundedDetail
 };
 
 export default icons;

@@ -13,7 +13,7 @@ const Header = ({dispatch}) => {
     FaSearch,
     FaRegHeart,
     FaMapMarkerAlt,
-    SiProbot
+    BsChatDots
   } = icons;
   const { current } = useSelector(state => state.user);
   // const [showSearch, setShowSearch] = useState(false);
@@ -105,7 +105,7 @@ const Header = ({dispatch}) => {
             className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors relative cursor-pointer"
             aria-label="Chatbot"
           >
-            <SiProbot size={18} className="text-gray-700" />
+            <BsChatDots size={18} className="text-gray-700" />
           </Link>
         </div>
       </div>

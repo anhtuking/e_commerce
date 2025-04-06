@@ -41,45 +41,70 @@ const blogPosts = [
 
 const Home = () => {
   const { categories } = useSelector((state) => state.app);
-  // console.log(categories);
-  // const { isLoggedIn, current } = useSelector((state) => state.user);
-  // console.log({isLoggedIn, current});
 
   return (
-    <>
-      <div className="w-main flex font-main2 mt-6 ">
-        <div className="flex flex-col gap-5 w-[25%] flex-auto">
-          <Sidebar />
-          <DealDaily />
+    <div className="overflow-x-hidden">
+      {/* Hero Section with Banner and Sidebar */}
+      <div className="w-main mx-auto flex flex-col md:flex-row gap-5 mt-6">
+        {/* Left Column - Sidebar and Daily Deal */}
+        <div className="md:w-[25%] flex flex-col gap-5">
+          <div className="shadow-sm rounded-md overflow-hidden">
+            <Sidebar />
+          </div>
+          <div className="shadow-sm rounded-md overflow-hidden">
+            <DealDaily />
+          </div>
         </div>
-        <div className="flex flex-col gap-5 pl-5 w-[75%] h-[80%] flex-auto ">
-          <Banner />
-          <BestSellers />
+        
+        {/* Right Column - Banner and Best Sellers */}
+        <div className="md:w-[75%] flex flex-col gap-5">
+          <div className="rounded-md overflow-hidden shadow-sm">
+            <Banner />
+          </div>
+          <div className="bg-white p-4 rounded-md shadow-sm">
+            <BestSellers />
+          </div>
         </div>
       </div>
-      <div className="my-8 w-main">
+      
+      {/* Featured Products Section */}
+      <div className="my-10 w-main mx-auto bg-white rounded-md shadow-sm p-6">
         <FeatureProducts />
       </div>
-      <div className="my-8 w-main">
-        <h3 className="text-[20px] py-[15px] border-b-2 border-main font-semibold">
-          {" "}
-          HOT COLLECTIONS{" "}
-        </h3>
-        <div className="grid grid-cols-3 gap-6 mt-6 font-main2">
+      
+      {/* Hot Collections Section */}
+      <div className="my-10 w-main mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-2xl font-bold text-gray-800 border-b-2 border-main pb-2">
+            HOT COLLECTIONS
+          </h3>
+          <Link 
+            to={`/${path.PRODUCTS}`} 
+            className="flex items-center gap-1 text-gray-600 hover:text-main transition-colors"
+          >
+            View all collections
+            <BsArrowRight />
+          </Link>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 font-main2">
           {categories?.filter(el => el.brand.length > 0)?.map((el) => (
-            <div key={el._id} className="border-item p-4 flex items-center uppercase">
+            <div 
+              key={el._id} 
+              className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 p-4 flex items-center"
+            >
               <img
                 src={el?.image}
-                alt=""
-                className="w-[200px] h-[200px] object-contain mr-4"
+                alt={el.title}
+                className="w-[120px] h-[120px] object-contain mr-4"
               />
               <div>
-                <h4 className="text-lg">{el.title}</h4>
+                <h4 className="text-lg font-semibold text-gray-800 mb-2">{el.title}</h4>
                 <ul className="list-none text-gray-600">
-                  {el?.brand?.map((item) => (
-                    <li className="mt-1 flex items-center gap-1">
+                  {el?.brand?.map((item, index) => (
+                    <li key={index} className="mt-1 flex items-center gap-1 text-sm hover:text-main transition-colors">
                       <IoMdArrowDropright className="text-gray-500" />
-                      {item}
+                      <Link to={`/${path.PRODUCTS}?brand=${item}`}>{item}</Link>
                     </li>
                   ))}
                 </ul>
@@ -88,23 +113,25 @@ const Home = () => {
           ))}
         </div>
       </div>
-      <div className="my-12 w-main">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-[20px] font-semibold border-b-2 border-main py-[15px]">
+      
+      {/* Blog Posts Section */}
+      <div className="my-10 w-main mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-2xl font-bold text-gray-800 border-b-2 border-main pb-2">
             LATEST BLOG POSTS
           </h3>
           <Link 
             to={`/${path.BLOGS}`} 
-            className="flex items-center gap-1 text-gray-500 hover:text-main font-medium transition-colors"
+            className="flex items-center gap-1 text-gray-600 hover:text-main transition-colors"
           >
             View all articles
             <BsArrowRight />
           </Link>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 font-main2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-main2">
           {blogPosts.map(post => (
-            <div key={post.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 group">
+            <div key={post.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group">
               {/* Blog Image with Overlay */}
               <div className="relative overflow-hidden h-52">
                 <img 
@@ -138,7 +165,25 @@ const Home = () => {
           ))}
         </div>
       </div>
-    </>
+      
+      {/* Newsletter Subscription */}
+      <div className="w-full bg-gray-100 py-12 mb-10">
+        <div className="w-main mx-auto text-center">
+          <h3 className="text-2xl font-bold text-gray-800 mb-4">Subscribe To Our Newsletter</h3>
+          <p className="text-gray-600 mb-6 max-w-xl mx-auto">Stay updated with our latest offers, product launches, and tech news by joining our newsletter.</p>
+          <div className="flex flex-col sm:flex-row gap-2 justify-center max-w-lg mx-auto">
+            <input 
+              type="email" 
+              placeholder="Your email address" 
+              className="flex-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-main"
+            />
+            <button className="bg-main hover:bg-main-dark text-white font-medium px-6 py-3 rounded-md transition-colors">
+              Subscribe
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

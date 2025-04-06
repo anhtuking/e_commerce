@@ -2,9 +2,8 @@ import React, { useState, useEffect, memo } from "react";
 import { apiGetProducts } from "api/product";
 import { Link } from "react-router-dom";
 import { formatPrice, renderStarFromNumber } from "utils/helpers";
-import { FaStar, FaShoppingCart, FaRegEye, FaHeart, FaFilter, FaSearch } from "react-icons/fa";
+import { FaShoppingCart, FaRegEye, FaHeart, FaFilter, FaSearch } from "react-icons/fa";
 import { BsArrowRight, BsGrid3X3Gap, BsListUl } from "react-icons/bs";
-import { RiPriceTag3Line } from "react-icons/ri";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -18,14 +17,6 @@ const categoryOptions = [
   { value: "tablet", label: "Tablet" },
   { value: "accessories", label: "Accessories" },
   { value: "television", label: "Television" },
-];
-
-const sortOptions = [
-  { value: "-totalRatings", label: "Most Popular" },
-  { value: "-createdAt", label: "Newest" },
-  { value: "price", label: "Price: Low to High" },
-  { value: "-price", label: "Price: High to Low" },
-  { value: "-sold", label: "Best Selling" },
 ];
 
 const FeatureProducts = () => {
@@ -259,29 +250,29 @@ const FeatureProducts = () => {
         <Slider {...sliderSettings}>
           <div className="relative">
             <img 
-              src="https://dienthoaigiakho.vn/_next/image?url=https%3A%2F%2Fcdn.dienthoaigiakho.vn%2Fphotos%2F1738746634864-600x180_Subbanner-Mua-truoc-tra-sau.jpg&w=3840&q=75" 
+              src="https://hc.com.vn/i/ecommerce/media/11585647_BANNER_DESKTOP_IMAGE_1_165287.jpg" 
               alt="Promotion 1" 
               className="w-full h-[200px] md:h-[300px] object-cover rounded-lg"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent flex flex-col justify-center px-8">
-              <h3 className="text-white text-2xl md:text-3xl font-bold mb-2">Summer Sale</h3>
-              <p className="text-white text-sm md:text-base mb-4">Up to 50% off on selected items</p>
+              <h3 className="text-white text-2xl md:text-3xl font-bold mb-2">Giảm giá mùa hè</h3>
+              <p className="text-white text-sm md:text-base mb-4">Giảm giá lên đến 50% trên các sản phẩm được chọn</p>
               <Link to={`/${path.HOME}`} className="bg-main text-white px-4 py-2 rounded-full w-max hover:bg-red-700 transition-colors">
-                Shop Now
+                Mua ngay
               </Link>
             </div>
           </div>
           <div className="relative">
             <img 
-              src="https://dienthoaigiakho.vn/_next/image?url=https%3A%2F%2Fcdn.dienthoaigiakho.vn%2Fphotos%2F1738922725165-600x180_Sub-banner-Tablet-Macbook.jpg&w=3840&q=75" 
+              src="https://hc.com.vn/i/ecommerce/media/11585647_BANNER_DESKTOP_IMAGE_1_164242.jpg" 
               alt="Promotion 2" 
               className="w-full h-[200px] md:h-[300px] object-cover rounded-lg"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent flex flex-col justify-center px-8">
-              <h3 className="text-white text-2xl md:text-3xl font-bold mb-2">New Arrivals</h3>
-              <p className="text-white text-sm md:text-base mb-4">Discover the latest tech innovations</p>
+              <h3 className="text-white text-2xl md:text-3xl font-bold mb-2">Công nghệ mới xuất hiện</h3>
+              <p className="text-white text-sm md:text-base mb-4">Tìm hiểu về công nghệ mới nhất với bộ sưu tập các thiết bị công nghệ tiên tiến và điện tử. Chất lượng và hiệu suất tốt nhất với giá cả không thể đối kháng.</p>
               <Link to={`/${path.HOME}`} className="bg-main text-white px-4 py-2 rounded-full w-max hover:bg-red-700 transition-colors">
-                Explore
+                Tìm hiểu thêm
               </Link>
             </div>
           </div>

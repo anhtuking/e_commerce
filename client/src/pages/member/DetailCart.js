@@ -13,13 +13,21 @@ const DetailCart = ({ location, navigate, dispatch }) => {
   const { currentCart } = useSelector(state => state.user)
   const [promoCode, setPromoCode] = useState('')
   const [promoError, setPromoError] = useState('')
+  const [selectedItems, setSelectedItems] = useState([]);
 
+  const handleSelectItem = (itemId) => {
+    setSelectedItems(prev => {
+      if (prev.includes(itemId)) {
+        return prev.filter(id => id !== itemId)
+      }
+      return [...prev, itemId];
+    });
+  };
   // Tính tổng tiền
-  const cartTotal = currentCart?.reduce((sum, el) => sum + +el.product?.price * el.quantity, 0) || 0
-  // Tính phí vận chuyển (miễn phí nếu mua trên 2.000.000 VND)
-  const shippingFee = cartTotal > 2000000 ? 0 : 55000
-  // Tính tổng đơn hàng
-  const orderTotal = cartTotal + shippingFee
+  const selectedCart = currentCart?.filter(el => selectedItems.includes(el._id)) || [];
+  const cartTotal = selectedCart.reduce((sum, el) => sum + (+el.product?.price * el.quantity), 0);
+  const shippingFee = cartTotal > 2000000 ? 0 : 55000;
+  const orderTotal = cartTotal + shippingFee;
 
   const handlePromoCode = () => {
     if (!promoCode.trim()) {
@@ -30,7 +38,7 @@ const DetailCart = ({ location, navigate, dispatch }) => {
   }
 
   return (
-    <div className="p-6 min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="p-6 min-h-screen bg-gradient-to-b from-gray-50 to-white overflow-x-hidden">
       <div className="pl-4 mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
@@ -47,7 +55,7 @@ const DetailCart = ({ location, navigate, dispatch }) => {
         </div>
       </div>
 
-      <div className='w-[1555px] mx-auto mt-8 px-4'>
+      <div className='w-full max-w-[1555px] mx-auto mt-8 px-4'>
         <div className='flex flex-col lg:flex-row gap-8'>
           {/* Cart Items */}
           <div className='flex-1'>
@@ -55,14 +63,21 @@ const DetailCart = ({ location, navigate, dispatch }) => {
               <>
                 <div className='bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100'>
                   <div className='bg-gradient-to-r from-gray-800 to-gray-700 text-white font-semibold grid grid-cols-10 py-4 px-6'>
-                    <span className='col-span-6 w-full'>Chi tiết sản phẩm</span>
-                    <span className='col-span-1 w-full text-center'>Số lượng</span>
-                    <span className='col-span-3 w-full text-center'>Giá</span>
+                    <span className='col-span-1'>Chọn</span>
+                    <span className='col-span-5'>Chi tiết sản phẩm</span>
+                    <span className='col-span-1 text-center'>Số lượng</span>
+                    <span className='col-span-3 text-center'>Giá</span>
                   </div>
 
-                  <div className='divide-y divide-gray-100'>
+                  <div className='divide-y divide-gray-100'>  
                     {currentCart?.map(el => (
-                      <OrderItem key={el._id} el={el} defaultQuantity={el.quantity} />
+                      <OrderItem 
+                        key={el._id} 
+                        el={el} 
+                        defaultQuantity={el.quantity}
+                        selected={selectedItems.includes(el._id)}
+                        onSelect={() => handleSelectItem(el._id)}
+                      />
                     ))}
                   </div>
                 </div>
