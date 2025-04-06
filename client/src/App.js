@@ -20,10 +20,8 @@ import {
   ManageProduct,
   ManageOrder,
   ManageUser,
-  ManageBlogs,
-  ManageDiscounts,
-  CreateBlogs,
-  CreateDiscount,
+  ManageBlog,
+  ManageCoupon,
 } from "pages/admin";
 import {
   MemberLayout,
@@ -94,10 +92,8 @@ function App() {
           <Route path={path.MANAGE_PRODUCT} element={<ManageProduct />} />
           <Route path={path.MANAGE_USER} element={<ManageUser />} />
           <Route path={path.CREATE_PRODUCT} element={<CreateProduct />} />
-          <Route path={path.MANAGE_BLOGS} element={<ManageBlogs />} />
-          <Route path={path.MANAGE_DISCOUNT} element={<ManageDiscounts />} />
-          <Route path={path.CREATE_BLOG} element={<CreateBlogs />} />
-          <Route path={path.CREATE_DISCOUNT} element={<CreateDiscount />} />
+          <Route path={path.MANAGE_BLOG} element={<ManageBlog />} />
+          <Route path={path.MANAGE_COUPON} element={<ManageCoupon />} />
         </Route>
         <Route path={path.MEMBER} element={<MemberLayout />}>
           <Route path={path.PERSONAL} element={<Personal />} />

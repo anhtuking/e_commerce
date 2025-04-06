@@ -147,8 +147,8 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
   return (
     <div className="p-6 bg-gray-100 min-h-screen relative">
       <div className="p-4 flex justify-between items-center right-0 left-[327px]">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Update Product</h1>
-        <span className="text-main hover:underline cursor-pointer text-bold border-item hover:bg-gray-200" onClick={() => setEditProduct(null)}>Cancel</span>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">Cập nhật sản phẩm</h1>  
+        <span className="text-main hover:underline cursor-pointer text-bold border-item hover:bg-gray-200" onClick={() => setEditProduct(null)}>Hủy</span>
       </div>
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg px-4">
         <form onSubmit={handleSubmit(handleUpdateProduct)}>
@@ -161,7 +161,7 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
               required: "Need fill this field",
             }}
             fullWidth
-            placeholder="Name of new product"
+            placeholder="Tên sản phẩm"
           />
           <div className="w-full flex gap-4 my-6">
             <InputForm
@@ -173,7 +173,7 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
                 required: "Need fill this field",
               }}
               styleClass="flex-auto"
-              placeholder="Price of new product"
+              placeholder="Giá sản phẩm"
               type="number"
               fullWidth
             />
@@ -186,7 +186,7 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
                 required: "Need fill this field",
               }}
               styleClass="flex-auto"
-              placeholder="Quantity of new product"
+              placeholder="Số lượng sản phẩm"
               type="number"
               fullWidth
             />
@@ -199,12 +199,12 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
                 required: "Need fill this field",
               }}
               styleClass="flex-auto"
-              placeholder="Color of new product"
+              placeholder="Màu sắc sản phẩm"
             />
           </div>
           <div className="w-full flex gap-4 my-6">
             <Select
-              label="Category"
+              label="Danh mục"
               options={categories?.map((el) => ({
                 code: el.title,
                 value: el.title,
@@ -218,7 +218,7 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
               styleClass="flex-auto"
             />
             <Select
-              label="Brand"
+              label="Thương hiệu"
               options={categories
                 ?.find((el) => el.title === watch("category"))
                 ?.brand?.map((el) => ({
@@ -237,7 +237,7 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
           <MarkdownEditor
             name="description"
             changValue={changValue}
-            label="Description"
+            label="Mô tả"
             invalidFields={invalidFields}
             setInvalidFields={setInvalidFields}
             value={payload.description}
@@ -245,7 +245,7 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
           />
           <div className="flex flex-col gap-2 mt-8">
             <label className="font-semibold" htmlFor="thumb">
-              Upload thumb
+              Tải ảnh sản phẩm
             </label>
             <input
               type="file"
@@ -269,7 +269,7 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
           )}
           <div className="flex flex-col gap-2 mt-8">
             <label className="font-semibold" htmlFor="images">
-              Upload images of product
+              Tải ảnh sản phẩm
             </label>
             <input
               multiple
@@ -310,7 +310,7 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
             </div>
           )}
           <div className="mt-8 flex justify-end">
-            <Button type="submit">Save product</Button>
+            <Button type="submit">Lưu sản phẩm</Button>
           </div>
         </form>
       </div>

@@ -24,10 +24,10 @@ const path = {
     MANAGE_USER: 'manage-user',
     MANAGE_PRODUCT: 'manage-product',
     MANAGE_ORDER: 'manage-order',
-    MANAGE_DISCOUNT: 'manage-discount',
-    CREATE_DISCOUNT: 'create-discount',
-    MANAGE_BLOGS: 'manage-blogs',
+    MANAGE_BLOG: 'manage-blog',
     CREATE_BLOG: 'create-blog',
+    MANAGE_COUPON: 'manage-coupon',
+    CREATE_COUPON: 'create-coupon',
     
     //Member
     MEMBER: 'member',

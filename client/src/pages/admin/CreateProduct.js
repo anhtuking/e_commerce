@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import { getBase64, validate } from "utils/helpers";
 import { toast } from "react-toastify";
-import { FaTrash, FaSave, FaPlusCircle } from "react-icons/fa";
+import { FaTrash, FaPlusCircle } from "react-icons/fa";
 import { apiCreateProduct } from "api";
 import { showModal } from "store/app/appSlice";
 
@@ -120,8 +120,8 @@ const CreateProduct = () => {
             <FaPlusCircle className="text-white text-2xl" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Create Product</h1>
-            <p className="text-gray-500">Add a new product to your store catalog</p>
+            <h1 className="text-3xl font-bold text-gray-800">Thêm sản phẩm</h1>
+            <p className="text-gray-500">Thêm một sản phẩm mới vào danh sách sản phẩm của cửa hàng</p>
           </div>
         </div>
         <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
@@ -129,7 +129,7 @@ const CreateProduct = () => {
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg px-4">
         <form onSubmit={handleSubmit(handleCreateProduct)}>
           <InputForm
-            label={"Name product"}
+            label={"Tên sản phẩm"}
             register={register}
             errors={errors}
             id="title"
@@ -137,11 +137,11 @@ const CreateProduct = () => {
               required: "Need fill this field",
             }}
             fullWidth
-            placeholder="Name of new product"
+            placeholder="Tên sản phẩm mới"
           />
           <div className="w-full flex gap-4 my-6">
             <InputForm
-              label={"Price"}
+              label={"Giá"}
               register={register}
               errors={errors}
               id="price"
@@ -149,12 +149,12 @@ const CreateProduct = () => {
                 required: "Need fill this field",
               }}
               styleClass="flex-auto"
-              placeholder="Price of new product"
+              placeholder="Giá của sản phẩm mới"
               type="number"
               fullWidth
             />
             <InputForm
-              label={"Quantity"}
+              label={"Số lượng"}
               register={register}
               errors={errors}
               id="quantity"
@@ -162,12 +162,12 @@ const CreateProduct = () => {
                 required: "Need fill this field",
               }}
               styleClass="flex-auto"
-              placeholder="Quantity of new product"
+              placeholder="Số lượng của sản phẩm mới"
               type="number"
               fullWidth
             />
             <InputForm
-              label={"Color"}
+              label={"Màu sắc"}
               register={register}
               errors={errors}
               id="color"
@@ -175,12 +175,12 @@ const CreateProduct = () => {
                 required: "Need fill this field",
               }}
               styleClass="flex-auto"
-              placeholder="Color of new product"
+              placeholder="Màu sắc của sản phẩm mới"
             />
           </div>
           <div className="w-full flex gap-4 my-6">
             <Select
-              label="Category"
+              label="Danh mục"
               options={categories?.map((el) => ({
                 code: el._id,
                 value: el.title,
@@ -194,7 +194,7 @@ const CreateProduct = () => {
               styleClass="flex-auto"
             />
             <Select
-              label="Brand"
+              label="Thương hiệu"
               options={categories
                 ?.find((el) => el._id === watch("category"))
                 ?.brand?.map((el) => ({
@@ -213,14 +213,14 @@ const CreateProduct = () => {
           <MarkdownEditor
             name="description"
             changValue={changValue}
-            label="Description"
+            label="Mô tả"
             invalidFields={invalidFields}
             setInvalidFields={setInvalidFields}
             setIsFocusDescription={setIsFocusDescription}
           />
           <div className="flex flex-col gap-2 mt-8">
             <label className="font-semibold" htmlFor="thumb">
-              Upload thumb
+              Tải lên ảnh
             </label>
             <input
               type="file"
@@ -244,7 +244,7 @@ const CreateProduct = () => {
           )}
           <div className="flex flex-col gap-2 mt-8">
             <label className="font-semibold" htmlFor="images">
-              Upload images of product
+              Tải lên ảnh sản phẩm
             </label>
             <input
               multiple
@@ -284,8 +284,8 @@ const CreateProduct = () => {
               ))}
             </div>
           )}
-          <div className="mt-8 flex justify-end">
-            <Button type="submit">Save<FaSave/></Button>
+          <div className="mt-8 flex justify-end ">
+            <Button type="submit">Lưu</Button>
           </div>
         </form>
       </div>

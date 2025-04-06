@@ -81,7 +81,7 @@ const ProductInformation = ({totalRatings, ratings, nameProduct, pid, rerender})
             <div className='w-full p-4 border'>
                 {productInfoTabs.some(el => el.id === activedTab) && productInfoTabs.find(el => el.id === activedTab)?.content}
             </div>
-            <div className='flex flex-col py-8 w-main'>
+            <div className='flex flex-col py-8 w-full'>
                 <span className={`py-2 px-4 cursor-pointer bg-white border border-b-0 font-bold`}>
                     CUSTOMER REVIEW:
                 </span>

@@ -541,9 +541,7 @@ const updateWishlist = asyncHandler(async (req,res) => {
 
 const getUserOrder = asyncHandler(async (req, res) => {
   const { id } = req.user;
-  console.log("User ID:", id); // Kiểm tra ID người dùng
   const response = await Order.find({ userId: id });
-  console.log("Orders found:", response); // Kiểm tra dữ liệu đơn hàng
   return res.status(200).json({
     success: response ? true : false,
     response: response || "Không tìm thấy đơn hàng",
@@ -575,7 +573,6 @@ const getAllOrders = asyncHandler(async (req, res) => {
 
 const updateStatusOrder = asyncHandler(async (req, res) => {
   const { orderId, status } = req.body;
-  console.log("orderId:", orderId, "status:", status); // Log dữ liệu nhận được
   if (!orderId || !status) {
     return res.status(400).json({
       success: false,

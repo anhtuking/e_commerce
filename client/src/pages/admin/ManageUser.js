@@ -125,8 +125,8 @@ const ManageUser = () => {
             <RiGroupLine className="text-white text-2xl" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Manage Users</h1>
-            <p className="text-gray-500">Manage user accounts and access controls</p>
+            <h1 className="text-3xl font-bold text-gray-800">Quản lý tài khoản</h1>
+            <p className="text-gray-500">Quản lý tài khoản và kiểm soát truy cập</p>
           </div>
         </div>
         <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
@@ -138,7 +138,7 @@ const ManageUser = () => {
           value={queries?.search}
           setValue={setQueries}
           styleClass={"w500"}
-          placeholder="Search user..."
+          placeholder="Tìm kiếm tài khoản..."
         />
       </div>
       

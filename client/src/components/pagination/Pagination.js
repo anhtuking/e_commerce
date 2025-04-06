@@ -33,8 +33,8 @@ const Pagination = ({ totalCount }) => {
   // Nếu chỉ có 1 trang hoặc không có sản phẩm, không hiển thị phân trang
   if (totalCount <= pageSize || totalCount === 0) {
     return (
-      <div className="flex justify-end items-center p-4">
-        <span className="text-sm italic pl-2">
+      <div className="flex justify-center items-center p-4">
+        <span className="text-sm italic">
           {totalCount > 0 ? `Showing ${totalCount} of ${totalCount}` : "No results found"}
         </span>
       </div>
@@ -42,15 +42,16 @@ const Pagination = ({ totalCount }) => {
   }
 
   return (
-    <div className="flex flex-col md:flex-row md:justify-between items-center p-4">
-      <span className="text-sm italic mb-4 md:mb-0 pl-2">
+    <div className="flex flex-col items-center p-4">
+      <span className="text-sm italic mb-4 text-center">
         {`Showing ${range()} of ${totalCount}`}
       </span>
-      <div className="flex items-center space-x-2 pr-4">
+      
+      <div className="flex items-center justify-center flex-wrap gap-2">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-3 py-1 rounded-full border border-gray-300 text-gray-700 disabled:opacity-50 hover:bg-gray-200 transition-colors"
+          className="px-4 py-2 rounded-md bg-gray-100 border border-gray-200 text-gray-700 disabled:opacity-50 hover:bg-gray-200 transition-colors text-sm mr-1"
         >
           PREVIOUS
         </button>
@@ -63,7 +64,7 @@ const Pagination = ({ totalCount }) => {
                 onClick={() => handlePageChange(item)}
                 className={`w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 transition-colors ${
                   currentPage === item
-                    ? "bg-sky-900 text-white"
+                    ? "bg-red-600 text-white"
                     : "text-gray-700 hover:bg-gray-200"
                 }`}
               >
@@ -85,7 +86,7 @@ const Pagination = ({ totalCount }) => {
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-3 py-1 rounded-full border border-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 transition-colors"
+          className="px-4 py-2 rounded-md bg-gray-100 border border-gray-200 text-gray-700 hover:bg-gray-200 disabled:opacity-50 transition-colors text-sm ml-1"
         >
           NEXT
         </button>

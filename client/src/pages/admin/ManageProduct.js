@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
-import { CustomVarriant, InputForm, Pagination, Loading } from "components";
+import { CustomVarriant, InputForm, Pagination } from "components";
 import { useForm } from "react-hook-form";
 import { apiDeleteProduct, apiGetProducts } from "api";
 import moment from "moment";
 import {
   useSearchParams,
   createSearchParams,
-  useNavigate,
   useLocation,
 } from "react-router-dom";
 import useDebounce from "hooks/useDebounce";
@@ -15,11 +14,10 @@ import { BiSolidCustomize } from "react-icons/bi";
 import UpdateProduct from "./UpdateProduct";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
-import { showModal } from "store/app/appSlice";
-import { useDispatch } from "react-redux";
 import { RiProductHuntLine } from "react-icons/ri";
+import withBase from "hocs/withBase";
 
-const ManageProduct = () => {
+const ManageProduct = ({dispatch, navigate}) => {
   const {
     register,
     formState: { errors },
@@ -28,26 +26,30 @@ const ManageProduct = () => {
   const [products, setProducts] = useState(null);
   const [counts, setCounts] = useState(0);
   const [params] = useSearchParams();
-  const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
   const [editProduct, setEditProduct] = useState(null)
   const [update, setUpdate] = useState(false)
   const [customVarriant, setCustomVarriant] = useState(null)
   const [isLoading, setIsLoading] = useState(false);
   const cacheRef = useRef({});
+  const fetchInProgressRef = useRef(false);
 
   const render = useCallback(() => {
     setUpdate(prev => !prev);
   }, []);  
  
-  const fetchProducts = async (searchParams = {}) => {
+  const fetchProducts = useCallback(async (searchParams = {}) => {
+    // Ngăn việc gọi nhiều lần trong cùng một render cycle
+    if (fetchInProgressRef.current) return;
+    fetchInProgressRef.current = true;
+    
     const cacheKey = JSON.stringify(searchParams);
     
     // Kiểm tra trong cache
     if (cacheRef.current[cacheKey]) {
       setProducts(cacheRef.current[cacheKey].products);
       setCounts(cacheRef.current[cacheKey].counts);
+      fetchInProgressRef.current = false;
       return;
     }
     
@@ -74,28 +76,33 @@ const ManageProduct = () => {
       toast.error("Không thể tải danh sách sản phẩm.");
     } finally {
       setIsLoading(false);
+      fetchInProgressRef.current = false;
     }
-  };
+  }, []);
 
   const queryDebounce = useDebounce(watch("q"), 1000);
-  useEffect(() => {
-    const queries = Object.fromEntries([...params]);
-    if (queryDebounce) {
-      queries.q = queryDebounce;
-    } else {
-      delete queries.q;
-    }
-    navigate({
-      pathname: location.pathname,
-      search: new URLSearchParams(queries).toString(),
-    });
-  }, [queryDebounce, navigate, location]);
   
-
+  // UseEffect để xử lý queries từ thanh tìm kiếm
+  useEffect(() => {
+    if (queryDebounce !== undefined) {
+      const queries = Object.fromEntries([...params]);
+      if (queryDebounce) {
+        queries.q = queryDebounce;
+      } else {
+        delete queries.q;
+      }
+      navigate({
+        pathname: location.pathname,
+        search: createSearchParams(queries).toString(),
+      });
+    }
+  }, [queryDebounce, navigate, location.pathname, params]);
+  
+  // UseEffect riêng để fetch data khi params hoặc update thay đổi
   useEffect(() => {
     const searchParams = Object.fromEntries([...params]);
     fetchProducts(searchParams);
-  }, [params, update]);
+  }, [params, update, fetchProducts]);
 
   const handleDeleteProduct = (pid) => { 
     Swal.fire({
@@ -111,8 +118,7 @@ const ManageProduct = () => {
           // Xóa cache khi xóa sản phẩm
           cacheRef.current = {};
           // Tải lại dữ liệu
-          const searchParams = Object.fromEntries([...params]);
-          fetchProducts(searchParams);
+          render();
         } else {
           toast.error(response.mes)
         }
@@ -152,8 +158,8 @@ const ManageProduct = () => {
             <RiProductHuntLine className="text-white text-2xl" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Manage Products</h1>
-            <p className="text-gray-500">Manage and maintain your product catalog</p>
+            <h1 className="text-3xl font-bold text-gray-800">Quản lý sản phẩm</h1>
+            <p className="text-gray-500">Quản lý và bảo trì danh sách sản phẩm của cửa hàng</p>
           </div>
         </div>
         <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
@@ -166,7 +172,7 @@ const ManageProduct = () => {
             register={register}
             errors={errors}
             fullWidth
-            placeholder="Search product..."
+            placeholder="Tìm kiếm sản phẩm..."
           />
         </form>
       </div>
@@ -181,18 +187,18 @@ const ManageProduct = () => {
           <thead>
             <tr className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm">
               <th className="p-3 border">#</th>
-              <th className="p-3 border">Thumb</th>
-              <th className="p-3 border">Title</th>
-              <th className="p-3 border">Brand</th>
-              <th className="p-3 border">Category</th>
-              <th className="p-3 border">Price</th>
-              <th className="p-3 border">Quantity</th>
-              <th className="p-3 border">Sold</th>
-              <th className="p-3 border">Color</th>
-              <th className="p-3 border">Ratings</th>
-              <th className="p-3 border">Variants</th>
-              <th className="p-3 border">UpdateAt</th>
-              <th className="p-3 border">Actions</th>
+              <th className="p-3 border">Ảnh</th>
+              <th className="p-3 border">Tên sản phẩm</th>
+              <th className="p-3 border">Thương hiệu</th>
+              <th className="p-3 border">Danh mục</th>
+              <th className="p-3 border">Giá</th>
+              <th className="p-3 border">Số lượng</th>
+              <th className="p-3 border">Đã bán</th>
+              <th className="p-3 border">Màu sắc</th>
+              <th className="p-3 border">Đánh giá</th>
+              <th className="p-3 border">Biến thể</th>
+              <th className="p-3 border">Cập nhật</th>
+              <th className="p-3 border">Hành động</th>
             </tr>
           </thead>
           <tbody className={isLoading ? "opacity-50" : ""}>
@@ -261,4 +267,4 @@ const ManageProduct = () => {
   );
 };
 
-export default ManageProduct;
+export default withBase(ManageProduct);

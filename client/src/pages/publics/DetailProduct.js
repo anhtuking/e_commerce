@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { apiGetProduct, apiGetProducts } from 'api/product';
-import { Breadcrumb, Button, ProductExtraInfoItem, SelectQuantity, ProductInformation } from 'components';
+import { Breadcrumb, ProductExtraInfoItem, SelectQuantity, ProductInformation } from 'components';
 import CustomSlider from 'components/common/CustomSlider';
 import Slider from "react-slick";
 import ReactImageMagnify from 'react-image-magnify';
@@ -16,7 +16,7 @@ import path from 'utils/path';
 import { apiUpdateCart } from 'api';
 import { toast } from 'react-toastify';
 import { getCurrent } from 'store/user/asyncAction';
-import { FaHeart, FaShoppingCart, FaShippingFast, FaRegCheckCircle, FaArrowLeft, FaClock, FaEye, FaTag, FaStore, FaShieldAlt, FaInfoCircle, FaGift, FaHeadset } from 'react-icons/fa';
+import { FaHeart, FaShoppingCart, FaShippingFast, FaRegCheckCircle, FaArrowLeft, FaEye, FaStore, FaShieldAlt, FaInfoCircle, FaGift, FaHeadset } from 'react-icons/fa';
 
 var settings = {
     dots: false,
@@ -40,7 +40,7 @@ var settings = {
     ]
 };
 
-const DetailProduct = ({navigate, dispatch}) => {
+const DetailProduct = ({ navigate, dispatch }) => {
     const { pid, category } = useParams()
     const location = useLocation();
     const [product, setProduct] = useState(null)
@@ -132,34 +132,34 @@ const DetailProduct = ({navigate, dispatch}) => {
         if (flag === 'plus') setQuantity(prev => +prev + 1)
     }, [quantity])
 
-    const handleAddToCart = async() => {
+    const handleAddToCart = async () => {
         if (!current) return Swal.fire({
-          title: 'Wait...',
-          text: 'Please login to add to cart',
-          icon: 'info',
-          confirmButtonText: 'Login',
-          denyButtonText: 'Cancel',
-          showDenyButton: true,
-          confirmButtonColor: '#3085d6',
-        }).then( async (result) => {
-          if (result.isConfirmed) navigate(`/${path.LOGIN}?redirect=${location.pathname}`);
+            title: 'Wait...',
+            text: 'Please login to add to cart',
+            icon: 'info',
+            confirmButtonText: 'Login',
+            denyButtonText: 'Cancel',
+            showDenyButton: true,
+            confirmButtonColor: '#3085d6',
+        }).then(async (result) => {
+            if (result.isConfirmed) navigate(`/${path.LOGIN}?redirect=${location.pathname}`);
         })
-        
+
         setIsAddingToCart(true);
-        
+
         const currentVariant = varriant ? product?.varriants?.find(el => el.sku === varriant) : null;
         const cartData = addToCartUtil(product, quantity, currentVariant);
-        
+
         const response = await apiUpdateCart(cartData);
-        
+
         setIsAddingToCart(false);
-        
+
         if (response.success) {
             Swal.fire({
                 position: 'center',
                 icon: 'success',
-                title: 'Added to Cart!',
-                text: `${quantity} item(s) have been added to your cart`,
+                title: 'Thêm vào giỏ hàng thành công!',
+                text: `${quantity} sản phẩm đã được thêm vào giỏ hàng của bạn`,
                 showConfirmButton: false,
                 timer: 1500,
                 backdrop: 'rgba(0,0,0,0.4)'
@@ -169,32 +169,18 @@ const DetailProduct = ({navigate, dispatch}) => {
             toast.error(response.mes)
         }
     }
-    
-    // Calculate discount if there's original price
-    const calculateDiscount = () => {
-        if (product?.originalPrice && product?.price) {
-            const originalPrice = Number(product.originalPrice);
-            const currentPrice = Number(product.price);
-            if (originalPrice > currentPrice) {
-                return Math.round((1 - currentPrice / originalPrice) * 100);
-            }
-        }
-        return 0;
-    }
-    
-    const discount = calculateDiscount();
-    
+
     return (
         <div className='w-full bg-gray-50'>
             {/* Header & Breadcrumb */}
             <div className='bg-gradient-to-r from-gray-100 to-gray-200 shadow-sm'>
                 <div className='w-main mx-auto px-4 py-6'>
                     <div className='flex items-center gap-2 mb-3'>
-                        <button 
+                        <button
                             onClick={() => navigate(-1)}
                             className='flex items-center text-gray-600 hover:text-main transition-all text-sm font-medium'
                         >
-                            <FaArrowLeft className='mr-2' /> Back
+                            <FaArrowLeft className='mr-2' /> Trở lại
                         </button>
                     </div>
                     <h1 className='text-2xl md:text-3xl font-bold text-gray-800 mb-2'>
@@ -209,7 +195,7 @@ const DetailProduct = ({navigate, dispatch}) => {
                     </div>
                 </div>
             </div>
-            
+
             {/* Main Product Content */}
             <div className='w-main mx-auto px-4 py-8'>
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8'>
@@ -217,11 +203,6 @@ const DetailProduct = ({navigate, dispatch}) => {
                     <div className='lg:col-span-5 flex flex-col gap-4'>
                         <div className='bg-white rounded-lg shadow-sm overflow-hidden'>
                             <div className='relative border hover:border-main transition-all rounded-lg overflow-hidden group'>
-                                {discount > 0 && (
-                                    <div className='absolute top-2 left-2 z-10 bg-main text-white text-xs font-bold px-2 py-1 rounded-md flex items-center shadow-lg'>
-                                        <FaTag className='mr-1' /> {discount}% OFF
-                                    </div>
-                                )}
                                 <div className='absolute top-2 right-2 z-10 bg-white bg-opacity-80 text-main text-xs font-medium px-2 py-1 rounded-full flex items-center shadow-sm'>
                                     <FaEye className='mr-1' /> {Math.floor(Math.random() * 20) + 5} watching
                                 </div>
@@ -247,44 +228,44 @@ const DetailProduct = ({navigate, dispatch}) => {
                             <Slider {...settings} className='product-thumbnails'>
                                 {currentProduct.images.length === 0 && product?.images?.map((el, index) => (
                                     <div className='px-1' key={el}>
-                                        <div 
-                                            onClick={e => handleClickImages(e, el)} 
+                                        <div
+                                            onClick={e => handleClickImages(e, el)}
                                             className={`cursor-pointer border-2 rounded-lg overflow-hidden hover:shadow-md transform transition-transform hover:scale-105 ${currentImage === el ? 'border-main ring-2 ring-red-200' : 'border-gray-200'}`}
                                         >
-                                            <img src={el} alt={`sub-product-${index}`} className='h-[100px] w-full object-cover' />
+                                            <img src={el} alt={`sub-product-${index}`} className='h-full w-full object-cover' />
                                         </div>
                                     </div>
                                 ))}
                                 {currentProduct.images.length > 0 && currentProduct.images?.map((el, index) => (
                                     <div className='px-1' key={el}>
-                                        <div 
-                                            onClick={e => handleClickImages(e, el)} 
+                                        <div
+                                            onClick={e => handleClickImages(e, el)}
                                             className={`cursor-pointer border-2 rounded-lg overflow-hidden hover:shadow-md transform transition-transform hover:scale-105 ${currentImage === el ? 'border-main ring-2 ring-red-200' : 'border-gray-200'}`}
                                         >
-                                            <img src={el} alt={`sub-product-${index}`} className='h-[100px] w-full object-cover' />
+                                            <img src={el} alt={`sub-product-${index}`} className='h-full w-full object-cover' />
                                         </div>
                                     </div>
                                 ))}
                             </Slider>
                         </div>
-                        
+
                         {/* Product Tabs */}
                         <div className='bg-white rounded-lg shadow-sm mb-6'>
                             <div className='flex border-b'>
-                                <button 
+                                <button
                                     onClick={() => setActiveTab('description')}
                                     className={`flex-1 py-3 px-4 text-center font-medium text-sm transition-colors ${activeTab === 'description' ? 'text-main border-b-2 border-main' : 'text-gray-500 hover:text-gray-700'}`}
                                 >
-                                    Description
+                                    Mô tả
                                 </button>
-                                <button 
+                                <button
                                     onClick={() => setActiveTab('features')}
                                     className={`flex-1 py-3 px-4 text-center font-medium text-sm transition-colors ${activeTab === 'features' ? 'text-main border-b-2 border-main' : 'text-gray-500 hover:text-gray-700'}`}
                                 >
-                                    Features
+                                    Đặc điểm
                                 </button>
                             </div>
-                            
+
                             {/* Tab Content */}
                             <div className='p-6'>
                                 {activeTab === 'description' && (
@@ -292,9 +273,9 @@ const DetailProduct = ({navigate, dispatch}) => {
                                         {product?.description?.length > 1 && product?.description?.map((el) => (
                                             <p key={el} className='text-sm leading-6 text-gray-600'>{el}</p>
                                         ))}
-                                        {product?.description?.length === 1 && 
-                                            <div 
-                                                className='text-sm leading-6 text-gray-600 line-clamp-[8]' 
+                                        {product?.description?.length === 1 &&
+                                            <div
+                                                className='text-sm leading-6 text-gray-600 line-clamp-[8]'
                                                 dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product?.description[0]) }}
                                             ></div>
                                         }
@@ -306,22 +287,22 @@ const DetailProduct = ({navigate, dispatch}) => {
                                         <div className='flex items-start space-x-3'>
                                             <FaShieldAlt className='text-green-500 mt-1 flex-shrink-0' />
                                             <div>
-                                                <h4 className='text-sm font-medium'>Premium Quality</h4>
-                                                <p className='text-sm text-gray-600'>Made with high-quality materials for durability</p>
+                                                <h4 className='text-sm font-medium'>Chất lượng cao</h4>
+                                                <p className='text-sm text-gray-600'>Được làm từ vật liệu cao cấp cho độ bền</p>
                                             </div>
                                         </div>
                                         <div className='flex items-start space-x-3'>
                                             <FaShippingFast className='text-blue-500 mt-1 flex-shrink-0' />
                                             <div>
-                                                <h4 className='text-sm font-medium'>Fast Delivery</h4>
-                                                <p className='text-sm text-gray-600'>Quick shipping to your doorstep</p>
+                                                <h4 className='text-sm font-medium'>Giao hàng nhanh</h4>
+                                                <p className='text-sm text-gray-600'>Giao hàng đến tận cửa nhà bạn</p>
                                             </div>
                                         </div>
                                         <div className='flex items-start space-x-3'>
                                             <FaGift className='text-red-500 mt-1 flex-shrink-0' />
                                             <div>
-                                                <h4 className='text-sm font-medium'>Special Gift Packaging</h4>
-                                                <p className='text-sm text-gray-600'>Perfect for gifting to your loved ones</p>
+                                                <h4 className='text-sm font-medium'>Đóng gói đặc biệt</h4>
+                                                <p className='text-sm text-gray-600'>Hoàn hảo cho việc tặng người thân</p>
                                             </div>
                                         </div>
                                     </div>
@@ -329,7 +310,7 @@ const DetailProduct = ({navigate, dispatch}) => {
                             </div>
                         </div>
                     </div>
-                    
+
                     {/* Product Details */}
                     <div className='lg:col-span-4 flex flex-col'>
                         {/* Price & Rating */}
@@ -339,60 +320,35 @@ const DetailProduct = ({navigate, dispatch}) => {
                                     <h2 className='text-2xl md:text-3xl font-bold text-main'>
                                         {`${formatPrice(formatMoney(currentProduct.price || product?.price))} VND`}
                                     </h2>
-                                    {discount > 0 && (
-                                        <div className='flex items-center mt-1 gap-2'>
-                                            <span className='text-sm text-gray-500 line-through'>
-                                                {`${formatPrice(formatMoney(product?.originalPrice))} VND`}
-                                            </span>
-                                            <span className='text-sm font-semibold text-green-600'>
-                                                Save {discount}%
-                                            </span>
-                                        </div>
-                                    )}
+                                    <div className='flex items-center mt-1 gap-2'>
+                                        <span className='text-sm text-gray-500 line-through'>
+                                            {`${formatPrice(formatMoney(product?.originalPrice))} VND`}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                            
+
                             <div className='flex items-center gap-2 mb-4'>
-                                <div className='flex items-center gap-1 text-yellow-400 mr-2'>
-                                    {renderStarFromNumber(product?.totalRatings)?.map((el, index) => (
-                                        <span key={index}>{el}</span>
-                                    ))}
+                                <div className='flex flex-col gap-2'>
+                                    <div className='flex items-center gap-1 text-yellow-400 mr-2'>
+                                        {renderStarFromNumber(product?.totalRatings)?.map((el, index) => (
+                                            <span key={index}>{el}</span>
+                                        ))}
+                                    </div>
+                                    <div className='flex items-center gap-2'>
+                                        <span className='text-sm text-gray-500 border-r border-gray-300 pr-2'>
+                                            {`${product?.ratings?.length || 0} Đánh giá`}
+                                        </span>
+                                        <span className='text-sm text-gray-500 border-r border-gray-300 pr-2'>
+                                            {`Đã bán: ${product?.sold || 0}`}
+                                        </span>
+                                        <span className='text-sm text-gray-500'>
+                                            {`Kho: ${product?.quantity || 0}`}
+                                        </span>
+                                    </div>
                                 </div>
-                                <span className='text-sm text-gray-500 border-r border-gray-300 pr-2'>
-                                    {`${product?.ratings?.length || 0} Reviews`}
-                                </span>
-                                <span className='text-sm text-gray-500 border-r border-gray-300 pr-2'>
-                                    {`Sold: ${product?.sold || 0}`}
-                                </span>
-                                <span className='text-sm text-gray-500'>
-                                    {`Stock: ${product?.quantity || 0}`}
-                                </span>
                             </div>
-                            
-                            {/* Limited Time Offer */}
-                            {discount > 0 && (
-                                <div className='mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg'>
-                                    <div className='flex items-center justify-between mb-2'>
-                                        <span className='text-sm font-medium text-orange-700 flex items-center'>
-                                            <FaClock className='mr-1' /> Limited Time Offer
-                                        </span>
-                                        <span className='text-xs font-medium bg-orange-100 text-orange-700 px-2 py-1 rounded'>
-                                            Ends in 2 days
-                                        </span>
-                                    </div>
-                                    <div className='flex justify-between'>
-                                        <div className='flex items-center gap-1'>
-                                            <div className='w-8 h-8 bg-orange-600 text-white rounded flex items-center justify-center font-bold'>00</div>
-                                            <span>:</span>
-                                            <div className='w-8 h-8 bg-orange-600 text-white rounded flex items-center justify-center font-bold'>12</div>
-                                            <span>:</span>
-                                            <div className='w-8 h-8 bg-orange-600 text-white rounded flex items-center justify-center font-bold'>33</div>
-                                        </div>
-                                        <span className='text-sm text-orange-700'>Hours : Mins : Secs</span>
-                                    </div>
-                                </div>
-                            )}
-                            
+
                             {/* Status */}
                             <div className='flex items-center gap-2 mb-4'>
                                 <span className='text-sm font-medium text-gray-600'>Status:</span>
@@ -402,23 +358,23 @@ const DetailProduct = ({navigate, dispatch}) => {
                                 </span>
                             </div>
                         </div>
-                        
+
                         {/* Color Variants */}
                         <div className='bg-white rounded-lg shadow-sm p-6 mb-6'>
                             <h3 className='text-lg font-semibold mb-4 text-gray-800'>Color Options</h3>
                             <div className='flex flex-wrap gap-3'>
-                                <div 
-                                    onClick={() => setVarriant(null)} 
+                                <div
+                                    onClick={() => setVarriant(null)}
                                     className={clsx(
                                         'flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-all transform hover:shadow-md',
                                         !varriant ? 'border-main bg-red-50 scale-105' : 'border-gray-200 hover:border-main hover:scale-105'
                                     )}
                                 >
                                     <div className='relative w-10 h-10 rounded-md overflow-hidden border border-gray-200'>
-                                        <img 
-                                            src={product?.thumb} 
-                                            alt='thumb' 
-                                            className='w-full h-full object-cover' 
+                                        <img
+                                            src={product?.thumb}
+                                            alt='thumb'
+                                            className='w-full h-full object-cover'
                                         />
                                     </div>
                                     <div className='flex flex-col'>
@@ -426,21 +382,21 @@ const DetailProduct = ({navigate, dispatch}) => {
                                         <span className='text-xs text-gray-500'>{formatPrice(formatMoney(product?.price))} VND</span>
                                     </div>
                                 </div>
-                                
+
                                 {product?.varriants?.map(el => (
-                                    <div 
-                                        key={el.sku} 
-                                        onClick={() => setVarriant(el.sku)} 
+                                    <div
+                                        key={el.sku}
+                                        onClick={() => setVarriant(el.sku)}
                                         className={clsx(
                                             'flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-all transform hover:shadow-md',
                                             varriant === el.sku ? 'border-main bg-red-50 scale-105' : 'border-gray-200 hover:border-main hover:scale-105'
                                         )}
                                     >
                                         <div className='relative w-10 h-10 rounded-md overflow-hidden border border-gray-200'>
-                                            <img 
-                                                src={el.thumb} 
-                                                alt='thumb' 
-                                                className='w-full h-full object-cover' 
+                                            <img
+                                                src={el.thumb}
+                                                alt='thumb'
+                                                className='w-full h-full object-cover'
                                             />
                                         </div>
                                         <div className='flex flex-col'>
@@ -451,23 +407,23 @@ const DetailProduct = ({navigate, dispatch}) => {
                                 ))}
                             </div>
                         </div>
-                        
+
                         {/* Quantity & Add to Cart */}
                         <div className='bg-white rounded-lg shadow-sm p-6 mb-6 sticky top-4'>
                             <div className='mb-4'>
                                 <h3 className='text-lg font-semibold mb-2 text-gray-800'>Quantity</h3>
-                                <div className='flex items-center'>
-                                    <SelectQuantity 
-                                        quantity={quantity} 
-                                        handleQuantity={handleQuantity} 
-                                        handleChangeQuantity={handleChangeQuantity} 
+                                <div className='flex items-center jc'>
+                                    <SelectQuantity
+                                        quantity={quantity}
+                                        handleQuantity={handleQuantity}
+                                        handleChangeQuantity={handleChangeQuantity}
                                     />
                                 </div>
                             </div>
-                            
+
                             <div className='flex flex-col space-y-3'>
-                                <Button 
-                                    handleOnClick={handleAddToCart} 
+                                <button
+                                    onClick={handleAddToCart}
                                     className={`w-full ${isAddingToCart ? 'bg-gray-500' : 'bg-main hover:bg-red-700'} text-white py-4 rounded-lg flex items-center justify-center gap-2 transition-all transform hover:shadow-lg hover:scale-105`}
                                     disabled={isAddingToCart}
                                 >
@@ -479,33 +435,33 @@ const DetailProduct = ({navigate, dispatch}) => {
                                     ) : (
                                         <>
                                             <FaShoppingCart />
-                                            Add to cart
+                                            Thêm vào giỏ hàng
                                         </>
                                     )}
-                                </Button>
-                                
-                                <button 
+                                </button>
+
+                                <button
                                     className='w-full border border-main text-main hover:bg-red-50 py-3 rounded-lg flex items-center justify-center gap-2 transition-all transform hover:shadow-md'
                                 >
                                     <FaHeart />
-                                    Add to wishlist
+                                    Thêm vào danh sách yêu thích
                                 </button>
                             </div>
-                            
+
                             {/* Promotion Info */}
                             <div className='mt-4 pt-4 border-t border-gray-100'>
                                 <div className='flex items-center gap-2 mb-2'>
                                     <FaInfoCircle className='text-blue-500' />
-                                    <span className='text-xs font-medium text-gray-700'>Secure payment guaranteed</span>
+                                    <span className='text-xs font-medium text-gray-700'>Thanh toán an toàn</span>
                                 </div>
                                 <div className='flex items-center gap-2'>
                                     <FaGift className='text-red-500' />
-                                    <span className='text-xs font-medium text-gray-700'>Free gift wrapping on request</span>
+                                    <span className='text-xs font-medium text-gray-700'>Bao bì quà miễn phí</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     {/* Product Info & Shipping */}
                     <div className='lg:col-span-3'>
                         <div className='bg-white rounded-lg shadow-sm p-6 mb-6'>
@@ -515,66 +471,66 @@ const DetailProduct = ({navigate, dispatch}) => {
                                 ))}
                             </div>
                         </div>
-                        
+
                         {/* Customer Support */}
                         <div className='bg-white rounded-lg shadow-sm p-6 mb-6'>
-                            <h3 className='text-lg font-semibold mb-4 text-gray-800 border-b pb-2'>Need Help?</h3>
+                            <h3 className='text-lg font-semibold mb-4 text-gray-800 border-b pb-2'>Cần trợ giúp?</h3>
                             <div className='flex flex-col items-center text-center'>
                                 <div className='w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mb-3'>
                                     <FaHeadset size={24} />
                                 </div>
-                                <h4 className='font-medium mb-1'>Customer Support</h4>
-                                <p className='text-sm text-gray-600 mb-3'>Our team is here to help you</p>
+                                <h4 className='font-medium mb-1'>Hỗ trợ khách hàng</h4>
+                                <p className='text-sm text-gray-600 mb-3'>Đội ngũ của chúng tôi sẵn sàng giúp bạn</p>
                                 <button className='bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded hover:bg-blue-700 transition-colors'>
-                                    Contact Us
+                                    Liên hệ chúng tôi
                                 </button>
                             </div>
                         </div>
-                        
+
                         {/* Buyer Protection */}
                         <div className='bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg shadow-sm p-6'>
                             <div className='flex items-center gap-3 mb-3'>
                                 <div className='w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600'>
                                     <FaShieldAlt size={18} />
                                 </div>
-                                <h3 className='text-lg font-semibold text-gray-800'>Buyer Protection</h3>
+                                <h3 className='text-lg font-semibold text-gray-800'>Bảo vệ người mua</h3>
                             </div>
                             <ul className='space-y-2 text-sm'>
                                 <li className='flex items-center gap-2'>
                                     <FaRegCheckCircle className='text-green-500' />
-                                    <span>Money back guarantee</span>
+                                    <span>Hoàn tiền</span>
                                 </li>
                                 <li className='flex items-center gap-2'>
                                     <FaRegCheckCircle className='text-green-500' />
-                                    <span>Authentic products</span>
+                                    <span>Sản phẩm chính hãng</span>
                                 </li>
                                 <li className='flex items-center gap-2'>
                                     <FaRegCheckCircle className='text-green-500' />
-                                    <span>Secure transactions</span>
+                                    <span>Giao hàng nhanh chóng</span>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             {/* Product Information Tabs */}
             <div className='w-main mx-auto px-4 mt-10'>
                 <div className='bg-white rounded-lg shadow-sm'>
-                    <ProductInformation 
-                        totalRatings={product?.totalRatings} 
-                        ratings={product?.ratings} 
-                        nameProduct={product?.title} 
-                        pid={product?._id} 
-                        rerender={rerender} 
+                    <ProductInformation
+                        totalRatings={product?.totalRatings}
+                        ratings={product?.ratings}
+                        nameProduct={product?.title}
+                        pid={product?._id}
+                        rerender={rerender}
                     />
                 </div>
             </div>
-            
+
             {/* Related Products */}
             <div className='w-main mx-auto px-4 mt-10 mb-20'>
                 <div className='bg-white rounded-lg shadow-sm p-6'>
-                    <h3 className='text-xl font-bold text-gray-800 mb-6 pb-2 border-b'>You Might Also Like</h3>
+                    <h3 className='text-xl font-bold text-gray-800 mb-6 pb-2 border-b'>Sản phẩm bạn có thể thích</h3>
                     <CustomSlider products={relatedProduct} normal={true} />
                 </div>
             </div>

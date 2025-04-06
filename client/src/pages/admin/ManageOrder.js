@@ -132,8 +132,8 @@ const ManageOrder = () => {
             <AiOutlineShoppingCart className="text-white text-2xl" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Manage Orders</h1>
-            <p className="text-gray-500">Manage and track customer orders</p>
+            <h1 className="text-3xl font-bold text-gray-800">Quản lý đơn hàng</h1>
+            <p className="text-gray-500">Quản lý và theo dõi đơn hàng khách hàng</p>
           </div>
         </div>
         <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
@@ -142,7 +142,7 @@ const ManageOrder = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div className="mb-4 md:mb-0">
           <p className="text-gray-500 text-sm">
-            <span className="font-medium text-indigo-600">{filteredOrders.length}</span> orders found
+            <span className="font-medium text-indigo-600">{filteredOrders.length}</span> đơn hàng tìm thấy
           </p>
         </div>
 

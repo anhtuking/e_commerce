@@ -1,5 +1,6 @@
 import path from "./path";
 import icons from "./icons";
+import { FiCheck, FiX, FiTruck, FiClock } from "react-icons/fi";
 
 export const navigation = [
   {
@@ -226,12 +227,12 @@ export const adminSidebar = [
     icon: <FaPercentage />,
     submenu: [
       {
-        text: "Quản lý giảm giá",
-        path: `/${path.ADMIN}/${path.MANAGE_DISCOUNT}`,
+        text: "Quản lý mã khuyến mãi",
+        path: `/${path.ADMIN}/${path.MANAGE_COUPON}`,
       },
       {
-        text: "Tạo mới giảm giá",
-        path: `/${path.ADMIN}/${path.CREATE_DISCOUNT}`,
+        text: "Tạo mới mã khuyến mãi",
+        path: `/${path.ADMIN}/${path.CREATE_COUPON}`, 
       },
     ],
   },
@@ -243,7 +244,7 @@ export const adminSidebar = [
     submenu: [
       {
         text: "Quản lý Blog",
-        path: `/${path.ADMIN}/${path.MANAGE_BLOGS}`,
+        path: `/${path.ADMIN}/${path.MANAGE_BLOG}`,
       },
       {
         text: "Tạo mới Blog",
@@ -258,28 +259,28 @@ export const memberSidebar = [
   {
     id: 1,
     type: "SINGLE",
-    text: "My account",
+    text: "Tài khoản",
     path: `/${path.MEMBER}/${path.PERSONAL}`,
     icon: <RiAccountCircleFill />,
   },
   {
     id: 2,
     type: "SINGLE",
-    text: "My cart",
+    text: "Giỏ hàng",
     path: `/${path.MEMBER}/${path.MY_CART}`,
     icon: <RiShoppingCartFill />,
   },
   {
     id: 3,
     type: "SINGLE",
-    text: "Wishlist",
+    text: "Danh sách yêu thích",
     path: `/${path.MEMBER}/${path.WISHLIST}`,
     icon: <FaHeartCircleCheck />,
   },
   {
     id: 4,
     type: "SINGLE",
-    text: "My oders",
+    text: "Đơn hàng",
     path: `/${path.MEMBER}/${path.MY_ORDER}`,
     icon: <RiBillFill />,
   },
@@ -306,3 +307,34 @@ export const blockStatus = [
     value: "Active"
   }
 ]
+
+export const statusConfig = {
+  "Đã hủy": {
+    color: "bg-red-500",
+    icon: <FiX className="mr-1" />,
+    lightBg: "bg-red-50",
+    border: "border-red-200",
+    text: "text-red-700"
+  },
+  "Đang xử lý": {
+    color: "bg-amber-500",
+    icon: <FiClock className="mr-1" />,
+    lightBg: "bg-amber-50",
+    border: "border-amber-200",
+    text: "text-amber-700"
+  },
+  "Đã xác nhận": {
+    color: "bg-blue-500",
+    icon: <FiTruck className="mr-1" />,
+    lightBg: "bg-blue-50",
+    border: "border-blue-200",
+    text: "text-blue-700"
+  },
+  "Hoàn thành": {
+    color: "bg-green-500", 
+    icon: <FiCheck className="mr-1" />,
+    lightBg: "bg-green-50",
+    border: "border-green-200",
+    text: "text-green-700"
+  }
+};

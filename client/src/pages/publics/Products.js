@@ -133,12 +133,13 @@ const Products = () => {
           ))}
         </Masonry>
       </div>
-      <div className="w-full text-right justify-end my-4 jb">
-        <Pagination 
-        totalCount = {products?.counts}
-        />
+      <div className="w-full flex justify-center items-center my-8">
+        <div className="flex flex-col items-center">
+          <Pagination 
+            totalCount={products?.counts}
+          />
+        </div>
       </div>
-      <div className="w-full h-[500px]"></div>
     </div>
   );
 };

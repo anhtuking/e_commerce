@@ -239,8 +239,8 @@ const Dashboard = () => {
               <RxDashboard className="text-white text-2xl" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
-              <p className="text-gray-500">Overview of your store performance</p>
+              <h1 className="text-3xl font-bold text-gray-800">Thống kê</h1>
+              <p className="text-gray-500">Tổng quan hiển thị các thống kê của cửa hàng</p>
             </div>
           </div>
           <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
