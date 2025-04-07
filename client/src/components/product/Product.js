@@ -128,12 +128,12 @@ const Product = ({ productData, isNew, normal, navigate, dispatch, pid }) => {
           <div className="flex items-center gap-2">
             {productData?.price && (
               <span className="text-red-600 font-bold">
-                {`${formatPrice(productData?.price)} VND`}
+                {`${formatPrice(productData?.price)}`}
               </span>
             )}
             {productData?.priceOld && (
               <span className="text-gray-400 line-through text-sm">
-                {`${formatPrice(productData?.priceOld)} VND`}
+                {`${formatPrice(productData?.priceOld)}`}
               </span>
             )}
           </div>

@@ -15,7 +15,7 @@ const ProductCard = ({ image, title, totalRatings, price }) => {
             <span key={index}>{el}</span>
           ))}</span>
           <span className="capitalize font-semibold">{title?.toLowerCase()}</span>
-          <span className="text-red-500 font-bold">{`${formatPrice(price)} VND`}</span>
+          <span className="text-red-500 font-bold">{`${formatPrice(price)}`}</span>
         </div>
         </div>
       </div>

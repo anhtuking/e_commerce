@@ -13,7 +13,7 @@ import {
 } from "components";
 import Product from "components/product/Product";
 import { apiGetProducts } from "api/product";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Masonry from "react-masonry-css";
 import { sorts } from "../../utils/contants";
 
@@ -31,6 +31,7 @@ const Products = () => {
   const [params] = useSearchParams();
   const [sort, setSorts] = useState("");
   const { category } = useParams();
+  const categoryRef = useRef(null);
 
   const fetchProductsByCategory = async (queries) => {
     if (category && category !== 'products') queries.category = category
@@ -58,7 +59,11 @@ const Products = () => {
     const q = { ...priceQuery, ...queries };
 
     fetchProductsByCategory(q);
-    window.scrollTo(0,0)
+    if (categoryRef.current) {
+      categoryRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      window.scrollTo(0,0);
+    }
   }, [params]);
   const changeActiveFilter = useCallback(
     (name) => {
@@ -86,7 +91,7 @@ const Products = () => {
     <div className="w-full">
       <div className="h-[81px] flex justify-center items-center bg-gray-100">
         <div className="w-main">
-          <h3 className="font-semibold uppercase">{category}</h3>
+          <h3 ref={categoryRef} className="font-semibold uppercase">{category}</h3>
           <Breadcrumb category={category} />
         </div>
       </div>

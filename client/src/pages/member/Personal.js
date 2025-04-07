@@ -258,9 +258,11 @@ const Personal = ({dispatch}) => {
 
                 <div className="pt-4 border-t border-gray-200">
                   <p className="text-sm text-gray-500 mb-4">
+                    Mọi thông tin cá nhân của bạn được bảo mật và không được chia sẻ với bất kỳ ai khác.
+                  </p>
+                  <p className="text-sm text-gray-500 mb-4">
                     Bằng cách cập nhật thông tin cá nhân của bạn, bạn đồng ý với <a href="#" className="text-red-500 hover:underline">Điều khoản dịch vụ</a> và thừa nhận <a href="#" className="text-red-500 hover:underline">Chính sách bảo mật</a>.
                   </p>
-
                   {isDirty && (
                     <button
                       type="submit"

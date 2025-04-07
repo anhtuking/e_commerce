@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { apiGetProduct, apiGetProducts } from 'api/product';
 import { Breadcrumb, ProductExtraInfoItem, SelectQuantity, ProductInformation } from 'components';
@@ -52,6 +52,7 @@ const DetailProduct = ({ navigate, dispatch }) => {
     const [varriant, setVarriant] = useState(null)
     const [isAddingToCart, setIsAddingToCart] = useState(false)
     const [activeTab, setActiveTab] = useState('description')
+    const titleRef = useRef(null)
     const [currentProduct, setCurrentProduct] = useState({
         title: '',
         thumb: '',
@@ -104,7 +105,10 @@ const DetailProduct = ({ navigate, dispatch }) => {
             fetchProductData()
             fetchProducts()
         }
-        window.scroll(0, 0)
+        // window.scrollTo(0, 0)
+        if (titleRef.current) {
+            titleRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
     }, [pid])
 
     useEffect(() => {
@@ -174,7 +178,7 @@ const DetailProduct = ({ navigate, dispatch }) => {
         <div className='w-full bg-gray-50'>
             {/* Header & Breadcrumb */}
             <div className='bg-gradient-to-r from-gray-100 to-gray-200 shadow-sm'>
-                <div className='w-main mx-auto px-4 py-6'>
+                <div className='w-main mx-auto px-4 py-6' >
                     <div className='flex items-center gap-2 mb-3'>
                         <button
                             onClick={() => navigate(-1)}
@@ -183,7 +187,10 @@ const DetailProduct = ({ navigate, dispatch }) => {
                             <FaArrowLeft className='mr-2' /> Trở lại
                         </button>
                     </div>
-                    <h1 className='text-2xl md:text-3xl font-bold text-gray-800 mb-2'>
+                    <h1 
+                        ref={titleRef}
+                        className='text-2xl md:text-3xl font-bold text-gray-800 mb-2'
+                    >
                         {currentProduct?.title || product?.title}
                     </h1>
                     <div className='flex items-center flex-wrap gap-4 mb-2'>

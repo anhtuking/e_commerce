@@ -8,8 +8,8 @@ import { MdLocalFireDepartment } from 'react-icons/md';
 import { IoFlash } from 'react-icons/io5';
 
 const tabs = [
-  { id: 1, name: "Best Sellers", icon: <MdLocalFireDepartment className="text-orange-500" size={20} /> },
-  { id: 2, name: "New Arrivals", icon: <IoFlash className="text-blue-500" size={20} /> },
+  { id: 1, name: "Bán chạy nhất", icon: <MdLocalFireDepartment className="text-orange-500" size={20} /> },
+  { id: 2, name: "Mới nhất", icon: <IoFlash className="text-blue-500" size={20} /> },
 ];
 
 // Custom arrow components for the slider
@@ -135,7 +135,7 @@ const BestSellers = () => {
         
         {/* Decorative heading elements */}
         <div className="absolute right-0 top-1/2 -translate-y-1/2 hidden md:flex items-center gap-2">
-          <span className="text-gray-400 text-xs">{activeTab === 1 ? 'Top selling products' : 'Recently added items'}</span>
+          <span className="text-gray-400 text-xs">{activeTab === 1 ? 'Sản phẩm bán chạy nhất' : 'Sản phẩm mới nhất'}</span>
           <div className="w-20 h-0.5 bg-gray-200"></div>
           <div className="flex">
             {[1, 2, 3, 4, 5].map(star => (
@@ -150,7 +150,7 @@ const BestSellers = () => {
         {isLoading ? (
           <div className="min-h-[300px] flex flex-col items-center justify-center">
             <div className="animate-spin rounded-full h-14 w-14 border-4 border-gray-200 border-t-red-600"></div>
-            <p className="mt-4 text-gray-500 animate-pulse">Loading amazing products...</p>
+            <p className="mt-4 text-gray-500 animate-pulse">Đang tải sản phẩm...</p>
           </div>
         ) : (
           products && products.length > 0 ? (
@@ -173,7 +173,7 @@ const BestSellers = () => {
                 <svg className="w-16 h-16 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 14h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <p className="mt-4 text-gray-500">No products found</p>
+                <p className="mt-4 text-gray-500">Không tìm thấy sản phẩm</p>
               </div>
             </div>
           )

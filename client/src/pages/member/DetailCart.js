@@ -62,7 +62,7 @@ const DetailCart = ({ location, navigate, dispatch }) => {
             {currentCart?.length > 0 ? (
               <>
                 <div className='bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100'>
-                  <div className='bg-gradient-to-r from-gray-800 to-gray-700 text-white font-semibold grid grid-cols-10 py-4 px-6'>
+                  <div className='bg-gradient-to-r from-red-900 to-pink-900 text-white font-semibold grid grid-cols-10 py-4 px-6'>
                     <span className='col-span-1'>Chọn</span>
                     <span className='col-span-5'>Chi tiết sản phẩm</span>
                     <span className='col-span-1 text-center'>Số lượng</span>
@@ -108,14 +108,14 @@ const DetailCart = ({ location, navigate, dispatch }) => {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button
-                    handleOnClick={() => navigate(`/${path.HOME}`)}
+                    handleOnClick={() => navigate(`/${path.PRODUCTS}`)}
                     fw
                     className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg shadow-sm"
                   >
                     Xem sản phẩm
                   </Button>
                   <Button
-                    handleOnClick={() => navigate('/wishlist')}
+                    handleOnClick={() => navigate(`/${path.WISHLIST}`)}
                     className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-8 py-3 rounded-lg shadow-sm"
                   >
                     Xem danh sách yêu thích
@@ -166,7 +166,7 @@ const DetailCart = ({ location, navigate, dispatch }) => {
                   {shippingFee > 0 && (
                     <div className='text-sm flex items-start gap-2 bg-red-50 p-3 rounded-lg'>
                       <FaInfoCircle className="text-red-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-red-700">Thêm <span className="font-semibold">{formatPrice(2000000 - cartTotal)} VND</span> để miễn phí vận chuyển</span>
+                      <span className="text-red-700">Thêm <span className="font-semibold">{formatPrice(2000000 - cartTotal)} VND</span> để được áp dụng <a href="/member/my-cart" className="text-green-600 hover:underline font-semibold">miễn phí vận chuyển</a></span>
                     </div>
                   )}
                 </div>

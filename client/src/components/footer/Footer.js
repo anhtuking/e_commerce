@@ -15,15 +15,15 @@ const Footer = () => {
   return (
     <div className="w-full">
       {/* Newsletter Section with Gradient Background */}
-      <div className="py-8 bg-gradient-to-r from-red-700 to-pink-600 w-full">
+      <div className="py-8 bg-gradient-to-r from-red-900 to-pink-900 w-full">
         <div className="w-main mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex flex-col text-center md:text-left mb-4 md:mb-0">
               <span className="text-2xl font-bold text-white tracking-wide">
-                SIGN UP TO NEWSLETTER
+                ĐĂNG KÍ NHẬN TIN
               </span>
               <span className="text-sm text-gray-200 mt-1">
-                Subscribe now and receive weekly newsletter with exclusive offers
+                Đăng kí ngay và nhận bản tin tuần hàng tuần với các ưu đãi độc quyền
               </span>
             </div>
             <div className="flex w-full md:w-1/2 relative">
@@ -31,11 +31,11 @@ const Footer = () => {
                 className="p-4 rounded-l-full w-full bg-white bg-opacity-90 outline-none text-gray-800 h-[55px]
                 placeholder:text-sm placeholder:text-gray-600 placeholder:italic shadow-inner"
                 type="text"
-                placeholder="Email address"
+                placeholder="Địa chỉ email của bạn"
               />
               <button className="h-[55px] px-6 bg-gray-900 hover:bg-black transition-colors duration-300 rounded-r-full flex items-center justify-center text-white cursor-pointer">
-                <MdEmail size={18} className="mr-2" />
-                <span className="hidden md:inline text-sm font-medium">Subscribe</span>
+                <MdEmail size={30} className="mr-2" />
+                <span className="hidden md:inline text-sm font-medium">Đăng kí</span>
               </button>
             </div>
           </div>
@@ -43,7 +43,7 @@ const Footer = () => {
       </div>
       
       {/* Main Footer Content */}
-      <div className="py-12 w-full bg-gray-900 text-white">
+      <div className="py-12 w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white">
         <div className="w-main mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* About Us Section */}
           <div className="flex flex-col gap-4">
@@ -52,15 +52,15 @@ const Footer = () => {
             </h3>
             <p className="flex items-center gap-3 text-gray-300 hover:text-white transition duration-300">
               <GiPositionMarker className="text-red-500 flex-shrink-0" />
-              <span><strong>Address:</strong> Da Nang, Viet Nam</span>
+              <span><strong>Địa chỉ:</strong> Đà Nẵng, Việt Nam</span>
             </p>
             <p className="flex items-center gap-3 text-gray-300 hover:text-white transition duration-300">
               <FaPhoneAlt className="text-red-500 flex-shrink-0" />
-              <span><strong>Phone:</strong> (+84) 000 8386 008</span>
+              <span><strong>Điện thoại:</strong> (+84) 000 8386 008</span>
             </p>
             <p className="flex items-center gap-3 text-gray-300 hover:text-white transition duration-300">
               <MdEmail className="text-red-500 flex-shrink-0" />
-              <span><strong>Mail:</strong> duonganhtu@gmail.com</span>
+              <span><strong>Email:</strong> duonganhtu@gmail.com</span>
             </p>
             
             {/* Social Icons */}
@@ -101,73 +101,73 @@ const Footer = () => {
           {/* Information Section */}
           <div className="flex flex-col gap-3">
             <h3 className="text-lg font-bold border-l-4 border-red-500 pl-3 mb-5">
-              INFORMATION
+              THÔNG TIN
             </h3>
             <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
-              <span className="border-b border-transparent hover:border-red-500 pb-1">Typography</span>
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Chính sách bảo mật</span>
             </a>
             <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
-              <span className="border-b border-transparent hover:border-red-500 pb-1">Gallery</span>
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Điều khoản dịch vụ</span>
             </a>
             <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
-              <span className="border-b border-transparent hover:border-red-500 pb-1">Store Location</span>
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Địa chỉ cửa hàng</span>
             </a>
             <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
-              <span className="border-b border-transparent hover:border-red-500 pb-1">Today's Deals</span>
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Tuyển dụng</span>
             </a>
             <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
-              <span className="border-b border-transparent hover:border-red-500 pb-1">Contact</span>
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Liên hệ</span>
             </a>
           </div>
           
           {/* Who We Are Section */}
           <div className="flex flex-col gap-3">
             <h3 className="text-lg font-bold border-l-4 border-red-500 pl-3 mb-5">
-              WHO WE ARE
+              CHÚNG TÔI LÀ AI
             </h3>
             <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
-              <span className="border-b border-transparent hover:border-red-500 pb-1">Help</span>
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Hỗ trợ</span>
             </a>
             <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
-              <span className="border-b border-transparent hover:border-red-500 pb-1">Free Shipping</span>
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Miễn phí vận chuyển</span>
             </a>
             <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
-              <span className="border-b border-transparent hover:border-red-500 pb-1">FAQs</span>
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Câu hỏi thường gặp</span>
             </a>
             <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
-              <span className="border-b border-transparent hover:border-red-500 pb-1">Return & Exchange</span>
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Trả hàng và đổi trả</span>
             </a>
             <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
-              <span className="border-b border-transparent hover:border-red-500 pb-1">Testimonials</span>
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Đánh giá khách hàng</span>
             </a>
           </div>
           
           {/* Services Section */}
           <div className="flex flex-col gap-3">
             <h3 className="text-lg font-bold border-l-4 border-red-500 pl-3 mb-5">
-              SERVICES OTHER
+              DỊCH VỤ KHÁC
             </h3>
             <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
-              <span className="border-b border-transparent hover:border-red-500 pb-1">Business customers (B2B)</span>
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Khách hàng doanh nghiệp (B2B)</span>
             </a>
             <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
-              <span className="border-b border-transparent hover:border-red-500 pb-1">Payment incentives</span>
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Các ưu đãi thanh toán</span>
             </a>
             <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
-              <span className="border-b border-transparent hover:border-red-500 pb-1">Operating regulations</span>
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Các quy định hoạt động</span>
             </a>
             <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
-              <span className="border-b border-transparent hover:border-red-500 pb-1">Recruitment</span>
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Tuyển dụng</span>
             </a>
             <a href="/" className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300 flex items-center">
-              <span className="border-b border-transparent hover:border-red-500 pb-1">Warranty policy</span>
+              <span className="border-b border-transparent hover:border-red-500 pb-1">Chính sách bảo hành</span>
             </a>
           </div>
         </div>
       </div>
       
       {/* Footer Bottom */}
-      <div className="bg-gray-950 py-6">
+      <div className="bg-gradient-to-r from-gray-900 to-gray-800 py-6">
         <div className="w-main mx-auto px-4 flex flex-col items-center justify-center">
           <div className="flex items-center justify-center mb-4">
             <img
@@ -177,7 +177,7 @@ const Footer = () => {
             />
           </div>
           <div className="text-gray-400 text-center text-sm">
-            <p>Wish customers have the best service experience in Marseille</p>
+            <p>Hy vọng khách hàng có trải nghiệm dịch vụ tốt nhất tại Marseille</p>
             <p className="mt-1">Copyright © 2025 ATKING theme. Created by ATKING</p>
           </div>
         </div>

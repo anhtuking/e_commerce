@@ -6,8 +6,9 @@ import DealDaily from "components/product/DealDaily";
 import FeatureProducts from "components/product/FeatureProducts";
 import { useSelector } from "react-redux";
 import icons from "utils/icons";
-import { Link } from "react-router-dom";
+import { createSearchParams, Link } from "react-router-dom";
 import path from "utils/path";
+import withBase from "hocs/withBase";
 
 const { IoMdArrowDropright, BsArrowRight } = icons;
 
@@ -39,7 +40,7 @@ const blogPosts = [
   }
 ];
 
-const Home = () => {
+const Home = ({ navigate }) => {
   const { categories } = useSelector((state) => state.app);
 
   return (
@@ -101,11 +102,22 @@ const Home = () => {
               <div>
                 <h4 className="text-lg font-semibold text-gray-800 mb-2">{el.title}</h4>
                 <ul className="list-none text-gray-600">
-                  {el?.brand?.map((item, index) => (
-                    <li key={index} className="mt-1 flex items-center gap-1 text-sm hover:text-main transition-colors">
-                      <IoMdArrowDropright className="text-gray-500" />
-                      <Link to={`/${path.PRODUCTS}?brand=${item}`}>{item}</Link>
-                    </li>
+                  {el?.brand?.map((item) => (
+                    <span
+                      key={item}
+                      className="flex gap-1 items-center text-gray-500 hover:text-main transition-colors hover:underline cursor-pointer"
+                      onClick={() => 
+                        navigate({
+                          pathname: `/${el.title}`,
+                          search: createSearchParams({
+                            brand: item
+                          }).toString()
+                        })
+                      }
+                    >
+                      <IoMdArrowDropright className="text-gray-500" size={12}/>
+                      <li>{item}</li>
+                    </span>
                   ))}
                 </ul>
               </div>
@@ -165,26 +177,8 @@ const Home = () => {
           ))}
         </div>
       </div>
-      
-      {/* Newsletter Subscription */}
-      <div className="w-full bg-gray-100 py-12 mb-10">
-        <div className="w-main mx-auto text-center">
-          <h3 className="text-2xl font-bold text-gray-800 mb-4">Subscribe To Our Newsletter</h3>
-          <p className="text-gray-600 mb-6 max-w-xl mx-auto">Stay updated with our latest offers, product launches, and tech news by joining our newsletter.</p>
-          <div className="flex flex-col sm:flex-row gap-2 justify-center max-w-lg mx-auto">
-            <input 
-              type="email" 
-              placeholder="Your email address" 
-              className="flex-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-main"
-            />
-            <button className="bg-main hover:bg-main-dark text-white font-medium px-6 py-3 rounded-md transition-colors">
-              Subscribe
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
 
-export default Home;
+export default withBase(Home);

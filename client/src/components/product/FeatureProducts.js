@@ -234,13 +234,13 @@ const FeatureProducts = () => {
     <div className="w-full">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-2xl font-bold text-gray-800 border-b-2 border-main pb-2">
-        FEATURED PRODUCTS
-      </h3>
+          SẢN PHẨM NỔI BẬT
+        </h3>
         <Link 
           to={`/${path.PRODUCTS}`} 
           className="flex items-center gap-1 text-gray-600 hover:text-main transition-colors"
         >
-          View all products
+          Xem tất cả sản phẩm
           <BsArrowRight />
         </Link>
       </div>
@@ -254,13 +254,6 @@ const FeatureProducts = () => {
               alt="Promotion 1" 
               className="w-full h-[200px] md:h-[300px] object-cover rounded-lg"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent flex flex-col justify-center px-8">
-              <h3 className="text-white text-2xl md:text-3xl font-bold mb-2">Giảm giá mùa hè</h3>
-              <p className="text-white text-sm md:text-base mb-4">Giảm giá lên đến 50% trên các sản phẩm được chọn</p>
-              <Link to={`/${path.HOME}`} className="bg-main text-white px-4 py-2 rounded-full w-max hover:bg-red-700 transition-colors">
-                Mua ngay
-              </Link>
-            </div>
           </div>
           <div className="relative">
             <img 
@@ -268,13 +261,6 @@ const FeatureProducts = () => {
               alt="Promotion 2" 
               className="w-full h-[200px] md:h-[300px] object-cover rounded-lg"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent flex flex-col justify-center px-8">
-              <h3 className="text-white text-2xl md:text-3xl font-bold mb-2">Công nghệ mới xuất hiện</h3>
-              <p className="text-white text-sm md:text-base mb-4">Tìm hiểu về công nghệ mới nhất với bộ sưu tập các thiết bị công nghệ tiên tiến và điện tử. Chất lượng và hiệu suất tốt nhất với giá cả không thể đối kháng.</p>
-              <Link to={`/${path.HOME}`} className="bg-main text-white px-4 py-2 rounded-full w-max hover:bg-red-700 transition-colors">
-                Tìm hiểu thêm
-              </Link>
-            </div>
           </div>
         </Slider>
       </div>
@@ -362,7 +348,7 @@ const FeatureProducts = () => {
                 className="flex items-center gap-2 bg-white border border-gray-300 hover:border-main text-gray-700 px-6 py-2 rounded-full shadow-sm transition-colors"
               >
                 <IoMdAddCircleOutline size={20} />
-                <span>Load more products</span>
+                <span>Tải thêm sản phẩm</span>
               </button>
             </div>
           )}
@@ -370,8 +356,8 @@ const FeatureProducts = () => {
       ) : (
         <div className="min-h-[300px] flex flex-col items-center justify-center bg-white rounded-lg p-8">
           <FaFilter className="text-gray-300 text-5xl mb-4" />
-          <h4 className="text-xl font-semibold text-gray-600 mb-2">No products found</h4>
-          <p className="text-gray-500">Try changing your filters or search term</p>
+          <h4 className="text-xl font-semibold text-gray-600 mb-2">Không tìm thấy sản phẩm</h4>
+          <p className="text-gray-500">Hãy thay đổi các bộ lọc hoặc từ khóa tìm kiếm</p>
         </div>
       )}
       
