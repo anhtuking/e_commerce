@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
-import { InputForm, Pagination } from "components";
+import { InputForm, Pagination, CouponForm } from "components";
 import { useForm } from "react-hook-form";
 import moment from "moment";
 import {
@@ -12,157 +12,7 @@ import { FaTrash, FaEdit, FaTag, FaCalendarAlt, FaPercentage } from "react-icons
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import withBase from "hocs/withBase";
-import { apiGetAllCoupons, apiCreateCoupon, apiUpdateCoupon, apiDeleteCoupon } from "api/coupon";
-
-const CouponForm = ({ onSubmit, initialData, onCancel }) => {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm();
-  const [expiryDays, setExpiryDays] = useState(initialData?.expiryDays || 7);
-
-  useEffect(() => {
-    if (initialData) {
-      // Tính số ngày từ ngày hiện tại đến ngày hết hạn
-      if (initialData.expiry) {
-        const expiryDate = new Date(initialData.expiry);
-        const currentDate = new Date();
-        const diffTime = expiryDate - currentDate;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        setExpiryDays(diffDays > 0 ? diffDays : 7);
-      }
-
-      reset({
-        name: initialData.name,
-        discount: initialData.discount,
-      });
-    }
-  }, [initialData, reset]);
-
-  const handleFormSubmit = async (data) => {
-    try {
-      const couponData = {
-        ...data,
-        expiry: expiryDays
-      };
-      
-      let response;
-      if (initialData?._id) {
-        response = await apiUpdateCoupon(initialData._id, couponData);
-      } else {
-        response = await apiCreateCoupon(couponData);
-      }
-      
-      if (response.data.success) {
-        toast.success(initialData ? 'Cập nhật mã giảm giá thành công!' : 'Tạo mã giảm giá thành công!');
-        reset();
-        onSubmit();
-      } else {
-        toast.error(response.data.mes || 'Đã xảy ra lỗi!');
-      }
-    } catch (error) {
-      console.error('Error creating/updating coupon:', error);
-      toast.error(error.response?.data?.mes || 'Đã xảy ra lỗi!');
-    }
-  };
-
-  return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-bold mb-4 text-gray-800">
-        {initialData ? 'Cập nhật mã giảm giá' : 'Tạo mã giảm giá mới'}
-      </h2>
-      
-      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-        <div>
-          <label className="block text-gray-700 text-sm font-medium mb-1">Tên mã giảm giá</label>
-          <InputForm
-            id="name"
-            register={register}
-            errors={errors}
-            validate={{ 
-              required: "Tên mã giảm giá không được để trống",
-              minLength: {
-                value: 3,
-                message: "Tên mã giảm giá phải có ít nhất 3 ký tự"
-              },
-              maxLength: {
-                value: 15,
-                message: "Tên mã giảm giá không được vượt quá 15 ký tự"
-              },
-              pattern: {
-                value: /^[A-Za-z0-9]+$/,
-                message: "Tên mã giảm giá chỉ được chứa chữ cái và số"
-              }
-            }}
-            placeholder="Nhập tên mã giảm giá (ví dụ: SUMMER2023)"
-            fullWidth
-          />
-          <p className="text-gray-500 text-xs mt-1 italic">
-            Tên mã giảm giá sẽ được tự động chuyển thành chữ hoa
-          </p>
-        </div>
-        
-        <div>
-          <label className="block text-gray-700 text-sm font-medium mb-1">Giá trị giảm giá (%)</label>
-          <InputForm
-            id="discount"
-            register={register}
-            errors={errors}
-            validate={{ 
-              required: "Giá trị giảm giá không được để trống",
-              min: {
-                value: 1,
-                message: "Giá trị giảm giá tối thiểu là 1%"
-              },
-              max: {
-                value: 99,
-                message: "Giá trị giảm giá tối đa là 99%"
-              },
-              pattern: {
-                value: /^[0-9]+$/,
-                message: "Giá trị giảm giá phải là số"
-              }
-            }}
-            placeholder="Nhập % giảm giá (ví dụ: 10)"
-            fullWidth
-            type="number"
-          />
-        </div>
-        
-        <div>
-          <label className="block text-gray-700 text-sm font-medium mb-1">Thời hạn (ngày)</label>
-          <div className="flex items-center">
-            <input
-              type="range"
-              min="1"
-              max="90"
-              value={expiryDays}
-              onChange={(e) => setExpiryDays(parseInt(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-            />
-            <span className="ml-4 text-gray-700 font-medium w-12">{expiryDays}</span>
-          </div>
-          <p className="text-gray-500 text-xs mt-1">
-            Mã giảm giá có hiệu lực trong {expiryDays} ngày kể từ hôm nay
-          </p>
-        </div>
-        
-        <div className="flex justify-end space-x-3 pt-4">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md text-gray-800"
-          >
-            Hủy
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white"
-          >
-            {initialData ? 'Cập nhật' : 'Tạo mới'}
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-};
+import { apiGetAllCoupons, apiDeleteCoupon } from "api/coupon";
 
 const ManageCoupon = ({ dispatch, navigate }) => {
   const {
@@ -175,31 +25,36 @@ const ManageCoupon = ({ dispatch, navigate }) => {
   const [params] = useSearchParams();
   const location = useLocation();
   const [editCoupon, setEditCoupon] = useState(null);
-  const [isCreating, setIsCreating] = useState(false);
-  const [update, setUpdate] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(false);
   const cacheRef = useRef({});
   const fetchInProgressRef = useRef(false);
 
   const render = useCallback(() => {
-    setUpdate((prev) => !prev);
+    setShowForm((prev) => !prev);
   }, []);
 
   const fetchCoupons = useCallback(async () => {
     if (fetchInProgressRef.current) return;
     fetchInProgressRef.current = true;
 
-    setIsLoading(true);
+    setLoading(true);
     try {
       const response = await apiGetAllCoupons();
-      if (response.data.success) {
-        setCoupons(response.data.coupons);
-        setCounts(response.data.coupons.length);
+      console.log('Coupon response:', response); // For debugging
+      if (response?.success) {
+        setCoupons(response.coupons || []);
+        setCounts(response.coupons?.length || 0);
+        console.log(response.coupons);
+      } else {
+        console.error('API Response:', response);
+        toast.error(response?.mes || "Không thể tải danh sách mã giảm giá");
       }
     } catch (error) {
-      toast.error("Không thể tải danh sách mã giảm giá");
+      console.error('Error fetching coupons:', error);
+      toast.error(error?.mes || "Không thể tải danh sách mã giảm giá");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
       fetchInProgressRef.current = false;
     }
   }, []);
@@ -223,7 +78,7 @@ const ManageCoupon = ({ dispatch, navigate }) => {
 
   useEffect(() => {
     fetchCoupons();
-  }, [fetchCoupons, update]);
+  }, [fetchCoupons]);
 
   const handleDeleteCoupon = (cid) => {
     Swal.fire({
@@ -237,28 +92,34 @@ const ManageCoupon = ({ dispatch, navigate }) => {
       if (result.isConfirmed) {
         try {
           const response = await apiDeleteCoupon(cid);
-          if (response.data.success) {
+          if (response?.success) {
             toast.success("Xóa mã giảm giá thành công");
-            render();
+            fetchCoupons();
           } else {
-            toast.error(response.data.mes || "Xóa mã giảm giá thất bại");
+            toast.error(response?.mes || "Xóa mã giảm giá thất bại");
           }
         } catch (error) {
-          toast.error("Xóa mã giảm giá thất bại");
+          console.error('Error deleting coupon:', error);
+          toast.error(error?.mes || "Xóa mã giảm giá thất bại");
         }
       }
     });
   };
 
-  const handleSubmitForm = () => {
+  const handleEdit = (coupon) => {
+    setEditCoupon(coupon);
+    setShowForm(true);
+  };
+
+  const handleFormSubmit = () => {
+    setShowForm(false);
     setEditCoupon(null);
-    setIsCreating(false);
-    render();
+    fetchCoupons();
   };
 
   const handleCancel = () => {
+    setShowForm(false);
     setEditCoupon(null);
-    setIsCreating(false);
   };
 
   // Lọc và tìm kiếm coupons
@@ -277,12 +138,12 @@ const ManageCoupon = ({ dispatch, navigate }) => {
   return (
     <div className="p-6 bg-gray-100 min-h-screen relative">
       {/* Form chỉnh sửa hoặc tạo mới */}
-      {(editCoupon || isCreating) && (
+      {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <CouponForm
-              onSubmit={handleSubmitForm}
               initialData={editCoupon}
+              onSubmit={handleFormSubmit}
               onCancel={handleCancel}
             />
           </div>
@@ -306,7 +167,7 @@ const ManageCoupon = ({ dispatch, navigate }) => {
       <div className="flex justify-between items-center px-4 mb-6">
         <button
           className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow-sm flex items-center"
-          onClick={() => setIsCreating(true)}
+          onClick={() => setShowForm(true)}
         >
           <span className="mr-2">+</span> Tạo mã giảm giá mới
         </button>
@@ -322,7 +183,7 @@ const ManageCoupon = ({ dispatch, navigate }) => {
       </div>
 
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
-        {isLoading && (
+        {loading && (
           <div className="flex justify-center items-center py-4">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500"></div>
           </div>
@@ -339,7 +200,7 @@ const ManageCoupon = ({ dispatch, navigate }) => {
               <th className="p-3 border">Hành động</th>
             </tr>
           </thead>
-          <tbody className={isLoading ? "opacity-50" : ""}>
+          <tbody className={loading ? "opacity-50" : ""}>
             {filteredCoupons.map((coupon, index) => (
               <tr
                 key={coupon._id}
@@ -374,7 +235,7 @@ const ManageCoupon = ({ dispatch, navigate }) => {
                   <button
                     className="text-blue-600 hover:text-blue-800 transition"
                     type="button"
-                    onClick={() => setEditCoupon(coupon)}
+                    onClick={() => handleEdit(coupon)}
                     title="Chỉnh sửa"
                   >
                     <FaEdit size={18} />
@@ -392,7 +253,7 @@ const ManageCoupon = ({ dispatch, navigate }) => {
             ))}
           </tbody>
         </table>
-        {filteredCoupons.length === 0 && !isLoading && (
+        {filteredCoupons.length === 0 && !loading && (
           <div className="text-center py-8 text-gray-500">
             {queryDebounce ? "Không tìm thấy mã giảm giá phù hợp" : "Chưa có mã giảm giá nào"}
           </div>

@@ -20,6 +20,7 @@ const Checkout = ({ dispatch }) => {
   const navigate = useNavigate();
   const { current } = useSelector((state) => state.user);
   const { currentCart } = useSelector((state) => state.user);
+  const appliedCoupon = JSON.parse(localStorage.getItem("applied_coupon")) || null;
 
   // State cho thông tin thanh toán với mặc định paymentMethod là "vnpay"
   const [paymentInfo, setPaymentInfo] = useState({
@@ -45,13 +46,12 @@ const Checkout = ({ dispatch }) => {
   }, [currentCart, navigate]);
 
   // Tính toán tổng tiền
-  const cartTotal =
-    currentCart?.reduce(
-      (sum, el) => sum + +el.product?.price * el.quantity,
-      0
-    ) || 0;
+  const discount = appliedCoupon?.discount || 0;
+
+  const cartTotal = currentCart?.reduce((sum, el) => sum + +el.product?.price * el.quantity, 0) || 0;
   const shippingFee = cartTotal > 2000000 ? 0 : 55000;
-  const orderTotal = cartTotal + shippingFee;
+  const orderTotal = cartTotal - discount + shippingFee;
+
 
   // Xử lý thay đổi thông tin
   const handleChange = (e) => {
@@ -346,6 +346,12 @@ const Checkout = ({ dispatch }) => {
                 ))}
 
                 <div className="border-t border-gray-200 pt-4">
+                  {appliedCoupon && (
+                    <div className="flex justify-between text-sm mb-1 text-green-700 font-semibold">
+                      <span>Mã giảm giá:</span>
+                      <span>{appliedCoupon.code} (-{formatPrice(appliedCoupon.discount)}đ)</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-sm text-gray-600">
                     <span>Tạm tính:</span>
                     <span>{formatPrice(cartTotal)} VND</span>
@@ -380,8 +386,7 @@ const Checkout = ({ dispatch }) => {
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <FaMoneyBillWave className="text-red-500" size={30} />
                     <span>
-                      Thanh toán an toàn qua thẻ tín dụng, chuyển khoản ngân
-                      hàng
+                      Thanh toán an toàn qua thẻ tín dụng, chuyển khoản ngân hàng
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-600">

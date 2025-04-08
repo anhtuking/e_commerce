@@ -98,17 +98,17 @@ const Products = () => {
       <div className="w-main border-item p-4 flex justify-between mt-8 m-auto">
         <div className="w-4/5 flex-auto flex flex-col gap-3">
           <span className="font-main2 font-bold text-sm uppercase">
-            Filter by:
+          Lọc theo:
           </span>
           <div className="flex items-center gap-4">
             <SearchItems
-              name="Price"
+              name="Giá"
               activeClick={activeClick}
               changeActiveFilter={changeActiveFilter}
               type="input"
             />
             <SearchItems
-              name="Color"
+              name="Màu"
               activeClick={activeClick}
               changeActiveFilter={changeActiveFilter}
             />
@@ -116,7 +116,7 @@ const Products = () => {
         </div>
         <div className="w-1/5 flex-col flex">
           <span className="font-main2 font-bold text-sm uppercase">
-            Sort by:
+          Sắp xếp theo:
           </span>
           <div className="w-full">
             <InputSelect

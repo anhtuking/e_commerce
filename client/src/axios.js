@@ -42,28 +42,25 @@ instance.interceptors.response.use(function (response) {
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
-      return {
+      return Promise.reject({
         success: false,
-        message: error.response.data?.mes || 'Server error',
-        statusCode: error.response.status,
-        mes: error.response.data?.mes || 'Server error'
-      };
+        mes: error.response.data?.mes || 'Server error',
+        status: error.response.status
+      });
     } else if (error.request) {
       // The request was made but no response was received
-      return {
+      return Promise.reject({
         success: false,
-        message: 'No response from server. Please check your connection',
         mes: 'No response from server. Please check your connection',
-        statusCode: 503
-      };
+        status: 503
+      });
     } else {
       // Something happened in setting up the request that triggered an Error
-      return {
+      return Promise.reject({
         success: false,
-        message: error.message || 'Unknown error occurred',
         mes: error.message || 'Unknown error occurred',
-        statusCode: 500
-      };
+        status: 500
+      });
     }
   });
 

@@ -32,7 +32,7 @@ export const renderStarFromNumber = (number, size) => {
 };
 
 export function secondsToHms(d) {
-  d = Number(d) / 1000; // d đang là mili seconds nên sẽ chia cho 1000 để ra secondsseconds
+  d = Number(d) / 1000; // d đang là mili seconds nên sẽ chia cho 1000 để ra seconds
   const h = Math.floor(d / 3600);
   const m = Math.floor((d % 3600) / 60);
   const s = Math.floor((d % 3600) % 60);

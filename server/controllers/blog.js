@@ -2,8 +2,8 @@ const Blog = require("../models/blog");
 const asyncHandler = require("express-async-handler");
 
 const createNewBlog = asyncHandler(async (req, res) => {
-    const {title, description, category} = req.body
-    if (!title || !description || !category) throw new Error('Missing value')
+    const {title, description, category, author} = req.body
+    if (!title || !description || !category || !author) throw new Error('Missing value')
     const response = await Blog.create(req.body)
     return res.status(200).json({
         success: response ? true : false,
@@ -12,12 +12,19 @@ const createNewBlog = asyncHandler(async (req, res) => {
 });
 
 const getAllBlogs = asyncHandler(async (req, res) => {
-    const response = await Blog.find()
-    return res.status(200).json({
-        success: response ? true : false,
-        blogs: response ? response : 'Cannot get all Blogs'
-    })
+    try {
+        const blogs = await Blog.find()
+            .sort({ createdAt: -1 });
+        return res.status(200).json({
+            success: true,
+            blogs: blogs || [],
+            count: blogs?.length || 0
+        });
+    } catch (error) {
+        throw new Error('Lỗi khi lấy danh sách bài viết');
+    }
 });
+
 
 const updateBlog = asyncHandler(async (req, res) => {
     const {bid} = req.params
@@ -30,12 +37,12 @@ const updateBlog = asyncHandler(async (req, res) => {
 });
 
 const deleteBlog = asyncHandler(async (req, res) => {
-    const {bid} = req.params
-    const response = await Blog.findByIdAndDelete(bid, req.body, {new: true})
+    const {bid} = req.params;
+    const response = await Blog.findByIdAndDelete(bid);
     return res.status(200).json({
         success: response ? true : false,
         deletedBlog: response ? response : 'Cannot delete Blog'
-    })
+    });
 });
 
 // LIKE & DISLIKE the Blog

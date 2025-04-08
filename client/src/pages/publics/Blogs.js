@@ -10,72 +10,9 @@ import {
   BiLeftArrowAlt
 } from 'react-icons/bi';
 import { FaTags, FaRegBookmark } from 'react-icons/fa';
+import { apiGetAllBlogs } from 'api/blog';
 
-// Sample blog data
-const blogPosts = [
-  {
-    id: 1,
-    title: 'The Future of Smartphone Technology in 2025',
-    excerpt: 'Explore the upcoming trends and innovations that will shape the smartphone industry in the next few years, from foldable displays to AI integration.',
-    image: 'https://images.unsplash.com/photo-1616348436168-de43ad0db179?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c21hcnRwaG9uZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60',
-    category: 'Technology',
-    author: 'David Chen',
-    date: 'May 15, 2023',
-    comments: 24
-  },
-  {
-    id: 2,
-    title: 'How to Choose the Perfect Laptop for Your Needs',
-    excerpt: 'Buying a new laptop can be overwhelming with countless options available. This guide will help you identify what features matter most based on your specific needs.',
-    image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bGFwdG9wfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60',
-    category: 'Buying Guide',
-    author: 'Sarah Johnson',
-    date: 'April 28, 2023',
-    comments: 42
-  },
-  {
-    id: 3,
-    title: 'Wearable Tech: Beyond Fitness Tracking',
-    excerpt: 'Wearable technology has evolved far beyond step counting. Discover how smartwatches and other wearables are becoming essential health and productivity tools.',
-    image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8c21hcnR3YXRjaHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60',
-    category: 'Gadgets',
-    author: 'Michael Park',
-    date: 'April 15, 2023',
-    comments: 18
-  },
-  {
-    id: 4,
-    title: 'The Evolution of Virtual Reality Technology',
-    excerpt: 'From gaming to professional training, virtual reality is transforming numerous industries. Learn about the latest advancements and what\'s coming next.',
-    image: 'https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dmlydHVhbCUyMHJlYWxpdHl8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60',
-    category: 'Technology',
-    author: 'Emily Zhang',
-    date: 'March 30, 2023',
-    comments: 31
-  },
-  {
-    id: 5,
-    title: 'Smart Home Essentials for Beginners',
-    excerpt: 'Ready to make your home smarter? This beginner-friendly guide covers the essential devices to get started with building an integrated smart home system.',
-    image: 'https://images.unsplash.com/photo-1558002038-1055e2cf8a69?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c21hcnQlMjBob21lfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60',
-    category: 'Smart Home',
-    author: 'Robert Wilson',
-    date: 'March 18, 2023',
-    comments: 27
-  },
-  {
-    id: 6,
-    title: 'Cybersecurity Tips Everyone Should Follow',
-    excerpt: 'In an increasingly digital world, protecting your personal information is crucial. Learn these essential cybersecurity practices to keep your data safe.',
-    image: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y3liZXJzZWN1cml0eXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60',
-    category: 'Security',
-    author: 'Jennifer Lee',
-    date: 'February 24, 2023',
-    comments: 45
-  }
-];
-
-// Categories
+// Nếu cần, bạn vẫn có thể giữ lại dữ liệu mẫu cho các phần khác như Categories, Popular Posts, Tags:
 const categories = [
   { name: 'Technology', count: 15 },
   { name: 'Buying Guide', count: 8 },
@@ -86,39 +23,37 @@ const categories = [
   { name: 'News', count: 18 }
 ];
 
-// Popular posts
 const popularPosts = [
   {
     id: 1,
     title: 'Top 10 Smartphones of 2023',
     date: 'June 10, 2023',
-    image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cGhvbmV8ZW58MHwwfDB8fHww&auto=format&fit=crop&w=800&q=60'
+    image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60'
   },
   {
     id: 2,
     title: 'The Ultimate Guide to Mechanical Keyboards',
     date: 'May 28, 2023',
-    image: 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8a2V5Ym9hcmR8ZW58MHwwfDB8fHww&auto=format&fit=crop&w=800&q=60'
+    image: 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60'
   },
   {
     id: 3,
     title: 'How AI is Changing the Tech Industry',
     date: 'May 15, 2023',
-    image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8QUl8ZW58MHwwfDB8fHww&auto=format&fit=crop&w=800&q=60'
+    image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60'
   },
   {
     id: 4,
     title: 'Best Budget Earbuds for 2023',
     date: 'April 30, 2023',
-    image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZWFyYnVkc3xlbnwwfDB8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60'
+    image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60'
   }
 ];
 
-// Tags
 const tags = [
   'Smartphones', 'Laptops', 'Wearables', 'Gaming', 'AI',
   'IoT', 'Headphones', 'Cameras', 'Speakers', 'Accessories',
-  'Apple', 'Samsung', 'Google', 'Reviews', 'Tips'
+  'Apple', 'Samsung', 'Reviews', 'Tips'
 ];
 
 const Blogs = () => {
@@ -126,21 +61,36 @@ const Blogs = () => {
   const [blogData, setBlogData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Simulate data loading
-    const timer = setTimeout(() => {
-      setBlogData(blogPosts);
-      setLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
+  // Xử lý tìm kiếm (nếu cần)
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
-    return (
+  // Call API lấy blog từ MongoDB, thay vì sử dụng dữ liệu mẫu
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const response = await apiGetAllBlogs();
+        if (response.success) {
+          // Nếu API không có trường excerpt, bạn có thể tạo nó (ví dụ: cắt ngắn description)
+          const blogsWithExcerpt = response.blogs.map(blog => ({
+            ...blog,
+            excerpt: blog.description ? blog.description.substring(0, 150) + '...' : '',
+            // Chuyển createdAt thành định dạng ngày nếu cần
+            date: new Date(blog.createdAt).toLocaleDateString()
+          }));
+          setBlogData(blogsWithExcerpt);
+        }
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBlogs();
+  }, []);
+
+  return (
     <div className="w-full bg-gray-50 min-h-screen pb-16">
       {/* Header */}
       <div className="h-[81px] flex justify-start items-start bg-gray-100">
@@ -176,14 +126,15 @@ const Blogs = () => {
               </div>
             ) : (
               <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
-                <h2 className="text-2xl font-semibold text-gray-800 mb-6 border-b border-gray-100 pb-3">Latest Articles
+                <h2 className="text-2xl font-semibold text-gray-800 mb-6 border-b border-gray-100 pb-3">
+                  Latest Articles
                   <p className="text-gray-400 text-sm">
                     Discover the latest news, tips, and insights about technology and digital products
                   </p>
                 </h2>
                 <div className="grid grid-cols-1 gap-8">
                   {blogData.map((post) => (
-                    <div className="flex flex-col md:flex-row gap-6 border-b border-gray-100 pb-8 last:border-b-0 last:pb-0">
+                    <div key={post._id} className="flex flex-col md:flex-row gap-6 border-b border-gray-100 pb-8 last:border-b-0 last:pb-0">
                       <div className="md:w-1/3 overflow-hidden rounded-lg group">
                         <div className="relative h-60 md:h-48 overflow-hidden rounded-lg">
                           <img
@@ -203,15 +154,16 @@ const Blogs = () => {
                         <div className="flex items-center text-gray-500 text-sm mb-3 space-x-4">
                           <div className="flex items-center">
                             <BiUser className="mr-1" />
-                            {post.author}
+                            {post.author || 'Unknown'}
                           </div>
                           <div className="flex items-center">
                             <BiCalendar className="mr-1" />
                             {post.date}
                           </div>
+                          {/* Nếu API không trả về số comment, bạn có thể bỏ hoặc ấn định giá trị mặc định */}
                           <div className="flex items-center">
                             <BiMessageRounded className="mr-1" />
-                            {post.comments} Comments
+                            {post.comments || 0} Comments
                           </div>
                         </div>
                         <p className="text-gray-600 mb-4">
@@ -366,7 +318,7 @@ const Blogs = () => {
                 <input
                   type="email"
                   placeholder="Your email address"
-                  className="w-full px-4 py-2 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-white text-gray-800"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-white text-gray-800"
                 />
                 <button
                   type="submit"
@@ -384,10 +336,9 @@ const Blogs = () => {
       <div className="w-main mx-auto mt-16">
         <div className="bg-white rounded-lg shadow-md p-8">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">You Might Also Like</h2>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {blogPosts.slice(0, 3).map((post) => (
-              <div className="bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+            {blogData.slice(0, 3).map((post) => (
+              <div key={post._id} className="bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div className="overflow-hidden h-48">
                   <img
                     src={post.image}

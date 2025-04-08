@@ -79,31 +79,32 @@ function sortObject(obj) {
 }
 
 const createPaymentRecord = asyncHandler(async (req, res) => {
-  // Giả sử bạn dùng orderCode làm định danh duy nhất cho đơn hàng
-  let { orderCode, transactionCode, note } = req.body;
-  
-  // Tự sinh orderCode nếu không có
+  let { orderCode, transactionCode, note, discountCode } = req.body;
+
   if (!orderCode) {
     orderCode = "ORDER" + Date.now();
     req.body.orderCode = orderCode;
   }
-  // Tự sinh transactionCode nếu không có
+
   if (!transactionCode) {
     transactionCode = "TXN" + Date.now();
     req.body.transactionCode = transactionCode;
   }
-  // Xử lý note
+
   if (!note) {
     req.body.note = "";
   }
-  
-  // Kiểm tra xem đã có đơn hàng với orderCode này chưa
+
+  // Nếu không có discountCode, thì gán null để đồng bộ dữ liệu
+  if (!discountCode) {
+    req.body.discountCode = null;
+  }
+
   const existingPayment = await Payment.findOne({ orderCode });
   if (existingPayment) {
     return res.status(200).json({ success: true, payment: existingPayment });
   }
-  
-  // Nếu chưa có, tạo đơn hàng mới
+
   const payment = await Payment.create(req.body);
   return res.status(200).json({
     success: payment ? true : false,

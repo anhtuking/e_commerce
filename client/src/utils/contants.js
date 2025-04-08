@@ -108,76 +108,76 @@ export const productInfoTabs = [
   },
 ];
 export const colors = [
-  "black",
-  "brown",
-  "gray",
-  "white",
-  "pink",
-  "yellow",
-  "orange",
-  "purple",
-  "green",
-  "blue",
+  "đen",
+  "nâu",
+  "xám",
+  "trắng",
+  "hồng",
+  "vàng",
+  "cam",
+  "tím",
+  "xanh lá cây",
+  "xanh dương",
 ];
 
 export const sorts = [
   {
     id: 1,
     value: "-sold",
-    text: "Best selling",
+    text: "Bán chạy nhất",
   },
   {
     id: 2,
     value: "title",
-    text: "Alphabetically A->Z",
+    text: "Theo thứ tự A->Z",
   },
   {
     id: 3,
     value: "-title",
-    text: "Alphabetically Z->A",
+    text: "Theo thứ tự Z->A",
   },
   {
     id: 4,
     value: "-price",
-    text: "Price high to low",
+    text: "Giá cao đến thấp",
   },
   {
     id: 5,
     value: "price",
-    text: "Price low to high",
+    text: "Giá thấp đến cao",
   },
   {
     id: 6,
     value: "-createAt",
-    text: "Date new to old",
+    text: "Ngày mới đến ngày cũ",
   },
   {
     id: 7,
     value: "createAt",
-    text: "Date old to new",
+    text: "Ngày cũ đến ngày mới",
   },
 ];
 
 export const ratingOptions = [
   {
     id: 1,
-    text: "Terrible",
+    text: "Rất tệ",
   },
   {
     id: 2,
-    text: "Bad",
+    text: "Tệ",
   },
   {
     id: 3,
-    text: "Neutral",
+    text: "Bình thường",
   },
   {
     id: 4,
-    text: "Good",
+    text: "Tốt",
   },
   {
     id: 5,
-    text: "Perfect",
+    text: "Rất tốt",
   },
 ];
 
@@ -222,35 +222,17 @@ export const adminSidebar = [
   },
   {
     id: 5,
-    type: "PARENT",
+    type: "SINGLE",
     text: "Mã khuyến mãi",
+    path: `/${path.ADMIN}/${path.MANAGE_COUPON}`,
     icon: <FaPercentage />,
-    submenu: [
-      {
-        text: "Quản lý mã khuyến mãi",
-        path: `/${path.ADMIN}/${path.MANAGE_COUPON}`,
-      },
-      {
-        text: "Tạo mới mã khuyến mãi",
-        path: `/${path.ADMIN}/${path.CREATE_COUPON}`, 
-      },
-    ],
   },
   {
     id: 6,
-    type: "PARENT",
+    type: "SINGLE",
     text: "Quản lý Blog",
+    path: `/${path.ADMIN}/${path.MANAGE_BLOG}`,
     icon: <MdEmail />,
-    submenu: [
-      {
-        text: "Quản lý Blog",
-        path: `/${path.ADMIN}/${path.MANAGE_BLOG}`,
-      },
-      {
-        text: "Tạo mới Blog",
-        path: `/${path.ADMIN}/${path.CREATE_BLOG}`,
-      },
-    ],
   },
 ];
 
