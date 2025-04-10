@@ -46,19 +46,24 @@ const deleteCoupon = asyncHandler(async (req, res) => {
 const validateCoupon = asyncHandler(async (req, res) => {
   const { name } = req.body;
   if (!name) throw new Error("Missing coupon code");
+
   const coupon = await Coupon.findOne({ name: name.toUpperCase() });
+  
   if (!coupon) {
     return res.status(404).json({
       success: false,
       mes: "Mã giảm giá không tồn tại"
     });
   }
+
+  // Kiểm tra hạn sử dụng
   if (new Date(coupon.expiry) < new Date()) {
     return res.status(400).json({
       success: false,
       mes: "Mã giảm giá đã hết hạn"
     });
   }
+
   return res.status(200).json({
     success: true,
     coupon

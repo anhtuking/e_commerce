@@ -49,12 +49,13 @@ const DetailCart = ({ location, navigate, dispatch }) => {
     try {
       const response = await apiValidateCoupon({ name: promoCode })
       if (response.success) {
-        setAppliedCoupon(response.coupon)
-        toast.success('Áp dụng mã giảm giá thành công!')
-        setPromoCode('')
+        setAppliedCoupon(response.coupon);
+        toast.success('Áp dụng mã giảm giá thành công!');
+        setPromoCode('');
+        localStorage.setItem("applied_coupon", JSON.stringify(response.coupon));
       } else {
-        setPromoError(response.mes || 'Mã giảm giá không hợp lệ')
-      }
+        setPromoError(response.mes || 'Mã giảm giá không hợp lệ');
+      }      
     } catch (error) {
       setPromoError(error.mes || 'Đã xảy ra lỗi khi kiểm tra mã giảm giá')
     } finally {

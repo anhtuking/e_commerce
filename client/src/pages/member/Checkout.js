@@ -20,7 +20,11 @@ const Checkout = ({ dispatch }) => {
   const navigate = useNavigate();
   const { current } = useSelector((state) => state.user);
   const { currentCart } = useSelector((state) => state.user);
-  const appliedCoupon = JSON.parse(localStorage.getItem("applied_coupon")) || null;
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  useEffect(() => {
+    const storedCoupon = JSON.parse(localStorage.getItem("applied_coupon"));
+    setAppliedCoupon(storedCoupon);
+  }, []);
 
   // State cho thông tin thanh toán với mặc định paymentMethod là "vnpay"
   const [paymentInfo, setPaymentInfo] = useState({
@@ -46,11 +50,14 @@ const Checkout = ({ dispatch }) => {
   }, [currentCart, navigate]);
 
   // Tính toán tổng tiền
-  const discount = appliedCoupon?.discount || 0;
-
   const cartTotal = currentCart?.reduce((sum, el) => sum + +el.product?.price * el.quantity, 0) || 0;
   const shippingFee = cartTotal > 2000000 ? 0 : 55000;
-  const orderTotal = cartTotal - discount + shippingFee;
+
+  // Tính giảm giá
+  const discountPercent = appliedCoupon ? Number(appliedCoupon.discount) : 0;
+  const discountAmount = (cartTotal * discountPercent) / 100;
+  const orderTotal = cartTotal + shippingFee - discountAmount;
+
 
 
   // Xử lý thay đổi thông tin
@@ -348,8 +355,8 @@ const Checkout = ({ dispatch }) => {
                 <div className="border-t border-gray-200 pt-4">
                   {appliedCoupon && (
                     <div className="flex justify-between text-sm mb-1 text-green-700 font-semibold">
-                      <span>Mã giảm giá:</span>
-                      <span>{appliedCoupon.code} (-{formatPrice(appliedCoupon.discount)}đ)</span>
+                      <span>Giảm giá:</span>
+                      <span>{appliedCoupon.code} (-{formatPrice(discountAmount)} VND)</span>
                     </div>
                   )}
                   <div className="flex justify-between text-sm text-gray-600">
