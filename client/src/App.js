@@ -48,7 +48,7 @@ function App() {
     (state) => state.app
   );
   // const { isShowChat } = useSelector((state) => state.chat);
-  
+
   useEffect(() => {
     dispatch(getCategories());
   }, [dispatch]);
@@ -83,7 +83,6 @@ function App() {
           <Route path={path.DETAIL_PRODUCT__CATEGORY__PID__TITLE} element={<DetailProduct />} />
           <Route path={path.FAQ} element={<FAQs />} />
           <Route path={path.PRODUCTS__CATEGORY} element={<Products />} />
-          <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
           <Route path={path.ALL} element={<Home />} />
         </Route>
         <Route path={path.ADMIN} element={<AdminLayout />}>
@@ -103,6 +102,7 @@ function App() {
         </Route>
         <Route path={path.FINAL_REGISTER} element={<FinalRegister />} />
         <Route path={path.LOGIN} element={<Login />} />
+        <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
       </Routes>
       <ToastContainer
         position="top-right" // vi tri
