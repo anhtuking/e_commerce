@@ -4,7 +4,6 @@ import Loading from "components/common/Loading";
 import InputForm from "components/input/InputForm";
 import React, { memo, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FaSave } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { showModal } from "store/app/appSlice";

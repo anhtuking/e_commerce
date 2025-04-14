@@ -27,13 +27,13 @@ const FeatureProducts = () => {
   const [sortBy, setSortBy] = useState("-totalRatings");
   const [viewMode, setViewMode] = useState("grid");
   const [searchTerm, setSearchTerm] = useState("");
-  const [visibleProducts, setVisibleProducts] = useState(8);
+  const [visibleProducts, setVisibleProducts] = useState(10);
 
   const fetchProducts = async () => {
     setIsLoading(true);
     try {
     const response = await apiGetProducts({
-        limit: 20,
+        limit: 30,
         sort: sortBy
       });
 
@@ -81,7 +81,7 @@ const FeatureProducts = () => {
   }, [sortBy]);
 
   const loadMoreProducts = () => {
-    setVisibleProducts(prev => prev + 4);
+    setVisibleProducts(prev => prev + 5);
   };
 
   // Settings for the promotional banner slider
@@ -109,13 +109,22 @@ const FeatureProducts = () => {
         {/* Overlay with quick actions */}
         <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
           <div className="flex gap-2">
-            <button className="w-10 h-10 rounded-full bg-white text-gray-700 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors">
+            <Link 
+              to={`/${product.category.toLowerCase()}/${product._id}/${product.title}`}
+              className="w-10 h-10 rounded-full bg-white text-gray-700 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors"
+            >
               <FaRegEye size={16} />
-            </button>
-            <button className="w-10 h-10 rounded-full bg-white text-gray-700 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors">
+            </Link>
+            <button 
+              onClick={() => window.location.href = `/${product.category.toLowerCase()}/${product._id}/${product.title}?add=cart`}
+              className="w-10 h-10 rounded-full bg-white text-gray-700 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors"
+            >
               <FaShoppingCart size={16} />
             </button>
-            <button className="w-10 h-10 rounded-full bg-white text-gray-700 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors">
+            <button 
+              onClick={() => window.location.href = `/${product.category.toLowerCase()}/${product._id}/${product.title}?add=wishlist`}
+              className="w-10 h-10 rounded-full bg-white text-gray-700 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors"
+            >
               <FaHeart size={16} />
             </button>
           </div>
@@ -211,10 +220,16 @@ const FeatureProducts = () => {
             </div>
             
             <div className="flex gap-2">
-              <button className="p-2 rounded bg-gray-100 text-gray-700 hover:bg-red-600 hover:text-white transition-colors">
+              <button 
+                onClick={() => window.location.href = `/${product.category.toLowerCase()}/${product._id}/${product.title}?add=cart`}
+                className="p-2 rounded bg-gray-100 text-gray-700 hover:bg-red-600 hover:text-white transition-colors"
+              >
                 <FaShoppingCart size={16} />
               </button>
-              <button className="p-2 rounded bg-gray-100 text-gray-700 hover:bg-red-600 hover:text-white transition-colors">
+              <button 
+                onClick={() => window.location.href = `/${product.category.toLowerCase()}/${product._id}/${product.title}?add=wishlist`}
+                className="p-2 rounded bg-gray-100 text-gray-700 hover:bg-red-600 hover:text-white transition-colors"
+              >
                 <FaHeart size={16} />
               </button>
               <Link 
@@ -330,7 +345,7 @@ const FeatureProducts = () => {
       ) : filteredProducts.length > 0 ? (
         <>
           <div className={viewMode === 'grid' 
-            ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4' 
+            ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4' 
             : 'space-y-4'
           }>
             {filteredProducts.slice(0, visibleProducts).map(product => (
@@ -345,7 +360,7 @@ const FeatureProducts = () => {
             <div className="flex justify-center mt-8">
               <button 
                 onClick={loadMoreProducts}
-                className="flex items-center gap-2 bg-white border border-gray-300 hover:border-main text-gray-700 px-6 py-2 rounded-full shadow-sm transition-colors"
+                className="flex items-center gap-2 bg-white border border-gray-300 hover:border-main hover:bg-main hover:text-white text-gray-700 px-6 py-2 rounded-full shadow-sm transition-colors"
               >
                 <IoMdAddCircleOutline size={20} />
                 <span>Tải thêm sản phẩm</span>

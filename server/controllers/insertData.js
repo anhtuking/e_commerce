@@ -6,18 +6,43 @@ const categoryData = require('../../data/cate_brand')
 const ProductCategory = require('../models/productCategory')
 
 const fn = async (product) => {
+    const parsePrice = (str) =>
+        parseFloat((str || '').replace(/[^\d]/g, '')) || 0;
+
+    // Xử lý variants
+    const variants = product?.variants && Array.isArray(product?.variants)
+      ? product.variants.map((variant) => ({
+          color: variant?.color,
+          price: parsePrice(variant?.price),
+          thumb: variant?.thumb,
+          sku: variant?.sku || slugify(`${product.name}-${variant.color}`) + "-" + Math.round(Math.random() * 1000)
+        }))
+      : [];
+
+    const detailedDescription = Array.isArray(product?.description)
+      ? product.description.join('\n')
+      : product?.description || '';
+
+    // Lấy nội dung 'describe' từ infomations 
+    const extraDescription = product?.infomations?.describe || '';
+
+    // Tạo document mới
     await Product.create({
         title: product?.name,
         slug: slugify(product?.name) + "-" + Math.round(Math.random() * 100),
-        description: product?.description, 
+        description: detailedDescription,             // Lưu mô tả gốc
+        longDescription: extraDescription,            // Tạo thêm trường để lưu chuỗi (hoặc mảng) từ infomations
         brand: product?.brand,
         price: parseFloat(product?.price.replace(/[^\d,]/g, '').replace(',', '.')), 
         category: product?.category?.[0] || "",
         quantity: Math.floor(Math.random() * 1000) + 1, 
-        sold: Math.floor(Math.random() * 100), 
+        sold: Math.floor(Math.random() * 100),
         images: product?.images,
-        color: product?.variants?.find(el => el.label.toLowerCase() === 'color')?.variants[0] || "No Color",
+        color: product?.variants?.[0]?.color || "No Color",
+        variants: variants,
         thumb: product?.thumb,
+        // Nếu vẫn muốn lưu toàn bộ object infomations (ngoài phần describe), để sau này dùng:
+        infomations: product?.infomations,
         totalRatings: 0
     });
 };

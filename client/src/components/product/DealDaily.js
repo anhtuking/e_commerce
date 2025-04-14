@@ -187,11 +187,19 @@ const DealDaily = ({ navigate, dispatch }) => {
           )}
         </div>
 
-        <div className="flex h-4 mt-4 justify-center">
-          {hasValidProductData &&
-            renderStarFromNumber(dealDaily.data.totalRatings, 20)?.map((el, index) => (
-              <span key={index}>{el}</span>
-            ))}
+        <div className="flex h-4 mt-4 justify-center items-center">
+          {hasValidProductData && (
+            <>
+              <div className="flex text-yellow-400">
+                {renderStarFromNumber(dealDaily.data.totalRatings, 18)?.map((el, index) => (
+                  <span key={index}>{el}</span>
+                ))}
+              </div>
+              <span className="text-xs text-gray-600 ml-1">
+                ({dealDaily.data.totalRatings || 0})
+              </span>
+            </>
+          )}
         </div>
 
         {hasValidProductData ? (
@@ -239,7 +247,8 @@ const DealDaily = ({ navigate, dispatch }) => {
             type="button"
             onClick={() => {
               if (hasValidProductData) {
-                navigate(`/${dealDaily.data.category?.toLowerCase()}/${dealDaily.data._id}/${dealDaily.data.title}`);
+                const encodedTitle = encodeURIComponent(dealDaily.data.title.replace(/\s+/g, '-'));
+                navigate(`/${dealDaily.data.category?.toLowerCase()}/${dealDaily.data._id}/${encodedTitle}`);
               }
             }}
             disabled={!hasValidProductData || isLoading}

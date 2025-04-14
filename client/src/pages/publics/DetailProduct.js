@@ -5,7 +5,7 @@ import { Breadcrumb, ProductExtraInfoItem, SelectQuantity, ProductInformation } 
 import CustomSlider from 'components/common/CustomSlider';
 import Slider from "react-slick";
 import ReactImageMagnify from 'react-image-magnify';
-import { formatMoney, formatPrice, renderStarFromNumber, addToCartUtil } from 'utils/helpers';
+import { formatPrice, renderStarFromNumber, addToCartUtil } from 'utils/helpers';
 import { productExtraInformation } from 'utils/contants';
 import DOMPurify from 'dompurify';
 import clsx from 'clsx';
@@ -49,9 +49,10 @@ const DetailProduct = ({ navigate, dispatch }) => {
     const [quantity, setQuantity] = useState(1)
     const [relatedProduct, setRelatedProduct] = useState(null)
     const [update, setUpdate] = useState(false)
-    const [varriant, setVarriant] = useState(null)
+    const [variant, setVariant] = useState(null)
     const [isAddingToCart, setIsAddingToCart] = useState(false)
     const [activeTab, setActiveTab] = useState('description')
+    const [activeTab2, setActiveTab2] = useState('features')
     const titleRef = useRef(null)
     const [currentProduct, setCurrentProduct] = useState({
         title: '',
@@ -74,27 +75,31 @@ const DetailProduct = ({ navigate, dispatch }) => {
     }
 
     useEffect(() => {
-        if (varriant) {
-            const selectedVariant = product?.varriants?.find(el => el.sku === varriant);
+        if (variant) {
+            const selectedVariant = product?.variants?.find(el => el.sku === variant);
             if (selectedVariant) {
-                setCurrentProduct({
+                setCurrentProduct(prev => ({
+                    ...prev,
                     title: selectedVariant.title,
                     color: selectedVariant.color,
-                    images: selectedVariant.images,
                     thumb: selectedVariant.thumb,
                     price: selectedVariant.price,
-                });
+                }));
             }
         } else if (product) {
-            setCurrentProduct({
-                title: product?.title,
-                color: product?.color,
-                images: product?.images || [],
-                thumb: product?.thumb,
-                price: product?.price,
-            });
+            setCurrentProduct((prev) => ({
+                ...prev,
+                title: product.title,
+                color: product.color,
+                thumb: product.thumb,
+                price: product.price,
+            }));
         }
-    }, [varriant, product]);
+    }, [variant, product]);
+
+    const filteredVariants = product?.variants?.filter(
+        (el) => el.color !== product.color
+    );
 
     const rerender = useCallback(() => {
         setUpdate(!update)
@@ -151,7 +156,7 @@ const DetailProduct = ({ navigate, dispatch }) => {
 
         setIsAddingToCart(true);
 
-        const currentVariant = varriant ? product?.varriants?.find(el => el.sku === varriant) : null;
+        const currentVariant = variant ? product?.variants?.find(el => el.sku === variant) : null;
         const cartData = addToCartUtil(product, quantity, currentVariant);
 
         const response = await apiUpdateCart(cartData);
@@ -187,7 +192,7 @@ const DetailProduct = ({ navigate, dispatch }) => {
                             <FaArrowLeft className='mr-2' /> Trở lại
                         </button>
                     </div>
-                    <h1 
+                    <h1
                         ref={titleRef}
                         className='text-2xl md:text-3xl font-bold text-gray-800 mb-2'
                     >
@@ -233,7 +238,7 @@ const DetailProduct = ({ navigate, dispatch }) => {
                         </div>
                         <div className='mt-4'>
                             <Slider {...settings} className='product-thumbnails'>
-                                {currentProduct.images.length === 0 && product?.images?.map((el, index) => (
+                                {currentProduct?.images?.length === 0 && product?.images?.map((el, index) => (
                                     <div className='px-1' key={el}>
                                         <div
                                             onClick={e => handleClickImages(e, el)}
@@ -243,7 +248,7 @@ const DetailProduct = ({ navigate, dispatch }) => {
                                         </div>
                                     </div>
                                 ))}
-                                {currentProduct.images.length > 0 && currentProduct.images?.map((el, index) => (
+                                {currentProduct?.images?.length > 0 && currentProduct.images?.map((el, index) => (
                                     <div className='px-1' key={el}>
                                         <div
                                             onClick={e => handleClickImages(e, el)}
@@ -263,7 +268,7 @@ const DetailProduct = ({ navigate, dispatch }) => {
                                     onClick={() => setActiveTab('description')}
                                     className={`flex-1 py-3 px-4 text-center font-medium text-sm transition-colors ${activeTab === 'description' ? 'text-main border-b-2 border-main' : 'text-gray-500 hover:text-gray-700'}`}
                                 >
-                                    Mô tả
+                                    Thông số
                                 </button>
                                 <button
                                     onClick={() => setActiveTab('features')}
@@ -278,11 +283,11 @@ const DetailProduct = ({ navigate, dispatch }) => {
                                 {activeTab === 'description' && (
                                     <div className='space-y-2'>
                                         {product?.description?.length > 1 && product?.description?.map((el) => (
-                                            <p key={el} className='text-sm leading-6 text-gray-600'>{el}</p>
+                                            <p key={el} className='text-sm leading-6 text-gray-600 whitespace-pre-line'>{el}</p>
                                         ))}
                                         {product?.description?.length === 1 &&
                                             <div
-                                                className='text-sm leading-6 text-gray-600 line-clamp-[8]'
+                                                className='text-sm leading-6 text-gray-600 line-clamp-[15] whitespace-pre-line'
                                                 dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product?.description[0]) }}
                                             ></div>
                                         }
@@ -312,6 +317,26 @@ const DetailProduct = ({ navigate, dispatch }) => {
                                                 <p className='text-sm text-gray-600'>Hoàn hảo cho việc tặng người thân</p>
                                             </div>
                                         </div>
+                                        <div className='flex items-start space-x-3'>
+                                            <div>
+                                                <h4 className='text-sm font-medium'>Mới, đầy đủ phụ kiện từ nhà sản xuất</h4>
+                                            </div>
+                                        </div>
+                                        <div className='flex items-start space-x-3'>
+                                            <div>
+                                                <h4 className='text-sm font-medium'>Bảo hành 18 tháng tại trung tâm bảo hành Chính hãng</h4>
+                                            </div>
+                                        </div>
+                                        <div className='flex items-start space-x-3'>
+                                            <div>
+                                                <h4 className='text-sm font-medium'>Giá sản phẩm đã bao gồm VAT</h4>
+                                            </div>
+                                        </div>
+                                        <div className='flex items-start space-x-3'>
+                                            <div>
+                                                <h4 className='text-sm font-medium'>1 đổi 1 trong 30 ngày nếu có lỗi phần cứng từ nhà sản xuất</h4>
+                                            </div>
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -325,13 +350,17 @@ const DetailProduct = ({ navigate, dispatch }) => {
                             <div className='flex justify-between items-center mb-4'>
                                 <div>
                                     <h2 className='text-2xl md:text-3xl font-bold text-main'>
-                                        {`${formatPrice(formatMoney(currentProduct.price || product?.price))} VND`}
+                                        {Number(currentProduct.price || product?.price) 
+                                            ? `${formatPrice(Number(currentProduct.price || product?.price))} VND` 
+                                            : "Đang cập nhật"}
                                     </h2>
-                                    <div className='flex items-center mt-1 gap-2'>
-                                        <span className='text-sm text-gray-500 line-through'>
-                                            {`${formatPrice(formatMoney(product?.originalPrice))} VND`}
-                                        </span>
-                                    </div>
+                                    {product?.originalPrice && Number(product?.originalPrice) > 0 && (
+                                        <div className='flex items-center mt-1 gap-2'>
+                                            <span className='text-sm text-gray-500 line-through'>
+                                                {formatPrice(Number(product?.originalPrice))} VND
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
@@ -366,15 +395,15 @@ const DetailProduct = ({ navigate, dispatch }) => {
                             </div>
                         </div>
 
-                        {/* Color Variants */}
+                        {/* Variants */}
                         <div className='bg-white rounded-lg shadow-sm p-6 mb-6'>
-                            <h3 className='text-lg font-semibold mb-4 text-gray-800'>Color Options</h3>
+                            <h3 className='text-lg font-semibold mb-4 text-gray-800'>Màu sắc</h3>
                             <div className='flex flex-wrap gap-3'>
                                 <div
-                                    onClick={() => setVarriant(null)}
+                                    onClick={() => setVariant(null)}
                                     className={clsx(
                                         'flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-all transform hover:shadow-md',
-                                        !varriant ? 'border-main bg-red-50 scale-105' : 'border-gray-200 hover:border-main hover:scale-105'
+                                        !variant ? 'border-main bg-red-50 scale-105' : 'border-gray-200 hover:border-main hover:scale-105'
                                     )}
                                 >
                                     <div className='relative w-10 h-10 rounded-md overflow-hidden border border-gray-200'>
@@ -386,17 +415,20 @@ const DetailProduct = ({ navigate, dispatch }) => {
                                     </div>
                                     <div className='flex flex-col'>
                                         <span className='text-sm font-medium'>{product?.color}</span>
-                                        <span className='text-xs text-gray-500'>{formatPrice(formatMoney(product?.price))} VND</span>
+                                        <span className='text-xs text-gray-500'>
+                                            {Number(product?.price) 
+                                                ? formatPrice(Number(product?.price)) 
+                                                : "Đang cập nhật"} VND
+                                        </span>
                                     </div>
                                 </div>
-
-                                {product?.varriants?.map(el => (
+                                {filteredVariants?.map(el => (
                                     <div
                                         key={el.sku}
-                                        onClick={() => setVarriant(el.sku)}
+                                        onClick={() => setVariant(el.sku)}
                                         className={clsx(
                                             'flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-all transform hover:shadow-md',
-                                            varriant === el.sku ? 'border-main bg-red-50 scale-105' : 'border-gray-200 hover:border-main hover:scale-105'
+                                            variant === el.sku ? 'border-main bg-red-50 scale-105' : 'border-gray-200 hover:border-main hover:scale-105'
                                         )}
                                     >
                                         <div className='relative w-10 h-10 rounded-md overflow-hidden border border-gray-200'>
@@ -408,7 +440,11 @@ const DetailProduct = ({ navigate, dispatch }) => {
                                         </div>
                                         <div className='flex flex-col'>
                                             <span className='text-sm font-medium'>{el.color}</span>
-                                            <span className='text-xs text-gray-500'>{formatPrice(formatMoney(el.price))} VND</span>
+                                            <span className='text-xs text-gray-500'>
+                                                {Number(el.price) 
+                                                    ? formatPrice(Number(el.price)) 
+                                                    : "Đang cập nhật"} VND
+                                            </span>
                                         </div>
                                     </div>
                                 ))}
@@ -530,6 +566,7 @@ const DetailProduct = ({ navigate, dispatch }) => {
                         nameProduct={product?.title}
                         pid={product?._id}
                         rerender={rerender}
+                        productInfo={product?.infomations}
                     />
                 </div>
             </div>

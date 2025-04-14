@@ -78,6 +78,20 @@ const Home = ({ navigate }) => {
           <div className="shadow-sm rounded-md overflow-hidden">
             <DealDaily />
           </div>
+          <div className="shadow-sm rounded-md overflow-hidden">
+            <div className="w-full relative flex flex-col gap-3">
+              <img
+                src="https://cdn2.cellphones.com.vn/insecure/rs:fill:690:300/q:10/plain/https://dashboard.cellphones.com.vn/storage/RightBanner-iPadAirM3 (2).jpg"
+                alt="Promotion Banner"
+                className="w-full h-[135px] object-cover"
+              />
+              <img
+                src="https://cdn2.cellphones.com.vn/insecure/rs:fill:690:300/q:10/plain/https://dashboard.cellphones.com.vn/storage/s-edu-2-0-right-laptop.jpg"
+                alt="Promotion Banner"
+                className="w-full h-[135px] object-cover"
+              />
+            </div>
+          </div>
         </div>
         <div className="md:w-[75%] flex flex-col gap-5">
           <div className="rounded-md overflow-hidden shadow-sm">
@@ -111,7 +125,7 @@ const Home = ({ navigate }) => {
           {categories?.filter(el => el.brand.length > 0)?.map((el) => (
             <div
               key={el._id}
-              className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 p-4 flex items-center"
+              className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 p-4 flex items-center border"
             >
               <img
                 src={el?.image}

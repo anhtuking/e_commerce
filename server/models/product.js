@@ -12,12 +12,15 @@ var productSchema = new mongoose.Schema(
     slug: {
       type: String,
       required: true,
-    //   unique: true,
       lowercase: true,
     },
     description: {
       type: Array,
       required: true,
+    },
+    infomations: {
+      type: mongoose.Schema.Types.Mixed, 
+      required: true
     },
     brand: {
       type: String,
@@ -62,13 +65,11 @@ var productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    varriants: [
+    variants: [
       {
         color: String,
         price: Number,
         thumb: String,
-        images: Array,
-        title: String,
         sku: String
       }
     ]

@@ -6,7 +6,6 @@ import path from "utils/path";
 import { useSelector } from "react-redux";
 import withBase from "hocs/withBase";
 import { showCart } from "store/app/appSlice";
-import { showChat } from "store/chat/chatSlice";
 import { apiGetProducts } from "api/product";
 import { formatPrice } from "utils/helpers";
 import useDebounce from "hooks/useDebounce";
@@ -53,7 +52,7 @@ const Header = ({dispatch, navigate}) => {
         try {
           const response = await apiGetProducts({ 
             q: debouncedSearchTerm,
-            limit: 20  // Tăng giới hạn số lượng sản phẩm hiển thị
+            limit: 20 
           });
           if (response.success) {
             setSearchResults(response.dataProducts || []);
@@ -88,7 +87,6 @@ const Header = ({dispatch, navigate}) => {
   
   const handleSearchBlur = () => {
     setSearchFocused(false);
-    // Using setTimeout to allow click on search results before hiding
     setTimeout(() => {
       setShowSearchResults(false);
     }, 200);
@@ -114,11 +112,11 @@ const Header = ({dispatch, navigate}) => {
         </Link>
         
         {/* Search bar - larger screens */}
-        <div className={`md:flex items-center max-w-xl w-full mx-8 relative ${searchFocused ? 'ring-2 ring-red-400' : ''}`}>
+        <div className={`md:flex items-center max-w-xl w-full mx-8 relative ${searchFocused ? 'ring-2 ring-white' : ''}`}>
           <input 
             type="text" 
             placeholder="Tìm kiếm sản phẩm..." 
-            className="w-full border border-gray-300 rounded-full py-2.5 px-6 focus:outline-none text-gray-700"
+            className="w-full border border-gray-300 rounded-full py-2.5 px-6 focus:outline-none focus:ring-0 text-gray-700"
             value={searchValue}
             onChange={handleSearchChange}
             onFocus={handleSearchFocus}

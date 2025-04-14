@@ -11,6 +11,7 @@ import Swal from 'sweetalert2'
 import path from 'utils/path'
 import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
+import DOMPurify from 'dompurify'
 
 const { IoClose, FaMinus, FaPlus } = icons
 
@@ -113,11 +114,28 @@ const QuickView = ({ data, dispatch, navigate }) => {
               ))}
             </div>
 
-            <ul className="space-y-2 mb-6">
-              {data?.description?.length > 0 && data?.description?.slice(0, 3).map((item, index) => (
-                <li key={index} className="text-sm text-gray-600">{item}</li>
-              ))}
-            </ul>
+            <div className="mb-6 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+              <h3 className="font-medium mb-2">Description:</h3>
+              {data?.description ? (
+                Array.isArray(data.description) ? (
+                  <ul className="space-y-2">
+                    {data.description.slice(0, 15).map((item, index) => (
+                      <li key={index} className="text-sm text-gray-600 whitespace-pre-line">{item}</li>
+                    ))}
+                    {data.description.length > 15 && (
+                      <li className="text-sm italic text-gray-500">... và nhiều thông tin khác</li>
+                    )}
+                  </ul>
+                ) : (
+                  <div 
+                    className="text-sm text-gray-600 line-clamp-15 whitespace-pre-line" 
+                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data.description) }}
+                  />
+                )
+              ) : (
+                <p className="text-sm text-gray-500 italic">Không có mô tả sản phẩm</p>
+              )}
+            </div>
 
             {/* Colors */}
             {(data?.varriants?.length > 0 || data?.color) && (

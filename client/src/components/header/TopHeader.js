@@ -56,17 +56,17 @@ const TopHeader = () => {
         <div className="flex items-center space-x-8">
           <div className="flex items-center gap-2 border-r border-red-500/30 pr-8">
             <FaShippingFast className="text-yellow-300" size={16} />
-            <span className="text-sm font-medium">Free Shipping on Orders $75+</span>
+            <span className="text-sm font-medium">Miễn phí vận chuyển cho đơn hàng trên 75$</span>
           </div>
           
           <div className="hidden md:flex items-center gap-2 border-r border-red-500/30 pr-8">
             <FaCreditCard className="text-yellow-300" size={14} />
-            <span className="text-sm">Secure Payments</span>
+            <span className="text-sm">Thanh toán an toàn</span>
           </div>
           
           <div className="hidden lg:flex items-center gap-2">
             <FaPercentage className="text-yellow-300" size={14} />
-            <span className="text-sm">Special Offers</span>
+            <span className="text-sm">Khuyến mãi đặc biệt</span>
           </div>
         </div>
         
@@ -75,7 +75,7 @@ const TopHeader = () => {
           {/* Call us */}
           <div className="hidden md:flex items-center gap-2">
             <FaPhoneAlt className="text-yellow-300 animate-pulse" size={14} />
-            <span className="text-sm font-medium">Call Us: (+84) 000 8386 008</span>
+            <span className="text-sm font-medium">Gọi chúng tôi: (+84) 000 8386 008</span>
           </div>
         
           {/* User Account */}
@@ -101,33 +101,45 @@ const TopHeader = () => {
                   {/* Menu links */}
                   {current?.role == 2010 ? (
                     <>
-                      <div className="px-4 py-2 text-xs text-red-600 font-semibold uppercase">Admin Panel</div>
+                      <div className="px-4 py-2 text-xs text-red-600 font-semibold uppercase">Trang quản trị</div>
                       <Link to={`/${path.ADMIN}/${path.DASHBOARD}`} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
                         <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xs">D</span>
-                        Dashboard
-                      </Link>
-                      <Link to={`/${path.ADMIN}/manage-product`} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
-                        <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xs">P</span>
-                        Manage Products
+                        Trang chủ
                       </Link>
                       <Link to={`/${path.ADMIN}/manage-user`} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
                         <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xs">U</span>
-                        Manage Users
+                        Quản lý tài khoản
+                      </Link>
+                      <Link to={`/${path.ADMIN}/manage-product`} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
+                        <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xs">P</span>
+                        Quản lý sản phẩm
+                      </Link>
+                      <Link to={`/${path.ADMIN}/manage-order`} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
+                        <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xs">O</span>
+                        Quản lý đơn hàng
+                      </Link>
+                      <Link to={`/${path.ADMIN}/manage-coupon`} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
+                        <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xs">P</span>
+                        Quản lý khuyến mãi
+                      </Link>
+                      <Link to={`/${path.ADMIN}/manage-blog`} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
+                        <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xs">B</span>
+                        Quản lý blogs
                       </Link>
                     </>
                   ) : (
                     <>
                       <Link to={`/${path.MEMBER}/${path.PERSONAL}`} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
                         <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xs">A</span>
-                        My Account
+                        Tài khoản của tôi
                       </Link>
                       <Link to={`/${path.MEMBER}/${path.MY_ORDER}`} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
                         <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xs">O</span>
-                        My Orders
+                        Đơn hàng của tôi
                       </Link>
                       <Link to={`/${path.MEMBER}/${path.WISHLIST}`} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
                         <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xs">W</span>
-                        Wishlist
+                        Danh sách yêu thích
                       </Link>
                     </>
                   )}
@@ -136,7 +148,7 @@ const TopHeader = () => {
                   <div onClick={() => dispatch(logout())} className="mt-2 mx-4 mb-3 text-sm">
                     <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg transition-colors">
                       <IoLogOutOutline size={18} />
-                      <span>Sign Out</span>
+                      <span>Đăng xuất</span>
                     </button>
                   </div>
                 </div>
@@ -144,7 +156,7 @@ const TopHeader = () => {
             </div>
           ) : (
             <Link className='bg-white/10 hover:bg-white/20 transition-all px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium' to={`/${path.LOGIN}`}>
-              Login / Register
+              Đăng nhập / Đăng ký
         </Link>
           )}
           
@@ -153,9 +165,6 @@ const TopHeader = () => {
             <a href="https://www.facebook.com/duongvan.anhtu.7" className="hover:text-yellow-300 transition-all transform hover:-translate-y-1 duration-300">
               <FaFacebook size={16} />
             </a>
-            <span className="hover:text-yellow-300 transition-all transform hover:-translate-y-1 duration-300 cursor-pointer">
-              <FaFacebookMessenger size={16} />
-            </span>
             <a href="https://x.com/marcuslouiss012" className="hover:text-yellow-300 transition-all transform hover:-translate-y-1 duration-300">
               <FaTwitter size={16} />
             </a>

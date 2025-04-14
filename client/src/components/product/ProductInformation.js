@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import { productInfoTabs } from 'utils/contants';
 import Button from 'components/common/Button';
 import Votebar from 'components/review/Votebar';
@@ -11,64 +11,91 @@ import { showModal } from 'store/app/appSlice';
 import Swal from 'sweetalert2'
 import path from 'utils/path';
 import { useNavigate } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 
 
-const ProductInformation = ({totalRatings, ratings, nameProduct, pid, rerender}) => {
+const ProductInformation = ({ totalRatings, ratings, nameProduct, pid, rerender, productInfo }) => {
     const [activedTab, setActivedTab] = useState(1);
+    const [customTabs, setCustomTabs] = useState([]);
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const {isLoggedIn} = useSelector(state => state.user)
+    const { isLoggedIn } = useSelector(state => state.user)
 
-    const handleSubmitVoteOption =  async ({comment, score, files}) => { 
+    useEffect(() => {
+        if (productInfo) {
+            // Tạo custom tabs dựa trên dữ liệu từ DB
+            const tabs = [
+                {
+                    id: 1,
+                    name: "Mô tả",
+                    // Lấy nội dung mô tả từ trường infomations.describe
+                    content: productInfo?.describe || "Không có thông tin mô tả"
+                }
+            ];
+
+            // Thêm tab mặc định cho phần đánh giá
+            tabs.push({
+                id: 2,
+                name: "Đánh giá",
+                content: productInfoTabs.find(tab => tab.id === 1)?.content || ""
+            });
+
+            setCustomTabs(tabs);
+        } else {
+            setCustomTabs(productInfoTabs);
+        }
+    }, [productInfo]);
+
+    const handleSubmitVoteOption = async ({ comment, score, files }) => {
         if (!comment || !pid || !score) {
             alert('Please rate the product before clicking submit.')
             return
         }
-        const response = await apiRatings({ star: score,  comment, pid, updatedAt: Date.now() })
+        const response = await apiRatings({ star: score, comment, pid, updatedAt: Date.now() })
         if (response.success) {
             Swal.fire({
-              icon: 'success',
-              title: 'Success assessment',
-              text: 'Your rating has been submitted successfully',
-              timer: 2000,
-              showConfirmButton: false
+                icon: 'success',
+                title: 'Success assessment',
+                text: 'Your rating has been submitted successfully',
+                timer: 2000,
+                showConfirmButton: false
             });
         }
         dispatch(showModal({
-            isShowModal: false, modalChildren:null
+            isShowModal: false, modalChildren: null
         }))
         rerender()
     }
 
-    const handleVoteNow = () => { 
+    const handleVoteNow = () => {
         if (!isLoggedIn) {
-          Swal.fire({
-            text: 'Login to rating product.',
-            cancelButtonText: 'Cancel',
-            confirmButtonText: 'Login now',
-            title: 'Oops!',
-            showCancelButton: true
-          }).then((result) => { 
-            if (result.isConfirmed) navigate(`/${path.LOGIN}`)
-          });
+            Swal.fire({
+                text: 'Login to rating product.',
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'Login now',
+                title: 'Oops!',
+                showCancelButton: true
+            }).then((result) => {
+                if (result.isConfirmed) navigate(`/${path.LOGIN}`)
+            });
         } else {
-          dispatch(showModal({
-            isShowModal: true,
-            modalChildren: (
-              <VoteOption 
-                nameProduct={nameProduct} 
-                pid={pid}  
-                handleSubmitVoteOption={handleSubmitVoteOption}
-              />
-            )
-          }));
+            dispatch(showModal({
+                isShowModal: true,
+                modalChildren: (
+                    <VoteOption
+                        nameProduct={nameProduct}
+                        pid={pid}
+                        handleSubmitVoteOption={handleSubmitVoteOption}
+                    />
+                )
+            }));
         }
-      }
+    }
 
     return (
         <div className='font-main2'>
             <div className='flex items-center gap-2 relative bottom-[-1px]'>
-                {productInfoTabs.map(e1 => (
+                {customTabs.map(e1 => (
                     <span
                         className={`py-2 px-4 cursor-pointer ${activedTab === e1.id ? 'bg-white border border-b-0' : 'bg-gray-200'}`}
                         key={e1.id}
@@ -79,22 +106,15 @@ const ProductInformation = ({totalRatings, ratings, nameProduct, pid, rerender})
                 ))}
             </div>
             <div className='w-full p-4 border'>
-                {productInfoTabs.some(el => el.id === activedTab) && productInfoTabs.find(el => el.id === activedTab)?.content}
-            </div>
-            <div className='flex flex-col py-8 w-full'>
-                <span className={`py-2 px-4 cursor-pointer bg-white border border-b-0 font-bold`}>
-                    CUSTOMER REVIEW:
-                </span>
-                    <div className='flex border-item'>
+                {activedTab === 1 && (
+                    <div className='flex border-item py-4'>
                         <div className='flex-4 flex flex-col items-center justify-center'>
-                            <span className='font-semibold text-3xl '>
+                            <span className='font-semibold text-3xl'>
                                 {`${totalRatings}/5`}
                             </span>
                             <span className='flex items-center gap-1'>
                                 {renderStarFromNumber(totalRatings)?.map((el, index) => (
-                                    <span key={index}>
-                                        {el}
-                                    </span>
+                                    <span key={index}>{el}</span>
                                 ))}
                             </span>
                             <span className='text-sm'>
@@ -103,33 +123,43 @@ const ProductInformation = ({totalRatings, ratings, nameProduct, pid, rerender})
                         </div>
                         <div className='flex-6 gap-2 p-4 flex flex-col'>
                             {Array.from(Array(5).keys()).reverse().map(el => (
-                                <Votebar 
-                                    key={el} 
-                                    number={el+1} 
-                                    ratingTotal={ratings?.length} 
+                                <Votebar
+                                    key={el}
+                                    number={el + 1}
+                                    ratingTotal={ratings?.length}
                                     ratingCounts={ratings?.filter(i => i.star === el + 1)?.length}
                                 />
                             ))}
                         </div>
                     </div>
-                    <div className='flex flex-col p-4 items-center justify-center'>
-                        <span>How do you rate this product?</span>
-                        <Button handleOnClick={handleVoteNow}>
-                            Rate now!
-                        </Button>
+                )}
+                {activedTab === 2 && (
+                    <div className='whitespace-pre-line' style={{ textAlign: 'justify' }}>
+                        <div
+                            dangerouslySetInnerHTML={{
+                                __html: DOMPurify.sanitize(customTabs.find(tab => tab.id === 1)?.content || '')
+                            }}
+                        />
                     </div>
-                    <div>
-                        {ratings?.map(el => (
-                            <Comment 
+                )}
+            </div>
+            <div className='flex flex-col py-8 w-full'>
+                <div className='flex flex-col p-4 items-center justify-center'>
+                    <span>How do you rate this product?</span>
+                    <Button handleOnClick={handleVoteNow}>Rate now!</Button>
+                </div>
+                <div>
+                    {ratings?.map(el => (
+                        <Comment
                             key={el._id}
                             star={el.star}
                             updatedAt={el.updatedAt}
                             comment={el.comment}
-                            name={`${el.postedBy?.lastname} ${el.postedBy?.firstname}`}
-                            />
-                        ))}
-                    </div>
+                            name={`${el.postedBy?.firstname} ${el.postedBy?.lastname}`}
+                        />
+                    ))}
                 </div>
+            </div>
         </div>
     );
 };

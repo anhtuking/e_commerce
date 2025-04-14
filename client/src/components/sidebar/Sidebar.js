@@ -11,7 +11,7 @@ const Sidebar = () => {
     <div className="flex flex-col border-item bg-white">
       <div className="flex items-center bg-red-800 text-white font-bold text-lg px-4 py-2 uppercase">
         <FaList className="mr-2" /> 
-        ALL COLLECTIONS
+        TẤT CẢ DANH MỤC
       </div>
       {categories?.map((el) => (
         <NavLink
