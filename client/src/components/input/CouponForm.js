@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { InputForm } from "components";
 import { toast } from "react-toastify";
 import { apiCreateCoupon, apiUpdateCoupon } from "api/coupon";
+import Swal from "sweetalert2";
 
 const CouponForm = ({ onSubmit, initialData, onCancel }) => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm({
@@ -47,18 +48,46 @@ const CouponForm = ({ onSubmit, initialData, onCancel }) => {
         response = await apiCreateCoupon(couponData);
       }
       
+      setIsSubmitting(false);
+      
       if (response?.success) {
-        toast.success(initialData ? 'Cập nhật mã giảm giá thành công!' : 'Tạo mã giảm giá thành công!');
-        reset();
-        onSubmit(); // Gọi callback để đóng form và cập nhật danh sách
+        // Sử dụng Swal thay vì toast
+        Swal.fire({
+          icon: 'success',
+          title: initialData ? 'Cập nhật thành công!' : 'Tạo mới thành công!',
+          text: initialData 
+            ? `Mã giảm giá ${data.name} đã được cập nhật thành công.`
+            : `Mã giảm giá ${data.name} đã được tạo thành công và có hiệu lực trong ${expiryDays} ngày.`,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'OK'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            reset();
+            onSubmit(); // Đóng form và refresh danh sách
+          }
+        });
       } else {
-        toast.error(response?.mes || 'Đã xảy ra lỗi!');
+        // Hiển thị thông báo lỗi
+        Swal.fire({
+          icon: 'error',
+          title: 'Lỗi!',
+          text: response?.mes || 'Đã xảy ra lỗi khi xử lý mã giảm giá!',
+          confirmButtonColor: '#d33',
+          confirmButtonText: 'Thử lại'
+        });
       }
     } catch (error) {
       console.error('Error creating/updating coupon:', error);
-      toast.error(error?.mes || 'Đã xảy ra lỗi!');
-    } finally {
       setIsSubmitting(false);
+      
+      // Hiển thị thông báo lỗi
+      Swal.fire({
+        icon: 'error',
+        title: 'Lỗi!',
+        text: error?.mes || 'Đã xảy ra lỗi khi xử lý mã giảm giá!',
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Thử lại'
+      });
     }
   };
 

@@ -44,7 +44,7 @@ const Pagination = ({ totalCount }) => {
   return (
     <div className="flex flex-col items-center p-4">
       <span className="text-sm italic mb-4 text-center">
-        {`Showing ${range()} of ${totalCount}`}
+        {`Hiển thị ${range()} của ${totalCount}`}
       </span>
       
       <div className="flex items-center justify-center flex-wrap gap-2">
@@ -53,7 +53,7 @@ const Pagination = ({ totalCount }) => {
           disabled={currentPage === 1}
           className="px-4 py-2 rounded-md bg-gray-100 border border-gray-200 text-gray-700 disabled:opacity-50 hover:bg-gray-200 transition-colors text-sm mr-1"
         >
-          PREVIOUS
+          TRƯỚC
         </button>
 
         {paginationRange?.map((item, index) => {
@@ -88,7 +88,7 @@ const Pagination = ({ totalCount }) => {
           disabled={currentPage === totalPages}
           className="px-4 py-2 rounded-md bg-gray-100 border border-gray-200 text-gray-700 hover:bg-gray-200 disabled:opacity-50 transition-colors text-sm ml-1"
         >
-          NEXT
+          TIẾP
         </button>
       </div>
     </div>

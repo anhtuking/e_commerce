@@ -1,10 +1,11 @@
 import axios from "../axios";
 
 // API cho quản lý blog
-export const apiGetAllBlogs = () => 
+export const apiGetAllBlogs = (params = {}) => 
   axios({
     url: '/blog/all',
     method: 'get',
+    params
   });
 
 export const apiGetBlog = (bid) =>

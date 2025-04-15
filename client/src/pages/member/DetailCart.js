@@ -7,7 +7,7 @@ import { BsArrowLeft, BsCartX, BsInfoCircle, BsCartCheck } from 'react-icons/bs'
 import { FaTruck, FaShieldAlt, FaMoneyBillWave, FaGift, FaClipboardCheck, FaUndo, FaInfoCircle, FaLock, FaTag, FaTrash } from 'react-icons/fa'
 import path from 'utils/path'
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { apiValidateCoupon } from 'api/coupon'
 import { toast } from 'react-toastify'
 
@@ -19,14 +19,36 @@ const DetailCart = ({ location, navigate, dispatch }) => {
   const [appliedCoupon, setAppliedCoupon] = useState(null)
   const [isValidating, setIsValidating] = useState(false)
 
+  // Khi vào trang giỏ hàng, đọc các mục đã chọn từ localStorage
+  useEffect(() => {
+    const storedSelectedItems = JSON.parse(localStorage.getItem("selected_cart_items")) || [];
+    setSelectedItems(storedSelectedItems);
+  }, []);
+
+  // Khi vào trang cart mới, xóa localStorage nếu không có sản phẩm nào được chọn
+  useEffect(() => {
+    if (selectedItems.length === 0) {
+      localStorage.removeItem("selected_cart_items");
+    }
+  }, [selectedItems]);
+
   const handleSelectItem = (itemId) => {
-    setSelectedItems(prev => {
+    setSelectedItems((prev) => {
+      let updated;
       if (prev.includes(itemId)) {
-        return prev.filter(id => id !== itemId)
+        updated = prev.filter((id) => id !== itemId);
+      } else {
+        updated = [...prev, itemId];
       }
-      return [...prev, itemId];
+      if (updated.length === 0) {
+        localStorage.removeItem("selected_cart_items");
+      } else {
+        localStorage.setItem("selected_cart_items", JSON.stringify(updated));
+      }
+      return updated;
     });
   };
+  
 
   // Tính tổng tiền
   const selectedCart = currentCart?.filter(el => selectedItems.includes(el._id)) || [];
@@ -34,20 +56,30 @@ const DetailCart = ({ location, navigate, dispatch }) => {
   const shippingFee = cartTotal > 2000000 ? 0 : 55000;
   
   // Tính giảm giá
-  const discountAmount = appliedCoupon ? (cartTotal * appliedCoupon.discount) / 100 : 0;
+  const discountPercent = appliedCoupon ? Number(appliedCoupon.discount) : 0;
+  const discountAmount = (cartTotal * discountPercent) / 100;
   const orderTotal = cartTotal + shippingFee - discountAmount;
 
   const handlePromoCode = async () => {
-    if (!promoCode.trim()) {
-      setPromoError('Vui lòng nhập mã khuyến mãi')
-      return
+    // Lấy danh sách sản phẩm đã chọn từ localStorage
+    const selectedCartItems = JSON.parse(localStorage.getItem("selected_cart_items")) || [];
+  
+    if (selectedCartItems.length === 0) {
+      toast.error("Vui lòng chọn ít nhất một sản phẩm trong giỏ hàng");
+      return;
     }
-
-    setIsValidating(true)
-    setPromoError('')
-
+  
+    if (!promoCode.trim()) {
+      setPromoError('Vui lòng nhập mã khuyến mãi');
+      localStorage.removeItem("applied_coupon"); 
+      return;
+    }
+    
+    setIsValidating(true);
+    setPromoError('');
+  
     try {
-      const response = await apiValidateCoupon({ name: promoCode })
+      const response = await apiValidateCoupon({ name: promoCode });
       if (response.success) {
         setAppliedCoupon(response.coupon);
         toast.success('Áp dụng mã giảm giá thành công!');
@@ -55,13 +87,23 @@ const DetailCart = ({ location, navigate, dispatch }) => {
         localStorage.setItem("applied_coupon", JSON.stringify(response.coupon));
       } else {
         setPromoError(response.mes || 'Mã giảm giá không hợp lệ');
+        localStorage.removeItem("applied_coupon"); 
       }      
     } catch (error) {
-      setPromoError(error.mes || 'Đã xảy ra lỗi khi kiểm tra mã giảm giá')
+      setPromoError(error.mes || 'Đã xảy ra lỗi khi kiểm tra mã giảm giá');
+      localStorage.removeItem("applied_coupon");
     } finally {
-      setIsValidating(false)
+      setIsValidating(false);
     }
-  }
+  };
+  
+
+  useEffect(() => {
+    // Nếu không có coupon nào được áp dụng trong state, xóa key khỏi localStorage.
+    if (!appliedCoupon) {
+      localStorage.removeItem("applied_coupon");
+    }
+  }, [appliedCoupon]);  
 
   const removeCoupon = () => {
     setAppliedCoupon(null)

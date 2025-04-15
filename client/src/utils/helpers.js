@@ -7,6 +7,7 @@ export const createSlug = (string) => {
     .toLowerCase() //chuyển thành chữ thường
     .normalize("NFD") //bỏ dấu
     .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[\/\\]/g, "-") // Replace slashes with hyphens
     .split(" ") //chuyển thành mảng có khoảng cáchcách
     .join("-"); //join mảng lại theo dấu -
 };

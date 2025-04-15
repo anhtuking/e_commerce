@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { apiGetUserOrder } from "api/user";
-import { formatPrice } from "utils/helpers";
+import { formatPrice, createSlug } from "utils/helpers";
 import moment from "moment";
-import { FiPackage, FiCalendar, FiCreditCard, FiShoppingBag, FiTruck, FiMapPin, FiMail, FiPhone, FiFileText } from "react-icons/fi";
+import { FiPackage, FiCalendar, FiCreditCard, FiShoppingBag, FiTruck, FiMapPin, FiMail, FiPhone, FiFileText, FiStar } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { statusConfig } from "utils/contants";
+import { useNavigate } from "react-router-dom";
 
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -12,6 +13,7 @@ const MyOrders = () => {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("all");
   const [expandedOrders, setExpandedOrders] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -263,7 +265,14 @@ const MyOrders = () => {
                                       </div>
                                     )}
                                     <div className="flex-1 min-w-0">
-                                      <p className="font-medium text-gray-800 truncate">
+                                      <p 
+                                        className="font-medium text-gray-800 truncate hover:text-main cursor-pointer"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          const safeTitle = createSlug(item.title);
+                                          navigate(`/${item.category?.toLowerCase() || 'san-pham'}/${item.pid || item._id}/${safeTitle}`);
+                                        }}
+                                      >
                                         {item.title || "Sản phẩm"}
                                       </p>
                                       <div className="flex flex-wrap gap-2 mt-1">
@@ -276,10 +285,23 @@ const MyOrders = () => {
                                           SL: {item.quantity}
                                         </span>
                                       </div>
-                                      <div className="mt-2">
+                                      <div className="mt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                         <p className="font-bold text-gray-800">
                                           {formatPrice(item.price)} VND
                                         </p>
+                                        {order.status === "Hoàn thành" && (
+                                          <button 
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              const safeTitle = createSlug(item.title);
+                                              navigate(`/${item.category?.toLowerCase() || 'san-pham'}/${item.pid || item._id}/${safeTitle}`);
+                                            }}
+                                            className="flex items-center justify-center gap-1 text-xs bg-main text-white px-3 py-1.5 rounded-md hover:bg-red-700 transition-colors"
+                                          >
+                                            <FiStar size={14} />
+                                            Đánh giá sản phẩm
+                                          </button>
+                                        )}
                                       </div>
                                     </div>
                                   </div>

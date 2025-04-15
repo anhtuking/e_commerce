@@ -18,29 +18,29 @@ import { MdOutlineLocalShipping } from 'react-icons/md';
 const mainServices = [
     {
         id: 1,
-        title: 'Free Shipping',
-        description: 'Free shipping on all orders over 2,000,000 VND.',
+        title: 'Giao hàng miễn phí',
+        description: 'Giao hàng miễn phí trên tất cả đơn hàng trên 2,000,000 VND.',
         icon: <FaShippingFast className="text-3xl md:text-4xl text-red-600" />,
         bgColor: 'bg-red-50'
     },
     {
         id: 2,
-        title: 'Money Back Guarantee',
-        description: '100% money back guarantee within 30 days of purchase.',
+        title: 'Hoàn tiền 100%',
+        description: 'Hoàn tiền 100% trong vòng 30 ngày khi mua hàng.',
         icon: <FaHandHoldingUsd className="text-3xl md:text-4xl text-red-600" />,
         bgColor: 'bg-blue-50'
     },
     {
         id: 3,
-        title: '24/7 Customer Support',
-        description: 'Our support team is available 24/7 to help you.',
+        title: 'Hỗ trợ 24/7',
+        description: 'Đội ngũ hỗ trợ của chúng tôi sẵn sàng hỗ trợ bạn 24/7.',
         icon: <FaHeadset className="text-3xl md:text-4xl text-red-600" />,
         bgColor: 'bg-green-50'
     },
     {
         id: 4,
-        title: 'Easy Returns',
-        description: 'Hassle-free return policy for all eligible products.',
+        title: 'Trả hàng dễ dàng',
+        description: 'Chính sách trả hàng dễ dàng cho tất cả sản phẩm được phép.',
         icon: <FaExchangeAlt className="text-3xl md:text-4xl text-red-600" />,
         bgColor: 'bg-purple-50'
     }
@@ -50,50 +50,50 @@ const mainServices = [
 const additionalServices = [
     {
         id: 1,
-        title: 'Secure Payment',
-        description: 'All transactions are secured with industry-standard encryption.',
+        title: 'Thanh toán an toàn',
+        description: 'Tất cả giao dịch được bảo mật bằng mã hóa công nghiệp.',
         icon: <FaCreditCard className="text-2xl text-red-600" />
     },
     {
         id: 2,
-        title: 'Technical Support',
-        description: 'Expert technical assistance for all products purchased.',
+        title: 'Hỗ trợ kỹ thuật',
+        description: 'Hỗ trợ kỹ thuật chuyên nghiệp cho tất cả sản phẩm đã mua.',
         icon: <BiSupport className="text-2xl text-red-600" />
     },
     {
         id: 3,
-        title: 'Warranty Service',
-        description: 'Extended warranty options available for most products.',
+        title: 'Dịch vụ bảo hành',
+        description: 'Các tùy chọn bảo hành được mở rộng cho hầu hết sản phẩm.',
         icon: <FaShieldAlt className="text-2xl text-red-600" />
     },
     {
         id: 4,
-        title: 'Express Delivery',
-        description: 'Get your products faster with our express delivery service.',
+        title: 'Giao hàng nhanh',
+        description: 'Nhận sản phẩm nhanh hơn với dịch vụ giao hàng nhanh của chúng tôi.',
         icon: <MdOutlineLocalShipping className="text-2xl text-red-600" />
     },
     {
         id: 5,
-        title: 'Best Price Guarantee',
-        description: 'We match prices for identical products from other retailers.',
+        title: 'Bảo hành tốt nhất',
+        description: 'Chúng tôi không bảo hành sản phẩm tốt nhất từ các nhà bán lẻ khác.',
         icon: <FaThumbsUp className="text-2xl text-red-600" />
     },
     {
         id: 6,
-        title: 'Gift Wrapping',
-        description: 'Special gift wrapping service available upon request.',
+        title: 'Bao bì đẹp',
+        description: 'Dịch vụ bao bì đẹp được cung cấp theo yêu cầu.',
         icon: <FaGift className="text-2xl text-red-600" />
     },
     {
         id: 7,
-        title: 'Secure Shopping',
-        description: 'Shop with confidence with our secure checkout process.',
+        title: 'Thanh toán an toàn',
+        description: 'Mua hàng với tự tin với quy trình thanh toán an toàn của chúng tôi.',
         icon: <RiSecurePaymentLine className="text-2xl text-red-600" />
     },
     {
         id: 8,
-        title: 'Extended Hours',
-        description: 'Our physical stores are open late for your convenience.',
+        title: 'Giờ làm việc',
+        description: 'Cửa hàng của chúng tôi mở cửa muộn để thuận tiện cho bạn.',
         icon: <BiTimeFive className="text-2xl text-red-600" />
     }
 ];
@@ -104,7 +104,7 @@ const Services = () => {
             {/* Header */}
             <div className="h-[81px] flex justify-start items-start bg-gray-100">
                 <div className="w-main mx-auto py-4">
-                    <h3 className="font-semibold uppercase text-2xl font-main2">Our Services</h3>
+                    <h3 className="font-semibold uppercase text-2xl font-main2">Dịch vụ của chúng tôi</h3>
                     <Breadcrumb category="services" />
                 </div>
             </div>
@@ -131,9 +131,9 @@ const Services = () => {
             {/* Shipping Process */}
             <div className="w-main mx-auto mt-20">
                 <div className="text-center mb-12">
-                    <h2 className="text-3xl font-semibold text-gray-800 mb-4">Our Shipping Process</h2>
+                    <h2 className="text-3xl font-semibold text-gray-800 mb-4">Quy trình giao hàng của chúng tôi</h2>
                     <p className="text-gray-600 max-w-2xl mx-auto">
-                        We ensure that your products are delivered to you in the most efficient and secure way possible.
+                        Chúng tôi đảm bảo rằng sản phẩm của bạn được giao đến bạn trong cách hiệu quả và an toàn nhất có thể.
                     </p>
                 </div>
 
@@ -144,8 +144,8 @@ const Services = () => {
                         {/* Step 1 */}
                         <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 mb-12 relative">
                             <div className="md:w-1/3 z-10 order-2 md:order-1 text-right">
-                                <h3 className="text-xl font-semibold text-gray-800 mb-2">Order Processing</h3>
-                                <p className="text-gray-600">Your order is verified and processed within 24 hours of placement.</p>
+                                <h3 className="text-xl font-semibold text-gray-800 mb-2">Xử lý đơn hàng</h3>
+                                <p className="text-gray-600">Đơn hàng của bạn được xác nhận và xử lý trong vòng 24 giờ.</p>
                             </div>
 
                             <div className="z-10 order-1 md:order-2 bg-red-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-semibold text-xl shadow-lg">
@@ -164,16 +164,16 @@ const Services = () => {
                             </div>
 
                             <div className="md:w-1/3 z-10 order-2 md:order-3 text-left">
-                                <h3 className="text-xl font-semibold text-gray-800 mb-2">Packaging</h3>
-                                <p className="text-gray-600">Products are carefully packed with eco-friendly materials for maximum protection.</p>
+                                <h3 className="text-xl font-semibold text-gray-800 mb-2">Bao bì</h3>
+                                <p className="text-gray-600">Sản phẩm được cẩn thận đóng gói với vật liệu bền và bền bỉ cho bảo vệ tối đa.</p>
                             </div>
                         </div>
 
                         {/* Step 3 */}
                         <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 mb-12 relative">
                             <div className="md:w-1/3 z-10 order-2 md:order-1 text-right">
-                                <h3 className="text-xl font-semibold text-gray-800 mb-2">Shipping</h3>
-                                <p className="text-gray-600">Your package is dispatched with our trusted courier partners for timely delivery.</p>
+                                <h3 className="text-xl font-semibold text-gray-800 mb-2">Giao hàng</h3>
+                                <p className="text-gray-600">Hàng hóa của bạn được giao đến bạn với độ tin cậy của đối tác vận chuyển của chúng tôi.</p>
                             </div>
 
                             <div className="z-10 order-1 md:order-2 bg-red-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-semibold text-xl shadow-lg">
@@ -192,8 +192,8 @@ const Services = () => {
                             </div>
 
                             <div className="md:w-1/3 z-10 order-2 md:order-3 text-left">
-                                <h3 className="text-xl font-semibold text-gray-800 mb-2">Delivery</h3>
-                                <p className="text-gray-600">Your products are delivered to your doorstep with confirmation of receipt.</p>
+                                <h3 className="text-xl font-semibold text-gray-800 mb-2">Giao hàng</h3>
+                                <p className="text-gray-600">Sản phẩm của bạn được giao đến cửa nhà bạn với xác nhận nhận hàng.</p>
                             </div>
                         </div>
                     </div>
@@ -203,9 +203,9 @@ const Services = () => {
             {/* Additional Services */}
             <div className="w-main mx-auto mt-20">
                 <div className="text-center mb-12">
-                    <h2 className="text-3xl font-semibold text-gray-800 mb-4">Additional Services</h2>
+                    <h2 className="text-3xl font-semibold text-gray-800 mb-4">Dịch vụ bổ sung</h2>
                     <p className="text-gray-600 max-w-2xl mx-auto">
-                        We offer a range of additional services to make your shopping experience more enjoyable.
+                        Chúng tôi cung cấp một loạt dịch vụ bổ sung để làm cho trải nghiệm mua hàng của bạn trở nên thêm thú vị.
                     </p>
                 </div>
 
@@ -226,15 +226,15 @@ const Services = () => {
             {/* Contact CTA */}
             <div className="w-main mx-auto mt-20 bg-gradient-to-r from-red-600 to-pink-600 rounded-lg shadow-xl overflow-hidden">
                 <div className="px-6 py-12 sm:p-12 text-center text-white">
-                    <h2 className="text-3xl font-bold mb-4">Need Help with Our Services?</h2>
+                    <h2 className="text-3xl font-bold mb-4">Cần trợ giúp với dịch vụ của chúng tôi?</h2>
                     <p className="mb-8 max-w-2xl mx-auto text-white text-opacity-90">
-                        Our customer service team is ready to assist you with any questions or concerns you may have.
+                        Đội ngũ hỗ trợ khách hàng của chúng tôi sẵn sàng giúp đỡ bạn với bất kỳ câu hỏi hoặc lo ngại nào.
                     </p>
                     <a
                         href="/"
                         className="inline-block px-8 py-3 bg-white text-red-600 font-semibold rounded-md shadow-md hover:bg-gray-50 transition-colors duration-300"
                     >
-                        Contact Us
+                        Liên hệ với chúng tôi
                     </a>
                 </div>
             </div>

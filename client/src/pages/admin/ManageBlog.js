@@ -129,7 +129,8 @@ const ManageBlog = ({ dispatch, navigate }) => {
   const handleSubmitForm = () => {
     setEditBlog(null);
     setIsCreating(false);
-    render();
+    // Refresh the blog list immediately
+    fetchBlogs();
   };
 
   const handleCancel = () => {

@@ -23,28 +23,24 @@ const ProductInformation = ({ totalRatings, ratings, nameProduct, pid, rerender,
 
     useEffect(() => {
         if (productInfo) {
-            // Tạo custom tabs dựa trên dữ liệu từ DB
             const tabs = [
                 {
                     id: 1,
+                    name: "Đánh giá",
+                    content: productInfoTabs.find(tab => tab.id === 1)?.content || ""
+                },
+                {
+                    id: 2,
                     name: "Mô tả",
-                    // Lấy nội dung mô tả từ trường infomations.describe
                     content: productInfo?.describe || "Không có thông tin mô tả"
                 }
             ];
-
-            // Thêm tab mặc định cho phần đánh giá
-            tabs.push({
-                id: 2,
-                name: "Đánh giá",
-                content: productInfoTabs.find(tab => tab.id === 1)?.content || ""
-            });
-
             setCustomTabs(tabs);
         } else {
             setCustomTabs(productInfoTabs);
         }
     }, [productInfo]);
+
 
     const handleSubmitVoteOption = async ({ comment, score, files }) => {
         if (!comment || !pid || !score) {
@@ -93,7 +89,7 @@ const ProductInformation = ({ totalRatings, ratings, nameProduct, pid, rerender,
     }
 
     return (
-        <div className='font-main2'>
+        <div className='font-main'>
             <div className='flex items-center gap-2 relative bottom-[-1px]'>
                 {customTabs.map(e1 => (
                     <span
@@ -105,9 +101,9 @@ const ProductInformation = ({ totalRatings, ratings, nameProduct, pid, rerender,
                     </span>
                 ))}
             </div>
-            <div className='w-full p-4 border'>
+            <div className='w-full p-4 border overflow-hidden'>
                 {activedTab === 1 && (
-                    <div className='flex border-item py-4'>
+                    <div className='flex border-item py-4 overflow-hidden'>
                         <div className='flex-4 flex flex-col items-center justify-center'>
                             <span className='font-semibold text-3xl'>
                                 {`${totalRatings}/5`}
@@ -134,10 +130,10 @@ const ProductInformation = ({ totalRatings, ratings, nameProduct, pid, rerender,
                     </div>
                 )}
                 {activedTab === 2 && (
-                    <div className='whitespace-pre-line' style={{ textAlign: 'justify' }}>
+                    <div className='whitespace-pre-wrap overflow-hidden break-words' style={{ textAlign: 'justify' }}>
                         <div
                             dangerouslySetInnerHTML={{
-                                __html: DOMPurify.sanitize(customTabs.find(tab => tab.id === 1)?.content || '')
+                                __html: DOMPurify.sanitize(customTabs.find(tab => tab.id === 2)?.content || '')
                             }}
                         />
                     </div>

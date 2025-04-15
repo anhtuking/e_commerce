@@ -13,7 +13,7 @@ import Swal from 'sweetalert2';
 import withBase from 'hocs/withBase';
 import { useSelector } from 'react-redux';
 import path from 'utils/path';
-import { apiUpdateCart } from 'api';
+import { apiUpdateCart, apiUpdateWishlist } from 'api/user';
 import { toast } from 'react-toastify';
 import { getCurrent } from 'store/user/asyncAction';
 import { FaHeart, FaShoppingCart, FaShippingFast, FaRegCheckCircle, FaArrowLeft, FaEye, FaStore, FaShieldAlt, FaInfoCircle, FaGift, FaHeadset } from 'react-icons/fa';
@@ -41,8 +41,13 @@ var settings = {
 };
 
 const DetailProduct = ({ navigate, dispatch }) => {
-    const { pid, category } = useParams()
+    const params = useParams();
+    const { pid } = params;
+    const category = params.category;
     const location = useLocation();
+    console.log('URL Params:', params);
+    console.log('Product ID:', pid);
+    
     const [product, setProduct] = useState(null)
     const { current } = useSelector(state => state.user)
     const [currentImage, setCurrentImage] = useState(null)
@@ -52,7 +57,6 @@ const DetailProduct = ({ navigate, dispatch }) => {
     const [variant, setVariant] = useState(null)
     const [isAddingToCart, setIsAddingToCart] = useState(false)
     const [activeTab, setActiveTab] = useState('description')
-    const [activeTab2, setActiveTab2] = useState('features')
     const titleRef = useRef(null)
     const [currentProduct, setCurrentProduct] = useState({
         title: '',
@@ -61,12 +65,19 @@ const DetailProduct = ({ navigate, dispatch }) => {
         price: '',
         color: ''
     })
+    const [isAddingToWishlist, setIsAddingToWishlist] = useState(false)
 
     const fetchProductData = async () => {
-        const response = await apiGetProduct(pid)
-        if (response.success) {
-            setProduct(response.dataProduct)
-            setCurrentImage(response.dataProduct?.thumb)
+        try {
+            const response = await apiGetProduct(pid)
+            if (response.success) {
+                setProduct(response.dataProduct)
+                setCurrentImage(response.dataProduct?.thumb)
+            } else {
+                console.error('Failed to fetch product:', response);
+            }
+        } catch (error) {
+            console.error('Error fetching product:', error);
         }
     }
     const fetchProducts = async () => {
@@ -179,11 +190,44 @@ const DetailProduct = ({ navigate, dispatch }) => {
         }
     }
 
+    const handleAddToWishlist = async () => {
+        if (!current) return Swal.fire({
+            title: 'Wait...',
+            text: 'Please login to add to wishlist',
+            icon: 'info',
+            confirmButtonText: 'Login',
+            denyButtonText: 'Cancel',
+            showDenyButton: true,
+            confirmButtonColor: '#3085d6',
+        }).then(async (result) => {
+            if (result.isConfirmed) navigate(`/${path.LOGIN}?redirect=${location.pathname}`);
+        })
+
+        setIsAddingToWishlist(true);
+        
+        try {
+            const response = await apiUpdateWishlist(pid);
+            
+            setIsAddingToWishlist(false);
+            
+            if (response.success) {
+                toast.success(response.mes);
+                dispatch(getCurrent());
+            } else {
+                toast.error(response.mes);
+            }
+        } catch (error) {
+            setIsAddingToWishlist(false);
+            toast.error("An error occurred. Please try again.");
+            console.error("Wishlist update error:", error);
+        }
+    }
+
     return (
         <div className='w-full bg-gray-50'>
             {/* Header & Breadcrumb */}
             <div className='bg-gradient-to-r from-gray-100 to-gray-200 shadow-sm'>
-                <div className='w-main mx-auto px-4 py-6' >
+                <div className='w-main mx-auto px-4 py-6 overflow-hidden' >
                     <div className='flex items-center gap-2 mb-3'>
                         <button
                             onClick={() => navigate(-1)}
@@ -209,7 +253,7 @@ const DetailProduct = ({ navigate, dispatch }) => {
             </div>
 
             {/* Main Product Content */}
-            <div className='w-main mx-auto px-4 py-8'>
+            <div className='w-main mx-auto px-4 py-8 overflow-hidden'>
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8'>
                     {/* Product Images */}
                     <div className='lg:col-span-5 flex flex-col gap-4'>
@@ -218,6 +262,7 @@ const DetailProduct = ({ navigate, dispatch }) => {
                                 <div className='absolute top-2 right-2 z-10 bg-white bg-opacity-80 text-main text-xs font-medium px-2 py-1 rounded-full flex items-center shadow-sm'>
                                     <FaEye className='mr-1' /> {Math.floor(Math.random() * 20) + 5} watching
                                 </div>
+                                <div className="overflow-hidden">
                                 <ReactImageMagnify {...{
                                     smallImage: {
                                         alt: currentProduct?.title || product?.title,
@@ -234,6 +279,7 @@ const DetailProduct = ({ navigate, dispatch }) => {
                                     shouldHideHintAfterFirstActivation: false,
                                     hintTextMouse: 'Hover to zoom'
                                 }} />
+                                </div>
                             </div>
                         </div>
                         <div className='mt-4'>
@@ -484,10 +530,21 @@ const DetailProduct = ({ navigate, dispatch }) => {
                                 </button>
 
                                 <button
-                                    className='w-full border border-main text-main hover:bg-red-50 py-3 rounded-lg flex items-center justify-center gap-2 transition-all transform hover:shadow-md'
+                                    onClick={handleAddToWishlist}
+                                    className={`w-full border ${current?.wishlist?.includes(pid) ? 'bg-red-50 border-red-500 text-red-500' : 'border-main text-main hover:bg-red-50'} py-3 rounded-lg flex items-center justify-center gap-2 transition-all transform hover:shadow-md`}
+                                    disabled={isAddingToWishlist}
                                 >
-                                    <FaHeart />
-                                    Thêm vào danh sách yêu thích
+                                    {isAddingToWishlist ? (
+                                        <>
+                                            <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-gray-500"></div>
+                                            <span>Đang xử lý...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FaHeart color={current?.wishlist?.includes(pid) ? 'red' : undefined} />
+                                            {current?.wishlist?.includes(pid) ? 'Đã thêm vào yêu thích' : 'Thêm vào danh sách yêu thích'}
+                                        </>
+                                    )}
                                 </button>
                             </div>
 
@@ -558,7 +615,7 @@ const DetailProduct = ({ navigate, dispatch }) => {
             </div>
 
             {/* Product Information Tabs */}
-            <div className='w-main mx-auto px-4 mt-10'>
+            <div className='w-main mx-auto px-4 mt-10 overflow-hidden'>
                 <div className='bg-white rounded-lg shadow-sm'>
                     <ProductInformation
                         totalRatings={product?.totalRatings}
@@ -572,7 +629,7 @@ const DetailProduct = ({ navigate, dispatch }) => {
             </div>
 
             {/* Related Products */}
-            <div className='w-main mx-auto px-4 mt-10 mb-20'>
+            <div className='w-main mx-auto px-4 mt-10 mb-20 overflow-hidden'>
                 <div className='bg-white rounded-lg shadow-sm p-6'>
                     <h3 className='text-xl font-bold text-gray-800 mb-6 pb-2 border-b'>Sản phẩm bạn có thể thích</h3>
                     <CustomSlider products={relatedProduct} normal={true} />

@@ -9,6 +9,9 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import path from "utils/path";
+import { useDispatch } from "react-redux";
+import { showModal } from "store/app/appSlice";
+import QuickView from "./QuickView";
 
 const categoryOptions = [
   { value: "all", label: "All Categories" },
@@ -28,6 +31,7 @@ const FeatureProducts = () => {
   const [viewMode, setViewMode] = useState("grid");
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleProducts, setVisibleProducts] = useState(10);
+  const dispatch = useDispatch();
 
   const fetchProducts = async () => {
     setIsLoading(true);
@@ -97,83 +101,95 @@ const FeatureProducts = () => {
   };
 
   // Product Card component for grid view
-  const ProductCardGrid = ({ product }) => (
-    <div className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full">
-      <div className="relative pt-[100%] overflow-hidden">
-        <img
-          src={product.thumb}
-          alt={product.title}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-        
-        {/* Overlay with quick actions */}
-        <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-          <div className="flex gap-2">
-            <Link 
-              to={`/${product.category.toLowerCase()}/${product._id}/${product.title}`}
-              className="w-10 h-10 rounded-full bg-white text-gray-700 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors"
-            >
-              <FaRegEye size={16} />
-            </Link>
-            <button 
-              onClick={() => window.location.href = `/${product.category.toLowerCase()}/${product._id}/${product.title}?add=cart`}
-              className="w-10 h-10 rounded-full bg-white text-gray-700 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors"
-            >
-              <FaShoppingCart size={16} />
-            </button>
-            <button 
-              onClick={() => window.location.href = `/${product.category.toLowerCase()}/${product._id}/${product.title}?add=wishlist`}
-              className="w-10 h-10 rounded-full bg-white text-gray-700 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors"
-            >
-              <FaHeart size={16} />
-            </button>
-          </div>
-        </div>
-        
-        {/* Sale badge if there's a discount */}
-        {product.price < product.originalPrice && (
-          <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
-            {Math.round((1 - product.price / product.originalPrice) * 100)}% OFF
-          </div>
-        )}
-        
-        {/* New badge if product is recent */}
-        {new Date(product.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) && (
-          <div className="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded">
-            NEW
-          </div>
-        )}
-      </div>
-      
-      <div className="p-4 flex flex-col flex-grow">
-        <div className="flex items-center text-yellow-400 mb-1">
-          {renderStarFromNumber(product.totalRatings, 14)?.map((el, index) => (
-            <span key={index}>{el}</span>
-          ))}
-          <span className="text-xs text-gray-500 ml-1">({product.ratings?.length || 0})</span>
-        </div>
-        
-        <Link 
-          to={`/${product.category.toLowerCase()}/${product._id}/${product.title}`}
-          className="font-medium text-gray-800 hover:text-red-600 transition-colors line-clamp-2 min-h-[48px]"
-        >
-          {product.title}
-        </Link>
-        
-        <div className="mt-auto pt-2">
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="font-bold text-red-600">{formatPrice(product.price)} VND</span>
-              {product.price < product.originalPrice && (
-                <span className="text-xs text-gray-500 line-through block">{formatPrice(product.originalPrice)} VND</span>
-              )}
+  const ProductCardGrid = ({ product }) => {
+    
+    const handleQuickView = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dispatch(showModal({
+        isShowModal: true,
+        modalChildren: <QuickView data={product} />
+      }));
+    };
+    
+    return (
+      <div className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full">
+        <div className="relative pt-[100%] overflow-hidden">
+          <img
+            src={product.thumb}
+            alt={product.title}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          
+          {/* Overlay with quick actions */}
+          <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <div className="flex gap-2">
+              <button 
+                onClick={handleQuickView}
+                className="w-10 h-10 rounded-full bg-white text-gray-700 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors"
+              >
+                <FaRegEye size={16} />
+              </button>
+              <button 
+                onClick={() => window.location.href = `/${product.category.toLowerCase()}/${product._id}/${product.title}?add=cart`}
+                className="w-10 h-10 rounded-full bg-white text-gray-700 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors"
+              >
+                <FaShoppingCart size={16} />
+              </button>
+              <button 
+                onClick={() => window.location.href = `/${product.category.toLowerCase()}/${product._id}/${product.title}?add=wishlist`}
+                className="w-10 h-10 rounded-full bg-white text-gray-700 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors"
+              >
+                <FaHeart size={16} />
+              </button>
             </div>
-            <span className="text-xs text-gray-500">Sold: {product.sold}</span>
+          </div>
+          
+          {/* Sale badge if there's a discount */}
+          {product.price < product.originalPrice && (
+            <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+              {Math.round((1 - product.price / product.originalPrice) * 100)}% OFF
+            </div>
+          )}
+          
+          {/* New badge if product is recent */}
+          {new Date(product.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) && (
+            <div className="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded">
+              NEW
+            </div>
+          )}
+        </div>
+        
+        <div className="p-4 flex flex-col flex-grow">
+          <div className="flex items-center text-yellow-400 mb-1">
+            {renderStarFromNumber(product.totalRatings, 14)?.map((el, index) => (
+              <span key={index}>{el}</span>
+            ))}
+            <span className="text-xs text-gray-500 ml-1">({product.ratings?.length || 0})</span>
+          </div>
+          
+          <Link 
+            to={`/${product.category.toLowerCase()}/${product._id}/${product.title}`}
+            className="font-medium text-gray-800 hover:text-red-600 transition-colors line-clamp-2 min-h-[48px]"
+          >
+            {product.title}
+          </Link>
+          
+          <div className="mt-auto pt-2">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="font-bold text-red-600">{formatPrice(product.price)} VND</span>
+                {product.price < product.originalPrice && (
+                  <span className="text-xs text-gray-500 line-through block">{formatPrice(product.originalPrice)} VND</span>
+                )}
+              </div>
+              <span className="text-xs text-gray-500">Sold: {product.sold}</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   // Product Card component for list view
   const ProductCardList = ({ product }) => (

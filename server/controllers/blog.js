@@ -13,12 +13,37 @@ const createNewBlog = asyncHandler(async (req, res) => {
 
 const getAllBlogs = asyncHandler(async (req, res) => {
     try {
-        const blogs = await Blog.find()
-            .sort({ createdAt: -1 });
+        const { page = 1, limit = 5, search = '' } = req.query;
+        const pageNum = parseInt(page);
+        const limitNum = parseInt(limit);
+        const skip = (pageNum - 1) * limitNum;
+
+        // Build filter object based on search query
+        const filter = {};
+        if (search) {
+            filter.$or = [
+                { title: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } },
+                { category: { $regex: search, $options: 'i' } }
+            ];
+        }
+
+        // Get total count for pagination
+        const totalCount = await Blog.countDocuments(filter);
+        
+        // Get blogs with pagination
+        const blogs = await Blog.find(filter)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limitNum);
+
         return res.status(200).json({
             success: true,
             blogs: blogs || [],
-            count: blogs?.length || 0
+            count: totalCount || 0,
+            page: pageNum,
+            limit: limitNum,
+            pages: Math.ceil(totalCount / limitNum) || 0
         });
     } catch (error) {
         throw new Error('Lỗi khi lấy danh sách bài viết');

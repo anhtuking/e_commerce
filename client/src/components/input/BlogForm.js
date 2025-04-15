@@ -4,6 +4,7 @@ import { InputForm } from "components";
 import { toast } from "react-toastify";
 import { apiCreateBlog, apiUpdateBlog, apiUploadImageBlog } from "api/blog";
 import withBase from "hocs/withBase";
+import Swal from "sweetalert2";
 
 const BlogForm = ({ onSubmit, initialData, onCancel }) => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm({
@@ -77,16 +78,38 @@ const BlogForm = ({ onSubmit, initialData, onCancel }) => {
         }
       }
       
-      toast.success(initialData ? "Cập nhật bài viết thành công!" : "Tạo bài viết mới thành công!");
-      reset();
-      setPreviewImage("");
-      setImageFile(null);
-      onSubmit();
+      setIsSubmitting(false);
+      
+      // Sử dụng Swal thay vì toast
+      Swal.fire({
+        icon: 'success',
+        title: initialData ? "Cập nhật thành công!" : "Tạo mới thành công!",
+        text: initialData 
+          ? "Bài viết đã được cập nhật thành công."
+          : "Bài viết mới đã được tạo thành công.",
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          reset();
+          setPreviewImage("");
+          setImageFile(null);
+          onSubmit(); // Đóng form và refresh danh sách
+        }
+      });
+      
     } catch (error) {
       console.error("Error submitting blog:", error);
-      toast.error(error.message || "Có lỗi xảy ra khi lưu bài viết");
-    } finally {
       setIsSubmitting(false);
+      
+      // Hiển thị thông báo lỗi bằng Swal
+      Swal.fire({
+        icon: 'error',
+        title: 'Lỗi!',
+        text: error.message || "Có lỗi xảy ra khi lưu bài viết",
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Thử lại'
+      });
     }
   };
 

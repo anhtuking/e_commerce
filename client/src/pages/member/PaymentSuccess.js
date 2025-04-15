@@ -2,13 +2,13 @@ import { apiSavePayment } from "api/payment";
 import { apiRemoveCart, apiUpdateCart } from "api/user";
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { formatPrice } from "utils/helpers"; 
+import { formatPrice } from "utils/helpers";
 import { getCurrent } from "store/user/asyncAction";
 import { toast } from "react-toastify";
 import withBase from "hocs/withBase";
 import { useSelector } from "react-redux";
 
-const PaymentSuccess = ({navigate, dispatch}) => {
+const PaymentSuccess = ({ navigate, dispatch }) => {
   const searchParams = new URLSearchParams(window.location.search);
   const [checkoutData, setCheckoutData] = useState(null);
   const requestSent = useRef(false);
@@ -28,41 +28,41 @@ const PaymentSuccess = ({navigate, dispatch}) => {
   // Hàm xóa các sản phẩm đã đặt khỏi giỏ hàng
   const clearCartItems = async (cartItems) => {
     if (!cartItems || cartItems.length === 0 || cartCleared.current) return;
-    
+
     try {
       console.log("Bắt đầu xóa sản phẩm khỏi giỏ hàng...");
       console.log("Số sản phẩm cần xóa:", cartItems.length);
-      
+
       // Nếu user đã đăng nhập và có giỏ hàng
       if (!current) {
         console.log("Người dùng không đăng nhập, không thể xóa giỏ hàng");
         return;
       }
-      
+
       // Phương pháp 1: Gọi API xóa từng sản phẩm
       let successCount = 0;
       let failCount = 0;
-      
+
       const productIds = cartItems.map(item => item.product?._id);
       console.log("Các sản phẩm cần xóa:", productIds);
-      
+
       for (const item of cartItems) {
         const pid = item.product?._id;
         const color = item.color || '';
-        
+
         if (!pid) {
           console.error("Không tìm thấy ID sản phẩm:", item);
           failCount++;
           continue;
         }
-        
+
         try {
           console.log(`Đang xóa sản phẩm: ${pid}, màu: ${color}`);
-          
+
           // Gọi API xóa sản phẩm khỏi giỏ hàng
           const response = await apiRemoveCart(pid, color);
           console.log("Kết quả xóa:", response);
-          
+
           if (response.success) {
             successCount++;
           } else {
@@ -73,13 +73,13 @@ const PaymentSuccess = ({navigate, dispatch}) => {
           failCount++;
         }
       }
-      
+
       console.log(`Đã xóa thành công ${successCount}/${cartItems.length} sản phẩm`);
-      
+
       // Cập nhật lại thông tin giỏ hàng trong Redux store
       dispatch(getCurrent());
       cartCleared.current = true; // Đánh dấu đã xóa giỏ hàng
-      
+
       if (successCount > 0) {
         toast.success(`Đã xóa ${successCount} sản phẩm khỏi giỏ hàng`);
       } else {
@@ -149,22 +149,24 @@ const PaymentSuccess = ({navigate, dispatch}) => {
         paymentInfo: checkoutData?.paymentInfo,
         note: checkoutData?.paymentInfo.note || "",  // Lấy ghi chú nếu có
       };
-      
+
       apiSavePayment(paymentData)
         .then((res) => {
           if (res.data.success) {
             console.log("Lưu hóa đơn thành công");
             // Log thông tin giỏ hàng trước khi xóa
             console.log("Dữ liệu giỏ hàng:", checkoutData?.cart);
-            // Sau khi lưu hóa đơn thành công, xóa các sản phẩm đã đặt khỏi giỏ hàng
+            // Sau khi lưu hóa đơn thành công, xóa các sản phẩm đã đặt khỏi giỏ hàng qua API
             clearCartItems(checkoutData?.cart);
+            // Đồng thời, xóa luôn key selected_cart_items khỏi localStorage
+            localStorage.removeItem("selected_cart_items");
           } else {
             console.error("Lưu hóa đơn thất bại", res.data);
           }
         })
         .catch((err) => {
           console.error("Có lỗi khi lưu hóa đơn:", err);
-        });      
+        });
     }
   }, [checkoutData, responseCode, dispatch, orderId, transactionNo, amount, bankCode, formatPayDate, current]);
 
@@ -184,7 +186,7 @@ const PaymentSuccess = ({navigate, dispatch}) => {
           <div className="grid grid-cols-2 gap-4 text-gray-700">
             <p>
               <strong>Mã đơn hàng:</strong> {orderId}
-            </p>  
+            </p>
             <p>
               <strong>Mã giao dịch:</strong> {transactionNo}
             </p>
