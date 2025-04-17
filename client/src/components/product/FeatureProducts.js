@@ -281,6 +281,13 @@ const FeatureProducts = () => {
         <Slider {...sliderSettings}>
           <div className="relative">
             <img 
+              src="https://hoanghamobile.com/Content/Landding/Iphone16_end/img/promax/iPhone-16-PRO%20MAX.png?v=1.4.4.9" 
+              alt="Promotion 3" 
+              className="w-full h-[200px] md:h-[300px] object-cover rounded-lg"
+            />
+          </div>
+          <div className="relative">
+            <img 
               src="https://hc.com.vn/i/ecommerce/media/11585647_BANNER_DESKTOP_IMAGE_1_165287.jpg" 
               alt="Promotion 1" 
               className="w-full h-[200px] md:h-[300px] object-cover rounded-lg"
@@ -290,13 +297,6 @@ const FeatureProducts = () => {
             <img 
               src="https://hc.com.vn/i/ecommerce/media/11585647_BANNER_DESKTOP_IMAGE_1_164242.jpg" 
               alt="Promotion 2" 
-              className="w-full h-[200px] md:h-[300px] object-cover rounded-lg"
-            />
-          </div>
-          <div className="relative">
-            <img 
-              src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/7a/de/7adece1c51d94f081fa52342199742db.png" 
-              alt="Promotion 3" 
               className="w-full h-[200px] md:h-[300px] object-cover rounded-lg"
             />
           </div>

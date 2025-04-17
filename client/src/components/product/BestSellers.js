@@ -115,7 +115,7 @@ const BestSellers = () => {
   return (
     <div className="w-full">
       {/* Fancy tab header with animated indicator */}
-      <div className="flex flex-col relative border-b-0">
+      <div className="flex flex-col relative">
         <div className="flex items-center justify-center sm:justify-start gap-8 relative">
           {tabs.map((tab) => (
             <div

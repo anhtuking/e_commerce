@@ -7,8 +7,9 @@ import { Link } from "react-router-dom";
 import withBase from "hocs/withBase";
 import { useSelector } from "react-redux";
 import { getDealDaily } from "store/product/productSlice";
+import sale from "assets/sale.png"
 
-const { MdOutlineStar, TiThMenuOutline } = icons;
+const { TiThMenuOutline } = icons;
 
 const DealDaily = ({ navigate, dispatch }) => {
   const [hour, setHour] = useState(0);
@@ -158,13 +159,8 @@ const DealDaily = ({ navigate, dispatch }) => {
 
   return (
     <div className="w-full h-full bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-      <div className="flex items-center justify-between pb-4 mb-4">
-        <span className="text-xl font-bold text-gray-800">ƯU ĐÃI NGÀY</span>
-        <div className="flex items-center space-x-2">
-          <MdOutlineStar color="#dd1111" size={20} className="animate-blink" />
-          <MdOutlineStar color="#dd1111" size={20} className="animate-blink" />
-          <MdOutlineStar color="#dd1111" size={20} className="animate-blink" />
-        </div>
+      <div className="flex items-center justify-center pb-4 mb-2">
+        <img src={sale} alt="title"  />
       </div>
 
       <div className="w-full flex flex-col items-center pt-2">
@@ -191,12 +187,12 @@ const DealDaily = ({ navigate, dispatch }) => {
           {hasValidProductData && (
             <>
               <div className="flex text-yellow-400">
-                {renderStarFromNumber(dealDaily.data.totalRatings, 18)?.map((el, index) => (
+                {renderStarFromNumber(dealDaily.data.totalRatings || 5, 18)?.map((el, index) => (
                   <span key={index}>{el}</span>
                 ))}
               </div>
               <span className="text-xs text-gray-600 ml-1">
-                ({dealDaily.data.totalRatings || 0})
+                {dealDaily.data.totalRatings ? `(${dealDaily.data.totalRatings})` : '(5)'}
               </span>
             </>
           )}
@@ -252,9 +248,8 @@ const DealDaily = ({ navigate, dispatch }) => {
               }
             }}
             disabled={!hasValidProductData || isLoading}
-            className={`flex-1 flex gap-2 items-center justify-center ${
-              !hasValidProductData || isLoading ? "bg-gray-400" : "bg-main hover:bg-gray-800"
-            } text-white font-medium py-3 px-4 rounded-md transition-colors`}
+            className={`flex-1 flex gap-2 items-center justify-center ${!hasValidProductData || isLoading ? "bg-gray-400" : "bg-main hover:bg-gray-800"
+              } text-white font-medium py-3 px-4 rounded-md transition-colors`}
           >
             <TiThMenuOutline />
             <span>Xem ngay</span>

@@ -197,7 +197,7 @@ const Header = ({ dispatch, navigate }) => {
             <div className="flex flex-col">
               <span className="text-xs text-gray-600">Vị trí của bạn</span>
               <select
-                className="text-sm font-medium text-gray-800 bg-transparent outline-none"
+                className="text-sm font-medium text-gray-800 bg-transparent outline-none cursor-pointer"
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(e.target.value)}
               >

@@ -180,6 +180,51 @@ const Home = ({ navigate }) => {
         </div>
       </div>
 
+      <div className="my-10 w-main mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-2xl font-bold text-gray-800 border-b-2 border-main pb-2">
+            ƯU ĐÃI THANH TOÁN
+          </h3>
+        </div>
+        
+        {/* Payment Promotion Banners */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Banner 1 */}
+          <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group">
+            <div className="relative overflow-hidden">
+              <img 
+                src="https://cdn2.fptshop.com.vn/unsafe/828x0/filters:format(webp):quality(75)/H3_405x175_36a142f683.png" 
+                alt="VPBank Payment Promotion"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                <div className="p-4 text-white">
+                  <h4 className="font-bold text-lg">Ưu đãi thẻ tín dụng VNPAY</h4>
+                  <p className="text-sm">Giảm thêm 500.000đ khi thanh toán qua thẻ tín dụng VNPAY</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Banner 2 */}
+          <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group">
+            <div className="relative overflow-hidden">
+              <img 
+                src="https://cdn2.fptshop.com.vn/unsafe/828x0/filters:format(webp):quality(75)/H3_405x175_A1_9f35d00a82.png" 
+                alt="Installment Payment Promotion"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                <div className="p-4 text-white">
+                  <h4 className="font-bold text-lg">Ưu đãi trả góp 0%</h4>
+                  <p className="text-sm">Trả góp 0% lãi suất qua nhiều ngân hàng và công ty tài chính</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/*================== BLOG POSTS SLIDER SECTION ==================*/}
       <div className="my-10 w-main mx-auto">
         <div className="flex justify-between items-center mb-6">

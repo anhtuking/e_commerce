@@ -1,224 +1,242 @@
-import { apiSavePayment } from "api/payment";
-import { apiRemoveCart, apiUpdateCart } from "api/user";
-import { useEffect, useRef, useState } from "react";
-import Swal from "sweetalert2";
-import { formatPrice } from "utils/helpers";
-import { getCurrent } from "store/user/asyncAction";
-import { toast } from "react-toastify";
-import withBase from "hocs/withBase";
-import { useSelector } from "react-redux";
+// src/pages/PaymentSuccess.js
 
-const PaymentSuccess = ({ navigate, dispatch }) => {
+import { apiSavePayment } from "api/payment";
+import { apiRemoveCart } from "api/user";
+import { getCurrent } from "store/user/asyncAction";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
+import { formatPrice } from "utils/helpers";
+import withBase from "hocs/withBase";
+
+const PaymentSuccess = ({ navigate }) => {
+  const dispatch = useDispatch();
+  const { current } = useSelector((state) => state.user);
   const searchParams = new URLSearchParams(window.location.search);
+  const responseCode = searchParams.get("vnp_ResponseCode");
+
   const [checkoutData, setCheckoutData] = useState(null);
   const requestSent = useRef(false);
-  const cartCleared = useRef(false);
-  const { current } = useSelector(state => state.user);
 
+  // 1) Load checkout info từ localStorage
   useEffect(() => {
     const data = localStorage.getItem("checkout_info");
     if (data) {
       setCheckoutData(JSON.parse(data));
       localStorage.removeItem("checkout_info");
     } else {
-      navigate("/"); // Nếu không có dữ liệu, chuyển hướng về trang chủ
+      navigate("/");
     }
   }, [navigate]);
 
-  // Hàm xóa các sản phẩm đã đặt khỏi giỏ hàng
-  const clearCartItems = async (cartItems) => {
-    if (!cartItems || cartItems.length === 0 || cartCleared.current) return;
-
-    try {
-      console.log("Bắt đầu xóa sản phẩm khỏi giỏ hàng...");
-      console.log("Số sản phẩm cần xóa:", cartItems.length);
-
-      // Nếu user đã đăng nhập và có giỏ hàng
-      if (!current) {
-        console.log("Người dùng không đăng nhập, không thể xóa giỏ hàng");
-        return;
-      }
-
-      // Phương pháp 1: Gọi API xóa từng sản phẩm
-      let successCount = 0;
-      let failCount = 0;
-
-      const productIds = cartItems.map(item => item.product?._id);
-      console.log("Các sản phẩm cần xóa:", productIds);
-
-      for (const item of cartItems) {
-        const pid = item.product?._id;
-        const color = item.color || '';
-
-        if (!pid) {
-          console.error("Không tìm thấy ID sản phẩm:", item);
-          failCount++;
-          continue;
-        }
-
-        try {
-          console.log(`Đang xóa sản phẩm: ${pid}, màu: ${color}`);
-
-          // Gọi API xóa sản phẩm khỏi giỏ hàng
-          const response = await apiRemoveCart(pid, color);
-          console.log("Kết quả xóa:", response);
-
-          if (response.success) {
-            successCount++;
-          } else {
-            failCount++;
-          }
-        } catch (err) {
-          console.error("Lỗi khi xóa sản phẩm:", err);
-          failCount++;
-        }
-      }
-
-      console.log(`Đã xóa thành công ${successCount}/${cartItems.length} sản phẩm`);
-
-      // Cập nhật lại thông tin giỏ hàng trong Redux store
-      dispatch(getCurrent());
-      cartCleared.current = true; // Đánh dấu đã xóa giỏ hàng
-
-      if (successCount > 0) {
-        toast.success(`Đã xóa ${successCount} sản phẩm khỏi giỏ hàng`);
-      } else {
-        toast.warning("Không thể xóa sản phẩm khỏi giỏ hàng qua API, vui lòng kiểm tra lại giỏ hàng");
-      }
-    } catch (error) {
-      console.error("Lỗi khi xóa sản phẩm khỏi giỏ hàng:", error);
-      toast.error("Không thể xóa sản phẩm khỏi giỏ hàng");
+  // 2) Nếu thanh toán bị hủy
+  useEffect(() => {
+    if (responseCode && responseCode !== "00") {
+      Swal.fire({
+        title: "Đã hủy",
+        text: "Thanh toán đã bị hủy bỏ",
+        icon: "error",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#3085d6",
+      }).then(() => navigate("/"));
     }
-  };
+  }, [responseCode, navigate]);
 
-  const responseCode = searchParams.get("vnp_ResponseCode");
-  if (responseCode !== "00") {
-    navigate("/")
-    Swal.fire({
-      title: "Đã hủy",
-      text: "Thanh toán đã bị hủy bỏ",
-      icon: "error",
-      confirmButtonText: "OK",
-      confirmButtonColor: "#3085d6",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        navigate("/");
-      }
-    });
-  }
+  // 3) Khi thành công: lưu hóa đơn và xoá sản phẩm khỏi cart
+  useEffect(() => {
+    if (!checkoutData || responseCode !== "00" || requestSent.current) return;
+    requestSent.current = true;
 
-  // Lấy thông tin từ VNPAY
+    // Build payload cho hóa đơn
+    const paymentData = {
+      orderCode: searchParams.get("vnp_TxnRef"),
+      transactionCode: searchParams.get("vnp_TransactionNo"),
+      amount: (searchParams.get("vnp_Amount") || 0) / 100,
+      bankCode: searchParams.get("vnp_BankCode"),
+      payDate: (() => {
+        const pd = searchParams.get("vnp_PayDate") || "";
+        return pd
+          ? `${pd.slice(6, 8)}/${pd.slice(4, 6)}/${pd.slice(0, 4)} ${pd.slice(
+              8,
+              10
+            )}:${pd.slice(10, 12)}:${pd.slice(12, 14)}`
+          : "";
+      })(),
+      userId: checkoutData.user._id,
+      email: checkoutData.user.email,
+      phone: checkoutData.paymentInfo.phone,
+      address: [
+        checkoutData.paymentInfo.address,
+        checkoutData.paymentInfo.ward,
+        checkoutData.paymentInfo.district,
+        checkoutData.paymentInfo.city,
+      ]
+        .filter(Boolean)
+        .join(", "),
+      products: checkoutData.cart.map((item) => ({
+        product: item.product._id,
+        quantity: item.quantity,
+        price: item.product.price,
+      })),
+      paymentInfo: checkoutData.paymentInfo,
+      note: checkoutData.paymentInfo.note || "",
+    };
+
+    // Gọi API lưu hóa đơn
+    apiSavePayment(paymentData)
+      .then(async (res) => {
+        if (res.data.success) {
+          // A) Xóa từng sản phẩm khỏi cart server
+          const cartItemsToRemove = checkoutData.cart;
+          console.log("Cart items to remove:", cartItemsToRemove);
+          
+          try {
+            for (const item of cartItemsToRemove) {
+              // Kiểm tra cấu trúc dữ liệu của từng item
+              const productId = item.product?._id;
+              const itemColor = item.color || "";
+              
+              if (!productId) {
+                console.error("Missing product ID for item:", item);
+                continue;
+              }
+              
+              console.log(`Removing product: ${productId}, color: ${itemColor}`);
+              const removeResponse = await apiRemoveCart(productId, itemColor);
+              
+              if (!removeResponse?.data?.success) {
+                console.warn(`Failed to remove product ${productId} with color ${itemColor}:`, removeResponse?.data);
+              }
+            }
+            
+            toast.success(
+              `Đã xóa ${cartItemsToRemove.length} sản phẩm khỏi giỏ hàng.`
+            );
+          } catch (removeErr) {
+            console.error("Error removing cart items:", removeErr);
+            console.error("Error details:", removeErr.response?.data || removeErr.message);
+            
+            // Vẫn tiếp tục cập nhật Redux và localStorage ngay cả khi xóa cart API thất bại
+            toast.error("Có lỗi khi xóa sản phẩm khỏi giỏ hàng, nhưng đơn hàng đã được lưu thành công.");
+          }
+
+          // B) Refresh lại Redux store
+          dispatch(getCurrent());
+          
+          // C) Xóa flag đã chọn
+          localStorage.removeItem("selected_cart_items");
+
+          // D) (Tuỳ) Xóa cart guest trong localStorage
+          const GUEST_CART_KEY = "cart";
+          const guestCart = JSON.parse(
+            localStorage.getItem(GUEST_CART_KEY) || "[]"
+          );
+          const purchasedIds = cartItemsToRemove.map((i) => i.product?._id).filter(Boolean);
+          const remaining = guestCart.filter(
+            (i) => !purchasedIds.includes(i.product._id)
+          );
+          localStorage.setItem(GUEST_CART_KEY, JSON.stringify(remaining));
+        } else {
+          console.error("Failed to save payment:", res.data);
+          toast.error(`Lưu đơn hàng thất bại: ${res.data.message || "Vui lòng kiểm tra lại."}`);
+        }
+      })
+      .catch((saveErr) => {
+        console.error("Error saving payment:", saveErr);
+        console.error("Error details:", saveErr.response?.data || saveErr.message);
+        
+        // Hiển thị thông báo lỗi chi tiết hơn
+        const errorMessage = saveErr.response?.data?.message || "Không thể kết nối tới máy chủ";
+        toast.error(`Có lỗi khi lưu hóa đơn: ${errorMessage}`);
+      });
+  }, [checkoutData, responseCode, dispatch, navigate]);
+
+  if (!checkoutData) return null;
+
+  // Extract values cho render
   const amount = (searchParams.get("vnp_Amount") || 0) / 100;
   const orderId = searchParams.get("vnp_TxnRef");
   const transactionNo = searchParams.get("vnp_TransactionNo");
   const bankCode = searchParams.get("vnp_BankCode");
-  const payDate = searchParams.get("vnp_PayDate");
-
-  // Định dạng ngày
-  const formatPayDate = payDate && `
-    ${payDate.slice(6, 8)}/
-    ${payDate.slice(4, 6)}/
-    ${payDate.slice(0, 4)} 
-    ${payDate.slice(8, 10)}:
-    ${payDate.slice(10, 12)}:
-    ${payDate.slice(12, 14)}
-  `;
-
-  useEffect(() => {
-    if (checkoutData && responseCode === "00" && !requestSent.current) {
-      requestSent.current = true; // Đánh dấu đã gửi request
-
-      const paymentData = {
-        orderCode: orderId,             // Mã đơn hàng
-        transactionCode: transactionNo, // Mã giao dịch
-        amount,
-        bankCode,
-        payDate: formatPayDate,
-        userId: checkoutData?.user?._id,
-        email: checkoutData?.user?.email,
-        phone: checkoutData?.user?.mobile || checkoutData?.paymentInfo?.phone,
-        address: `${checkoutData?.paymentInfo.address}, ${checkoutData?.paymentInfo.ward}, ${checkoutData?.paymentInfo.district}, ${checkoutData?.paymentInfo.city}`,
-        products: checkoutData?.cart?.map((item) => ({
-          product: item.product._id,
-          quantity: item.quantity,
-          price: item.product.price,
-          title: item.title,
-          thumbnail: item.thumbnail,
-          color: item.color || ""
-        })),
-        paymentInfo: checkoutData?.paymentInfo,
-        note: checkoutData?.paymentInfo.note || "",  // Lấy ghi chú nếu có
-      };
-
-      apiSavePayment(paymentData)
-        .then((res) => {
-          if (res.data.success) {
-            console.log("Lưu hóa đơn thành công");
-            // Log thông tin giỏ hàng trước khi xóa
-            console.log("Dữ liệu giỏ hàng:", checkoutData?.cart);
-            // Sau khi lưu hóa đơn thành công, xóa các sản phẩm đã đặt khỏi giỏ hàng qua API
-            clearCartItems(checkoutData?.cart);
-            // Đồng thời, xóa luôn key selected_cart_items khỏi localStorage
-            localStorage.removeItem("selected_cart_items");
-          } else {
-            console.error("Lưu hóa đơn thất bại", res.data);
-          }
-        })
-        .catch((err) => {
-          console.error("Có lỗi khi lưu hóa đơn:", err);
-        });
-    }
-  }, [checkoutData, responseCode, dispatch, orderId, transactionNo, amount, bankCode, formatPayDate, current, clearCartItems]);
-
-  if (!checkoutData) return null; 
+  // Định dạng lại payDate như trên
+  const payDate = (() => {
+    const pd = searchParams.get("vnp_PayDate") || "";
+    return pd
+      ? `${pd.slice(6, 8)}/${pd.slice(4, 6)}/${pd.slice(0, 4)} ${pd.slice(
+          8,
+          10
+        )}:${pd.slice(10, 12)}:${pd.slice(12, 14)}`
+      : "";
+  })();
+  const { user, paymentInfo, cart } = checkoutData;
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
-        {/* Thông báo thành công */}
         <h1 className="text-2xl font-bold text-main mb-6 text-center">
           THANH TOÁN THÀNH CÔNG!
         </h1>
 
-        {/* Thông tin đơn hàng từ VNPAY */}
+        {/* Thông tin giao dịch */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-green-600">Thông tin giao dịch</h2>
+          <h2 className="text-xl font-semibold mb-4 text-green-600">
+            Thông tin giao dịch
+          </h2>
           <div className="grid grid-cols-2 gap-4 text-gray-700">
-            <p><strong>Mã đơn hàng:</strong>{orderId}</p>
-            <p><strong>Mã giao dịch:</strong>{transactionNo}</p>
-            <p><strong>Ngân hàng:</strong>{bankCode}</p>
-            <p><strong>Số tiền:</strong> {formatPrice(amount)} VND</p>
-            <p><strong>Thời gian:</strong> {formatPayDate}</p>
-          </div>
-        </div>
-
-        {/* Thông tin người dùng */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-green-600">Thông tin người nhận</h2>
-          <div className="space-y-2 text-gray-700">
-            <div className="grid grid-cols-2 gap-4 text-gray-700">
-              <p>
-                <strong>Họ tên:</strong> {checkoutData.user?.firstname}{" "}
-                {checkoutData.user?.lastname}
-              </p>
-              <p><strong>Email:</strong> {checkoutData.user?.email}</p>
-            </div>
-            <p><strong>Số điện thoại:</strong> {checkoutData.user?.mobile}</p>
-            <p><strong>Địa chỉ:</strong> 
-              {checkoutData.paymentInfo.address},{" "}
-              {checkoutData.paymentInfo.ward},{" "}
-              {checkoutData.paymentInfo.district},{" "}
-              {checkoutData.paymentInfo.city}
+            <p>
+              <strong>Mã đơn hàng:</strong> {orderId}
+            </p>
+            <p>
+              <strong>Mã giao dịch:</strong> {transactionNo}
+            </p>
+            <p>
+              <strong>Ngân hàng:</strong> {bankCode}
+            </p>
+            <p>
+              <strong>Số tiền:</strong> {formatPrice(amount)} VND
+            </p>
+            <p>
+              <strong>Thời gian:</strong> {payDate}
             </p>
           </div>
         </div>
 
-        {/* Danh sách sản phẩm */}
+        {/* Thông tin người nhận */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-green-600">Sản phẩm đã mua</h2>
+          <h2 className="text-xl font-semibold mb-4 text-green-600">
+            Thông tin người nhận
+          </h2>
+          <div className="space-y-2 text-gray-700">
+            <div className="grid grid-cols-2 gap-4">
+              <p>
+                <strong>Họ tên:</strong> {user.firstname} {user.lastname}
+              </p>
+              <p>
+                <strong>Email:</strong> {user.email}
+              </p>
+            </div>
+            <p>
+              <strong>Số điện thoại:</strong> {user.mobile}
+            </p>
+            <p>
+              <strong>Địa chỉ:</strong> {paymentInfo.address},{" "}
+              {paymentInfo.ward}, {paymentInfo.district}, {paymentInfo.city}
+            </p>
+          </div>
+        </div>
+
+        {/* Sản phẩm đã mua */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-green-600">
+            Sản phẩm đã mua
+          </h2>
           <div className="space-y-4">
-            {checkoutData.cart?.map((item) => (
-              <div key={item._id} className="flex items-center border-b pb-4">
+            {cart.map((item) => (
+              <div
+                key={item._id}
+                className="flex items-center border-b pb-4"
+              >
                 <img
                   src={item.thumbnail}
                   alt={item.title}
@@ -230,7 +248,7 @@ const PaymentSuccess = ({ navigate, dispatch }) => {
                     Số lượng: {item.quantity}
                   </p>
                   <p className="text-red-600">
-                    {formatPrice(item.product?.price * item.quantity)} VND
+                    {formatPrice(item.product.price * item.quantity)} VND
                   </p>
                 </div>
               </div>
@@ -238,7 +256,7 @@ const PaymentSuccess = ({ navigate, dispatch }) => {
           </div>
         </div>
 
-        {/* Nút quay về trang chủ */}
+        {/* Nút Quay về trang chủ */}
         <div className="text-center">
           <button
             onClick={() => navigate("/")}
