@@ -8,7 +8,6 @@ const initData = {
     data: [],
 }
 /*
-
 data:[
     {
         id: 1,
@@ -20,11 +19,7 @@ data:[
         
     }
 ]
-
-
 */
-
-
 const ChatSlice = createSlice({
     name: 'chat',
     initialState: initData,

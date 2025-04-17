@@ -54,17 +54,19 @@ const TopHeader = () => {
       <div className="w-full max-w-[1440px] mx-auto flex justify-between items-center py-2.5 px-6 relative z-10">
         {/* Left side - Announcements */}
         <div className="flex items-center space-x-8">
+          <div className="hidden md:flex items-center gap-2 border-r border-red-500/30 pr-8">
+            <FaPhoneAlt className="text-yellow-300 animate-pulse" size={14} />
+            <span className="text-sm font-medium">Hotline: (+84) 000 8386 008</span>
+          </div>
           <div className="flex items-center gap-2 border-r border-red-500/30 pr-8">
             <FaShippingFast className="text-yellow-300" size={16} />
             <span className="text-sm font-medium">Miễn phí vận chuyển cho đơn hàng trên 75$</span>
           </div>
-          
           <div className="hidden md:flex items-center gap-2 border-r border-red-500/30 pr-8">
             <FaCreditCard className="text-yellow-300" size={14} />
             <span className="text-sm">Thanh toán an toàn</span>
           </div>
-          
-          <div className="hidden lg:flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-2 ">
             <FaPercentage className="text-yellow-300" size={14} />
             <span className="text-sm">Khuyến mãi đặc biệt</span>
           </div>
@@ -72,12 +74,6 @@ const TopHeader = () => {
         
         {/* Right side - Contact & User */}
         <div className="flex items-center gap-6">
-          {/* Call us */}
-          <div className="hidden md:flex items-center gap-2">
-            <FaPhoneAlt className="text-yellow-300 animate-pulse" size={14} />
-            <span className="text-sm font-medium">Gọi chúng tôi: (+84) 000 8386 008</span>
-          </div>
-        
           {/* User Account */}
           {isLoggedIn && current ? (
             <div className="relative group">

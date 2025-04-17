@@ -32,10 +32,10 @@ const ManageBlog = ({ dispatch, navigate }) => {
     fetchInProgressRef.current = true;
     setIsLoading(true);
     try {
-      const response = await apiGetAllBlogs();
+      const response = await apiGetAllBlogs({ limit: 10, page: 1 });
       if (response.success) {
-        setBlogs(response.blogs);
-        setCounts(response.blogs.length);
+        setBlogs(response?.blogs || []);
+        setCounts(response?.blogs?.length || 0);
       }
     } catch (error) {
       toast.error("Không thể tải danh sách bài viết");

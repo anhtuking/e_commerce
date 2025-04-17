@@ -293,6 +293,13 @@ const FeatureProducts = () => {
               className="w-full h-[200px] md:h-[300px] object-cover rounded-lg"
             />
           </div>
+          <div className="relative">
+            <img 
+              src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/7a/de/7adece1c51d94f081fa52342199742db.png" 
+              alt="Promotion 3" 
+              className="w-full h-[200px] md:h-[300px] object-cover rounded-lg"
+            />
+          </div>
         </Slider>
       </div>
       
@@ -324,7 +331,7 @@ const FeatureProducts = () => {
             <div className="relative">
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Tìm kiếm sản phẩm..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 className="pl-9 pr-4 py-2 rounded-lg border border-gray-300 w-full focus:outline-none focus:border-main"

@@ -54,14 +54,6 @@ function App() {
   }, [dispatch]);
   return (
     <div className="font-main h-screen relative">
-      {/* {isShowChat && (
-        <div
-          onClick={() => dispatch(showChat())}
-          className="absolute inset-0 bg-overlay z-[50000] flex justify-end"
-        >
-          <ChatbotDetails />
-        </div>
-      )} */}
       {isShowCart && (
         <div
           onClick={() => dispatch(showCart({ signal: false }))}

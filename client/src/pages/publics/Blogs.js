@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Breadcrumb } from 'components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   BiSearch,
   BiCalendar,
@@ -10,60 +10,22 @@ import {
   BiChevronRight,
   BiLeftArrowAlt
 } from 'react-icons/bi';
-import { FaTags, FaRegBookmark } from 'react-icons/fa';
-import { apiGetAllBlogs } from 'api/blog';
-
-// Nếu cần, bạn vẫn có thể giữ lại dữ liệu mẫu cho các phần khác như Categories, Popular Posts, Tags:
-const categories = [
-  { name: 'Technology', count: 15 },
-  { name: 'Buying Guide', count: 8 },
-  { name: 'Gadgets', count: 12 },
-  { name: 'Smart Home', count: 7 },
-  { name: 'Security', count: 5 },
-  { name: 'Reviews', count: 20 },
-  { name: 'News', count: 18 }
-];
-
-const popularPosts = [
-  {
-    id: 1,
-    title: 'Top 10 Điện thoại thông minh năm 2025',
-    date: 'Ngày 10 tháng 4 năm 2025',
-    image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60'
-  },
-  {
-    id: 2,
-    title: 'Hướng dẫn hoàn hảo cho bàn phím cơ',
-    date: 'Ngày 28 tháng  năm 2025',
-    image: 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60'
-  },
-  {
-    id: 3,
-    title: 'Cách AI đang thay đổi ngành công nghệ',
-    date: 'Ngày 15 tháng 3 năm 2025',
-    image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60'
-  },
-  {
-    id: 4,
-    title: 'Tai nghe giá rẻ tốt nhất năm 2025',
-    date: 'Ngày 30 tháng 2 năm 2025',
-    image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60'
-  }
-];
-
-const tags = [
-  'Smartphones', 'Laptops', 'Wearables', 'Gaming', 'AI',
-  'IoT', 'Headphones', 'Cameras', 'Speakers', 'Accessories',
-  'Apple', 'Samsung', 'Reviews', 'Tips'
-];
+import { FaTags, FaRegBookmark, FaThumbsUp, FaThumbsDown, FaRegThumbsUp, FaRegThumbsDown } from 'react-icons/fa';
+import { apiGetAllBlogs, apiLikeBlog, apiDislikeBlog } from 'api/blog';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { popularPosts, blogTags, blogCategories } from 'utils/contants';
 
 const Blogs = () => {
+  const navigate = useNavigate();
+  const { current } = useSelector(state => state.user);
   const [searchTerm, setSearchTerm] = useState('');
   const [blogData, setBlogData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalBlogs, setTotalBlogs] = useState(0);
+  const [loadingAction, setLoadingAction] = useState(false);
   const blogsPerPage = 5;
 
   // Xử lý tìm kiếm (nếu cần)
@@ -77,6 +39,77 @@ const Blogs = () => {
     if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Handle like blog
+  const handleLike = async (bid) => {
+    if (!current) {
+      toast.warning('Vui lòng đăng nhập để thực hiện chức năng này!');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      setLoadingAction(true);
+      const response = await apiLikeBlog(bid);
+      if (response.success) {
+        // Cập nhật lại danh sách blog sau khi like/unlike
+        const updatedBlogs = blogData.map(blog =>
+          blog._id === bid ? { ...blog, likes: response.result.likes, dislikes: response.result.dislikes } : blog
+        );
+        setBlogData(updatedBlogs);
+        toast.success('Đã cập nhật đánh giá!');
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        toast.error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!');
+        navigate('/login');
+      } else {
+        toast.error('Có lỗi xảy ra. Vui lòng thử lại sau!');
+      }
+    } finally {
+      setLoadingAction(false);
+    }
+  };
+
+  // Handle dislike blog
+  const handleDislike = async (bid) => {
+    if (!current) {
+      toast.warning('Vui lòng đăng nhập để thực hiện chức năng này!');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      setLoadingAction(true);
+      const response = await apiDislikeBlog(bid);
+      if (response.success) {
+        // Cập nhật lại danh sách blog sau khi dislike/undislike
+        const updatedBlogs = blogData.map(blog =>
+          blog._id === bid ? { ...blog, likes: response.result.likes, dislikes: response.result.dislikes } : blog
+        );
+        setBlogData(updatedBlogs);
+        toast.success('Đã cập nhật đánh giá!');
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        toast.error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!');
+        navigate('/login');
+      } else {
+        toast.error('Có lỗi xảy ra. Vui lòng thử lại sau!');
+      }
+    } finally {
+      setLoadingAction(false);
+    }
+  };
+
+  // Check if user has liked or disliked a blog
+  const hasUserLiked = (blog) => {
+    return current && blog.likes?.includes(current._id);
+  };
+
+  const hasUserDisliked = (blog) => {
+    return current && blog.dislikes?.includes(current._id);
   };
 
   // Call API lấy blog từ MongoDB, thay vì sử dụng dữ liệu mẫu
@@ -258,103 +291,115 @@ const Blogs = () => {
                   )}
                 </h2>
                 
-                {blogData.length > 0 ? (
+                {blogData.length === 0 ? (
+                  <div className="py-8 text-center text-gray-600">
+                    {searchTerm ? `Không tìm thấy bài viết cho "${searchTerm}"` : 'Chưa có bài viết nào'}
+                  </div>
+                ) : (
                   <div className="grid grid-cols-1 gap-8">
-                    {blogData.map((post) => (
-                      <div key={post._id} className="flex flex-col md:flex-row gap-6 border-b border-gray-100 pb-8 last:border-b-0 last:pb-0">
-                        <div className="md:w-1/3 overflow-hidden rounded-lg group">
-                          <Link to={`/blog/${post._id}`} className="block">
-                            <div className="relative h-60 md:h-48 overflow-hidden rounded-lg">
-                              <img
-                                src={post.image || 'https://via.placeholder.com/300x200?text=No+Image'}
-                                alt={post.title}
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                onError={(e) => {
-                                  e.target.src = 'https://via.placeholder.com/300x200?text=Error+Loading+Image';
-                                }}
-                              />
-                              <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded">
-                                {post.category || 'Chưa phân loại'}
-                              </div>
-                            </div>
-                          </Link>
+                    {blogData.map((blog) => (
+                      <div key={blog._id} className="flex flex-col md:flex-row gap-6 border-b border-gray-100 pb-8">
+                        {/* Blog Image */}
+                        <div className="md:w-1/3">
+                          <img 
+                            src={blog.image} 
+                            alt={blog.title} 
+                            className="w-full h-56 object-cover rounded-lg shadow-sm transition-transform hover:scale-105"
+                          />
                         </div>
-                        <div className="md:w-2/3">
-                          <h3 className="text-xl font-semibold text-gray-800 mb-2 hover:text-red-600 transition-colors duration-300">
-                            <Link to={`/blog/${post._id}`}>{post.title}</Link>
-                          </h3>
-                          <div className="flex flex-wrap items-center text-gray-500 text-sm mb-3 gap-4">
-                            <div className="flex items-center">
-                              <BiUser className="mr-1" />
-                              {post.author || 'Unknown'}
-                            </div>
+                        
+                        {/* Blog Content */}
+                        <div className="md:w-2/3 flex flex-col">
+                          <Link to={`/blog/${blog._id}`} className="text-xl font-semibold text-gray-800 hover:text-red-600 transition-colors">
+                            {blog.title}
+                          </Link>
+                          
+                          {/* Meta info */}
+                          <div className="flex flex-wrap items-center gap-4 my-2 text-sm text-gray-500">
                             <div className="flex items-center">
                               <BiCalendar className="mr-1" />
-                              {post.date}
+                              <span>{blog.date}</span>
+                            </div>
+                            <div className="flex items-center">
+                              <BiUser className="mr-1" />
+                              <span>{blog.author}</span>
                             </div>
                             <div className="flex items-center">
                               <BiMessageRounded className="mr-1" />
-                              {post.numberComments || 0} Bình luận
+                              <span>{blog.numberViews || 0} lượt xem</span>
                             </div>
                           </div>
-                          <p className="text-gray-600 mb-4">
-                            {post.excerpt}
-                          </p>
-                          <Link
-                            to={`/blog/${post._id}`}
-                            className="inline-flex items-center text-red-600 font-medium hover:text-red-700 transition-colors duration-300"
-                          >
-                            Đọc thêm <BiRightArrowAlt className="ml-1" />
-                          </Link>
+                          
+                          {/* Excerpt */}
+                          <p className="text-gray-600 my-3">{blog.excerpt}</p>
+                          
+                          <div className="mt-auto pt-3 flex justify-between items-center">
+                            <Link
+                              to={`/blog/${blog._id}`}
+                              className="inline-flex items-center font-medium text-red-600 hover:text-red-800 transition-colors"
+                            >
+                              Đọc tiếp <BiRightArrowAlt className="ml-1" />
+                            </Link>
+                            
+                            {/* Like/Dislike UI */}
+                            <div className="flex items-center gap-4">
+                              <button
+                                onClick={() => handleLike(blog._id)}
+                                disabled={loadingAction}
+                                className={`flex items-center gap-1 px-2 py-1 rounded-md transition-colors ${
+                                  hasUserLiked(blog) 
+                                    ? 'text-blue-600 bg-blue-50' 
+                                    : 'text-gray-600 hover:text-blue-600'
+                                }`}
+                                title="Thích"
+                              >
+                                {hasUserLiked(blog) ? <FaThumbsUp /> : <FaRegThumbsUp />}
+                                <span>{blog.likes?.length || 0}</span>
+                              </button>
+                              
+                              <button
+                                onClick={() => handleDislike(blog._id)}
+                                disabled={loadingAction}
+                                className={`flex items-center gap-1 px-2 py-1 rounded-md transition-colors ${
+                                  hasUserDisliked(blog) 
+                                    ? 'text-red-600 bg-red-50' 
+                                    : 'text-gray-600 hover:text-red-600'
+                                }`}
+                                title="Không thích"
+                              >
+                                {hasUserDisliked(blog) ? <FaThumbsDown /> : <FaRegThumbsDown />}
+                                <span>{blog.dislikes?.length || 0}</span>
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-12">
-                    <div className="text-gray-400 text-lg mb-4">Không tìm thấy bài viết nào</div>
-                    <button 
-                      onClick={() => {
-                        setSearchTerm('');
-                        setCurrentPage(1);
-                      }}
-                      className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
-                    >
-                      Xem tất cả bài viết
-                    </button>
-                  </div>
                 )}
-
+                
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="mt-10 flex justify-center">
-                    <div className="flex flex-wrap gap-2 items-center">
-                      <button
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        className={`px-4 py-2 border border-gray-300 rounded-md flex items-center ${
-                          currentPage === 1 
-                            ? 'text-gray-400 cursor-not-allowed' 
-                            : 'text-gray-700 hover:bg-gray-50'
-                        }`}
-                      >
-                        <BiLeftArrowAlt className="mr-1" /> Prev
-                      </button>
-                      
+                  <div className="flex justify-center items-center mt-10">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 mr-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <BiLeftArrowAlt size={20} />
+                    </button>
+                    
+                    <div className="flex space-x-2">
                       {renderPaginationItems()}
-                      
-                      <button
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                        className={`px-4 py-2 border border-gray-300 rounded-md flex items-center ${
-                          currentPage === totalPages 
-                            ? 'text-gray-400 cursor-not-allowed' 
-                            : 'text-gray-700 hover:bg-gray-50'
-                        }`}
-                      >
-                        Next <BiRightArrowAlt className="ml-1" />
-                      </button>
                     </div>
+                    
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 ml-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <BiChevronRight size={20} />
+                    </button>
                   </div>
                 )}
               </div>
@@ -382,7 +427,7 @@ const Blogs = () => {
             <div className="bg-white rounded-lg shadow-md p-6">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Danh mục</h3>
               <ul className="space-y-3">
-                {categories.map((category, index) => (
+                {blogCategories.map((category, index) => (
                   <li key={index}>
                     <a
                       href="#"
@@ -436,7 +481,7 @@ const Blogs = () => {
                 <FaTags className="mr-2 text-red-600" /> Tags
               </h3>
               <div className="flex flex-wrap gap-2">
-                {tags.map((tag, index) => (
+                {blogTags.map((tag, index) => (
                   <a
                     href="#"
                     key={index}

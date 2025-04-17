@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { apiGetUserOrder } from "api/user";
 import { formatPrice, createSlug } from "utils/helpers";
 import moment from "moment";
@@ -6,6 +6,7 @@ import { FiPackage, FiCalendar, FiCreditCard, FiShoppingBag, FiTruck, FiMapPin, 
 import { motion, AnimatePresence } from "framer-motion";
 import { statusConfig } from "utils/contants";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -270,7 +271,26 @@ const MyOrders = () => {
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           const safeTitle = createSlug(item.title);
-                                          navigate(`/${item.category?.toLowerCase() || 'san-pham'}/${item.pid || item._id}/${safeTitle}`);
+                                          
+                                          // Xác định product ID theo thứ tự ưu tiên, thêm log để debug
+                                          console.log('Item data:', item);
+                                          
+                                          // Ưu tiên dùng item.product nếu nó là ID (string)
+                                          const productId = typeof item.product === 'string' ? item.product :
+                                                           // Nếu là object thì kiểm tra item.product._id
+                                                           item.product?._id || 
+                                                           // Hoặc thử dùng pid nếu có
+                                                           item.pid || 
+                                                           // Cuối cùng thử dùng _id
+                                                           item._id;
+                                          
+                                          if (productId) {
+                                            // Thêm log để debug
+                                            console.log('Navigating to product:', productId);
+                                            navigate(`/${item.category?.toLowerCase() || 'san-pham'}/${productId}/${safeTitle}`);
+                                          } else {
+                                            toast.error("Không thể tìm thấy thông tin sản phẩm để đánh giá");
+                                          }
                                         }}
                                       >
                                         {item.title || "Sản phẩm"}
@@ -294,7 +314,26 @@ const MyOrders = () => {
                                             onClick={(e) => {
                                               e.stopPropagation();
                                               const safeTitle = createSlug(item.title);
-                                              navigate(`/${item.category?.toLowerCase() || 'san-pham'}/${item.pid || item._id}/${safeTitle}`);
+                                              
+                                              // Xác định product ID theo thứ tự ưu tiên, thêm log để debug
+                                              console.log('Item data:', item);
+                                              
+                                              // Ưu tiên dùng item.product nếu nó là ID (string)
+                                              const productId = typeof item.product === 'string' ? item.product :
+                                                               // Nếu là object thì kiểm tra item.product._id
+                                                               item.product?._id || 
+                                                               // Hoặc thử dùng pid nếu có
+                                                               item.pid || 
+                                                               // Cuối cùng thử dùng _id
+                                                               item._id;
+                                              
+                                              if (productId) {
+                                                // Thêm log để debug
+                                                console.log('Navigating to product:', productId);
+                                                navigate(`/${item.category?.toLowerCase() || 'san-pham'}/${productId}/${safeTitle}`);
+                                              } else {
+                                                toast.error("Không thể tìm thấy thông tin sản phẩm để đánh giá");
+                                              }
                                             }}
                                             className="flex items-center justify-center gap-1 text-xs bg-main text-white px-3 py-1.5 rounded-md hover:bg-red-700 transition-colors"
                                           >

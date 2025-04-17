@@ -184,16 +184,16 @@ const BestSellers = () => {
       <div className="w-full flex flex-col sm:flex-row gap-6">
         <div className="flex-1 overflow-hidden rounded-lg shadow-md group">
           <img 
-            src="https://digital-world-2.myshopify.com/cdn/shop/files/banner2-home2_2000x_crop_center.png?v=1613166657"
+            src="https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/H2_614x212_8824eb350f.png"
             alt="banner"
-            className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:filter group-hover:brightness-105"
+            className="w-full h-full object-cover transition-all duration-700"
           />
         </div>
         <div className="flex-1 overflow-hidden rounded-lg shadow-md group">
           <img 
-            src="https://digital-world-2.myshopify.com/cdn/shop/files/banner1-home2_2000x_crop_center.png?v=1613166657"
+            src="https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/H2_614x212_8cda4a9d9f.png"
             alt="banner"
-            className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:filter group-hover:brightness-105"
+            className="w-full h-full object-cover transition-all duration-700"
           />
         </div>
       </div>

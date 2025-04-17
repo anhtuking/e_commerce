@@ -157,8 +157,8 @@ const DealDaily = ({ navigate, dispatch }) => {
     dealDaily.data._id;
 
   return (
-    <div className="w-full h-full bg-white rounded-lg shadow-sm p-4">
-      <div className="flex items-center justify-between border-b pb-4 mb-4">
+    <div className="w-full h-full bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+      <div className="flex items-center justify-between pb-4 mb-4">
         <span className="text-xl font-bold text-gray-800">ƯU ĐÃI NGÀY</span>
         <div className="flex items-center space-x-2">
           <MdOutlineStar color="#dd1111" size={20} className="animate-blink" />

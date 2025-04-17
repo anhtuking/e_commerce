@@ -1,51 +1,85 @@
 import React, { memo } from 'react';
-import largeThumbnail from 'assets/large-thumbnail.mp4';
-import { Link } from 'react-router-dom';
-import path from 'utils/path';
+import Slider from 'react-slick';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const Banner = () => {
-    return (        
-        <div className='w-full relative group overflow-hidden rounded-lg'>
-            <video 
-                src={largeThumbnail} 
-                autoPlay 
-                muted 
-                loop 
-                className="h-full md:h-full lg:h-full w-full object-cover transition-transform duration-10000   "
-            />
+    // Settings for the small banners slider
+    const smallBannerSettings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 2,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 3000,
+        arrows: true,
+        responsive: [
+            {
+                breakpoint: 768,
+                settings: {
+                    slidesToShow: 1,
+                    arrows: false,
+                }
+            }
+        ]
+    };
+
+    // Array of small banner images
+    const smallBanners = [
+        {
+            id: 1,
+            src: "https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/H2_614x212_8cda4a9d9f.png",
+            alt: "banner 1"
+        },
+        {
+            id: 2,
+            src: "https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/H2_614x212_c5d8793756.png",
+            alt: "banner 2"
+        },
+        {
+            id: 3,
+            src: "https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/H2_614x212_8824eb350f.png",
+            alt: "banner 3"
+        },
+        {
+            id: 4,
+            src: "https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/H2_614x212_e97abfb675.png",
+            alt: "banner 4"
+        },
+        {
+            id: 5,
+            src: "https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/H2_614x212_002b4b6a00.png",
+            alt: "banner 5"
+        }
+    ];
+
+    return (
+        <div className='w-full flex flex-col gap-5'>
+            {/* Main banner */}
+            <div className='w-full relative group overflow-hidden rounded-lg'>
+                <img 
+                    src="https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/desk_header_d24626f696.png" 
+                    alt="Main Banner"
+                    className="w-full"
+                />
+            </div>
             
-            {/* Content Overlay */}
-            <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-center px-6 md:px-10 lg:px-16">
-                <div className="max-w-lg">
-                    <h2 
-                        className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3"
-                        style={{ animation: 'fadeInDown 0.8s ease-out forwards' }}
-                    >
-                        Công nghệ mới xuất hiện
-                    </h2>
-                    <p 
-                        className="text-sm md:text-base text-white mb-6 opacity-90"
-                        style={{ animation: 'fadeInUp 0.8s ease-out forwards' }}
-                    >
-                        Tìm hiểu về công nghệ mới nhất với bộ sưu tập các thiết bị công nghệ tiên tiến và điện tử. Chất lượng và hiệu suất tốt nhất với giá cả không thể đối kháng.
-                    </p>
-                    <div className="flex flex-wrap gap-3">
-                        <Link 
-                            to={`/${path.PRODUCTS}`}
-                            className="px-5 py-2.5 bg-white text-gray-900 font-medium rounded-md hover:bg-main hover:text-white transition-colors transform hover:scale-105"
-                            style={{ animation: 'fadeIn 0.8s ease-out forwards' }}
-                        >
-                            Mua ngay
-                        </Link>
-                        <Link 
-                            to={`/${path.BLOGS}`}
-                            className="px-5 py-2.5 bg-transparent text-white border border-white font-medium rounded-md hover:bg-white hover:text-gray-900 transition-colors transform hover:scale-105"
-                            style={{ animation: 'fadeIn 0.8s ease-out forwards', animationDelay: '150ms' }}
-                        >
-                            Tìm hiểu thêm
-                        </Link>
-                    </div>
-                </div>
+            {/* Small Promotional Banners with Slider */}
+            <div className="w-full banner-slider">
+                <Slider {...smallBannerSettings}>
+                    {smallBanners.map(banner => (
+                        <div key={banner.id} className="px-2">
+                            <div className="rounded-md overflow-hidden shadow-sm transition-transform duration-300 hover:scale-[1.01]">
+                                <img
+                                    src={banner.src}
+                                    alt={banner.alt}
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                        </div>
+                    ))}
+                </Slider>
             </div>
         </div>
     )

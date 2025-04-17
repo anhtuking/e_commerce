@@ -168,9 +168,9 @@ const PaymentSuccess = ({ navigate, dispatch }) => {
           console.error("Có lỗi khi lưu hóa đơn:", err);
         });
     }
-  }, [checkoutData, responseCode, dispatch, orderId, transactionNo, amount, bankCode, formatPayDate, current]);
+  }, [checkoutData, responseCode, dispatch, orderId, transactionNo, amount, bankCode, formatPayDate, current, clearCartItems]);
 
-  if (!checkoutData) return null; // Hiển thị loading hoặc redirect
+  if (!checkoutData) return null; 
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
@@ -184,21 +184,11 @@ const PaymentSuccess = ({ navigate, dispatch }) => {
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4 text-green-600">Thông tin giao dịch</h2>
           <div className="grid grid-cols-2 gap-4 text-gray-700">
-            <p>
-              <strong>Mã đơn hàng:</strong> {orderId}
-            </p>
-            <p>
-              <strong>Mã giao dịch:</strong> {transactionNo}
-            </p>
-            <p>
-              <strong>Ngân hàng:</strong> {bankCode}
-            </p>
-            <p>
-              <strong>Số tiền:</strong> {formatPrice(amount)} VND
-            </p>
-            <p>
-              <strong>Thời gian:</strong> {formatPayDate}
-            </p>
+            <p><strong>Mã đơn hàng:</strong>{orderId}</p>
+            <p><strong>Mã giao dịch:</strong>{transactionNo}</p>
+            <p><strong>Ngân hàng:</strong>{bankCode}</p>
+            <p><strong>Số tiền:</strong> {formatPrice(amount)} VND</p>
+            <p><strong>Thời gian:</strong> {formatPayDate}</p>
           </div>
         </div>
 
@@ -211,15 +201,11 @@ const PaymentSuccess = ({ navigate, dispatch }) => {
                 <strong>Họ tên:</strong> {checkoutData.user?.firstname}{" "}
                 {checkoutData.user?.lastname}
               </p>
-              <p>
-                <strong>Email:</strong> {checkoutData.user?.email}
-              </p>
+              <p><strong>Email:</strong> {checkoutData.user?.email}</p>
             </div>
-            <p>
-              <strong>Số điện thoại:</strong> {checkoutData.user?.mobile}
-            </p>
-            <p>
-              <strong>Địa chỉ:</strong> {checkoutData.paymentInfo.address},{" "}
+            <p><strong>Số điện thoại:</strong> {checkoutData.user?.mobile}</p>
+            <p><strong>Địa chỉ:</strong> 
+              {checkoutData.paymentInfo.address},{" "}
               {checkoutData.paymentInfo.ward},{" "}
               {checkoutData.paymentInfo.district},{" "}
               {checkoutData.paymentInfo.city}

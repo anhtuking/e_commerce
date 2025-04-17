@@ -30,7 +30,7 @@ const faqData = {
         },
         {
             question: 'Làm thế nào để liên hệ với hỗ trợ khách hàng?',
-            answer: 'Bạn có thể liên hệ với đội hỗ trợ khách hàng của chúng tôi qua email tại support@marseille.com, qua điện thoại tại 1-800-MARSEILLE, hoặc qua tính năng chat trực tiếp trên trang web của chúng tôi. Đội ngũ hỗ trợ của chúng tôi sẵn sàng hỗ trợ bạn 24/7.'
+            answer: 'Bạn có thể liên hệ với đội hỗ trợ khách hàng của chúng tôi qua email tại support@marseille.com, qua điện thoại tại (+84) 000 8386 008, hoặc qua tính năng chat trực tiếp trên trang web của chúng tôi. Đội ngũ hỗ trợ của chúng tôi sẵn sàng hỗ trợ bạn 24/7.'
         }
     ],
     orders: [
@@ -54,7 +54,7 @@ const faqData = {
     payments: [
         {
             question: 'Bạn chấp nhận phương thức thanh toán nào?',
-            answer: 'Chúng tôi chấp nhận nhiều phương thức thanh toán khác nhau bao gồm thẻ tín dụng/thẻ ghi nợ (Visa, Mastercard, American Express), PayPal, chuyển khoản ngân hàng và thanh toán khi nhận hàng (COD) cho các khu vực đáp ứng được. Tất cả thông tin thanh toán được xử lý an toàn.'
+            answer: 'Chúng tôi chấp nhận phương thức thanh toán online qua ví điện tử VNPAY bao gồm thẻ tín dụng/thẻ ghi nợ , chuyển khoản ngân hàng cho các khu vực đáp ứng được. Tất cả thông tin thanh toán được xử lý an toàn.'
         },
         {
             question: 'Có bất kỳ phí thêm hoặc thuế nào không?',

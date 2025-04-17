@@ -38,6 +38,7 @@ export {default as MarkdownEditor} from './input/MarkdownEditor'
 export {default as CustomVarriant} from './product/CustomVarriant'
 export {default as BlogForm} from './input/BlogForm'
 export {default as CouponForm} from './input/CouponForm'
+export {default as CategoryGrid} from './category/CategoryGrid'
 
 // Checkout components
 export { default as OrderSummary } from "./checkout/OrderSummary";
