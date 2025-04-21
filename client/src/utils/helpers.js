@@ -1,5 +1,5 @@
 import icons from "./icons";
-const { MdOutlineStar, MdOutlineStarBorder } = icons;
+const { MdOutlineStar, MdOutlineStarHalf, MdOutlineStarBorder } = icons;
 
 export const createSlug = (string) => {
   if (!string) return ""; // Tránh lỗi nếu string là undefined

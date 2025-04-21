@@ -9,7 +9,6 @@ import Swal from "sweetalert2";
 
 const { 
   FaFacebook, 
-  FaFacebookMessenger, 
   FaTwitter, 
   FaInstagramSquare, 
   FaGoogle, 
@@ -153,7 +152,7 @@ const TopHeader = () => {
           ) : (
             <Link className='bg-white/10 hover:bg-white/20 transition-all px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium' to={`/${path.LOGIN}`}>
               Đăng nhập / Đăng ký
-        </Link>
+            </Link>
           )}
           
           {/* Social Media Icons */}

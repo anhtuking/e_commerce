@@ -1,5 +1,5 @@
-import React, { memo, useState, useEffect } from "react";
-import { formatPrice, renderStarFromNumber, formatMoney } from "utils/helpers";
+import React, { memo, useState } from "react";
+import { formatPrice, renderStarFromNumber } from "utils/helpers";
 import tagnew from "assets/tagnew.png";
 import trending from "assets/trending.png";
 import icons from 'utils/icons';

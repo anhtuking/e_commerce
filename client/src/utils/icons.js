@@ -14,7 +14,7 @@ import {
   FaRegHeart,
   FaCartPlus
 } from "react-icons/fa";
-import { MdEmail, MdOutlineStar, MdOutlineStarBorder, MdMenu } from "react-icons/md";
+import { MdEmail, MdOutlineStar, MdOutlineStarHalf, MdOutlineStarBorder, MdMenu } from "react-icons/md";
 import { IoBagHandle, IoLogOutOutline } from "react-icons/io5";
 import { IoMdArrowDropright, IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { AiFillHome } from "react-icons/ai";
@@ -56,6 +56,7 @@ const icons = {
   FaGoogle,
   FaDiscord,
   MdOutlineStar,
+  MdOutlineStarHalf,
   MdOutlineStarBorder,
   FaEye,
   FaEyeSlash,

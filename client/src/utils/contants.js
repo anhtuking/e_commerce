@@ -291,15 +291,15 @@ export const statusConfig = {
 // Brand logos for the homepage slider
 export const brandLogos = [
   { id: 1, name: "Asus", logo: "https://en.accessoires-asus.com/template/smartphoneV3/images/pba_home_black.png", color: "#f25022" },
-  { id: 2, name: "Dell", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Dell_Logo.svg/1200px-Dell_Logo.svg.png", color: "#000000" },
+  { id: 2, name: "Dell", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Dell_Logo.svg/1200px-Dell_Logo.svg.png", color: "#415fff" },
   { id: 3, name: "Acer", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Acer_2011.svg/2560px-Acer_2011.svg.png", color: "#6aad29" },
-  { id: 4, name: "Lenovo", logo: "https://logos-world.net/wp-content/uploads/2022/07/Lenovo-Logo.png", color: "#415fff" },
+  { id: 4, name: "Lenovo", logo: "https://logos-world.net/wp-content/uploads/2022/07/Lenovo-Logo.png", color: "#a50034" },
   { id: 5, name: "LG", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/LG_symbol.svg/640px-LG_symbol.svg.png", color: "#a50034" },
   { id: 6, name: "Samsung", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/512px-Samsung_Logo.svg.png", color: "#1428a0" },
   { id: 7, name: "Apple", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/488px-Apple_logo_black.svg.png", color: "#555555" },
   { id: 8, name: "Xiaomi", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Xiaomi_logo_%282021-%29.svg/512px-Xiaomi_logo_%282021-%29.svg.png", color: "#ff6700" },
-  { id: 9, name: "Huawei", logo: "https://hrc.com.vn/wp-content/uploads/2025/02/Huawei-Logo.png", color: "#414141" },
-  { id: 10, name: "Oppo", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/OPPO_LOGO_2019.svg/2560px-OPPO_LOGO_2019.svg.png", color: "#fefefe" },
+  { id: 9, name: "Huawei", logo: "https://hrc.com.vn/wp-content/uploads/2025/02/Huawei-Logo.png", color: "#a50034" },
+  { id: 10, name: "Oppo", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/OPPO_LOGO_2019.svg/2560px-OPPO_LOGO_2019.svg.png", color: "#6aad29" },
 ];
 
 // Popular blog posts for Blog page

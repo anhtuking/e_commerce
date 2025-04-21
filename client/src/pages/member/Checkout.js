@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import path from "utils/path";
 import withBase from "hocs/withBase";
-
-// Import custom components
 import OrderSummary from "../../components/checkout/OrderSummary";
 import ShippingInfo from "../../components/checkout/ShippingInfo";
 import PaymentMethod from "../../components/checkout/PaymentMethod";
@@ -239,7 +237,7 @@ const Checkout = ({ dispatch }) => {
         <div className="bg-gradient-to-r from-red-900 to-pink-800 text-white h-24">
           <div className="w-full mx-auto py-2 px-4 flex flex-col justify-center items-center">
             <h1 className="font-bold uppercase text-3xl md:text-4xl font-main2 mb-2">
-              Checkout
+              Thanh toán
             </h1>
             <p className="mt-2 text-gray-100">
               Vui lòng kiểm tra thông tin trước khi thanh toán

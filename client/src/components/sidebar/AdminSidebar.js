@@ -62,7 +62,7 @@ const AdminSidebar = () => {
           <img
             src={logo2}
             alt="Admin Logo"
-            className={`${collapsed ? 'w-10' : 'w-32'} transition-all duration-300 drop-shadow-lg hover:scale-105`}
+            className={`${collapsed ? 'w-10' : 'w-33'} transition-all duration-300 drop-shadow-lg hover:scale-105`}
           />
         </Link>
         

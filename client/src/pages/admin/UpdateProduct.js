@@ -147,7 +147,7 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
   return (
     <div className="p-6 bg-gray-100 min-h-screen relative">
       <div className="p-4 flex justify-between items-center right-0 left-[327px]">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Cập nhật sản phẩm</h1>  
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">Chỉnh sửa sản phẩm</h1>  
         <span className="text-main hover:underline cursor-pointer text-bold border-item hover:bg-gray-200" onClick={() => setEditProduct(null)}>Hủy</span>
       </div>
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg px-4">

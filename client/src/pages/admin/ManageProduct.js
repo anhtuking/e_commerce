@@ -61,7 +61,6 @@ const ManageProduct = ({dispatch, navigate}) => {
         ...searchParams,
         limit: process.env.REACT_APP_LIMIT || 10,
       });
-      
       if (response.success) {
         setProducts(response.dataProducts);
         setCounts(response.counts);
@@ -126,31 +125,36 @@ const ManageProduct = ({dispatch, navigate}) => {
      })
    }
 
-  return (
+   return (
     <div className="p-6 bg-gray-100 min-h-screen relative">
-      {editProduct && <div className="absolute inset-0 bg-gray-100 z-50">
-        <UpdateProduct 
-          editProduct={editProduct} 
-          render={render} 
-          setEditProduct={setEditProduct}
-          onSuccess={() => {
-            // Xóa cache khi cập nhật sản phẩm
-            cacheRef.current = {};
-          }}
-        />
-      </div>}
-      {customVarriant && <div className="absolute inset-0 bg-gray-100 z-50">
-        <CustomVarriant 
-          customVarriant={customVarriant} 
-          render={render} 
-          setCustomVarriant={setCustomVarriant}
-          onSuccess={() => {
-            // Xóa cache khi cập nhật variant
-            cacheRef.current = {};
-          }}
-        />
-      </div>}
-      
+      {/* Edit Product Overlay */}
+      {editProduct && (
+        <div className="absolute inset-0 bg-gray-100 z-50">
+          <UpdateProduct
+            editProduct={editProduct}
+            render={render}
+            setEditProduct={setEditProduct}
+            onSuccess={() => {
+              cacheRef.current = {};
+            }}
+          />
+        </div>
+      )}
+
+      {/* Custom Variant Overlay */}
+      {customVarriant && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <CustomVarriant
+            customVarriant={customVarriant}
+            render={render}
+            setCustomVarriant={setCustomVarriant}
+            onSuccess={() => {
+              cacheRef.current = {};
+            }}
+          />
+        </div>
+      )}
+
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center mb-2">
@@ -164,7 +168,8 @@ const ManageProduct = ({dispatch, navigate}) => {
         </div>
         <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
       </div>
-      
+
+      {/* Search */}
       <div className="flex w-full justify-end items-center px-4 mb-6">
         <form className="w-[45%]">
           <InputForm
@@ -176,7 +181,8 @@ const ManageProduct = ({dispatch, navigate}) => {
           />
         </form>
       </div>
-      
+
+      {/* Product Table */}
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
         {isLoading && (
           <div className="flex justify-center items-center py-4">
@@ -208,7 +214,9 @@ const ManageProduct = ({dispatch, navigate}) => {
                 className="hover:bg-gray-100 transition-all border-b text-sm"
               >
                 <td className="p-3 text-center border">
-                  {(+params?.get("page") > 1 ? +params?.get("page") - 1 : 0) *
+                  {(+params?.get("page") > 1
+                    ? +params?.get("page") - 1
+                    : 0) *
                     process.env.REACT_APP_LIMIT +
                     index +
                     1}
@@ -236,7 +244,7 @@ const ManageProduct = ({dispatch, navigate}) => {
                   <button
                     className="text-blue-600 hover:text-blue-800 transition"
                     type="button"
-                    onClick={() => setEditProduct(el)} 
+                    onClick={() => setEditProduct(el)}
                   >
                     <FaEdit size={18} />
                   </button>
@@ -249,7 +257,7 @@ const ManageProduct = ({dispatch, navigate}) => {
                   </button>
                   <button
                     className="text-gray-600 hover:text-gray-800 transition"
-                    type="button" 
+                    type="button"
                     onClick={() => setCustomVarriant(el)}
                   >
                     <BiSolidCustomize size={20} />

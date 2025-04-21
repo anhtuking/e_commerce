@@ -108,17 +108,17 @@ const Home = ({ navigate }) => {
         <div className="rounded-md overflow-hidden shadow-sm">
           <Banner />
         </div>
-        
+
         {/* Categories Grid */}
         <CategoryGrid />
-        
+
         {/* DealDaily and BestSellers */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
           {/* Left column - DealDaily */}
           <div className="md:col-span-1 bg-white p-4 rounded-md shadow-sm">
             <DealDaily />
           </div>
-          
+
           {/* Right column - BestSellers */}
           <div className="md:col-span-3 bg-white p-4 rounded-md shadow-sm">
             <BestSellers />
@@ -186,14 +186,14 @@ const Home = ({ navigate }) => {
             ƯU ĐÃI THANH TOÁN
           </h3>
         </div>
-        
+
         {/* Payment Promotion Banners */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Banner 1 */}
           <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group">
             <div className="relative overflow-hidden">
-              <img 
-                src="https://cdn2.fptshop.com.vn/unsafe/828x0/filters:format(webp):quality(75)/H3_405x175_36a142f683.png" 
+              <img
+                src="https://cdn2.fptshop.com.vn/unsafe/828x0/filters:format(webp):quality(75)/H3_405x175_36a142f683.png"
                 alt="VPBank Payment Promotion"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
@@ -205,12 +205,12 @@ const Home = ({ navigate }) => {
               </div>
             </div>
           </div>
-          
+
           {/* Banner 2 */}
           <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group">
             <div className="relative overflow-hidden">
-              <img 
-                src="https://cdn2.fptshop.com.vn/unsafe/828x0/filters:format(webp):quality(75)/H3_405x175_A1_9f35d00a82.png" 
+              <img
+                src="https://cdn2.fptshop.com.vn/unsafe/828x0/filters:format(webp):quality(75)/H3_405x175_A1_9f35d00a82.png"
                 alt="Installment Payment Promotion"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />

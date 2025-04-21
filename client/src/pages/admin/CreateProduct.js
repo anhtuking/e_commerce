@@ -220,7 +220,7 @@ const CreateProduct = () => {
           />
           <div className="flex flex-col gap-2 mt-8">
             <label className="font-semibold" htmlFor="thumb">
-              Tải lên ảnh
+              Tải lên ảnh chính
             </label>
             <input
               type="file"
