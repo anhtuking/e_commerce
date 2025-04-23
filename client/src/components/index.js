@@ -39,6 +39,7 @@ export {default as CustomVariant} from './product/CustomVariant'
 export {default as BlogForm} from './input/BlogForm'
 export {default as CouponForm} from './input/CouponForm'
 export {default as CategoryGrid} from './category/CategoryGrid'
+export {default as ChatButton} from './common/ChatButton'
 
 // Checkout components
 export { default as OrderSummary } from "./checkout/OrderSummary";

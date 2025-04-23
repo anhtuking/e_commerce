@@ -86,14 +86,16 @@ const PaymentSuccess = ({ navigate }) => {
     // Gọi API lưu hóa đơn
     apiSavePayment(paymentData)
       .then(async (res) => {
-        if (res.data.success) {
+        if (res.success) {
           // A) Xóa từng sản phẩm khỏi cart server
           const cartItemsToRemove = checkoutData.cart;
           console.log("Cart items to remove:", cartItemsToRemove);
           
           try {
+            // Đếm số sản phẩm đã xóa thành công
+            let successCount = 0;
+            
             for (const item of cartItemsToRemove) {
-              // Kiểm tra cấu trúc dữ liệu của từng item
               const productId = item.product?._id;
               const itemColor = item.color || "";
               
@@ -103,51 +105,43 @@ const PaymentSuccess = ({ navigate }) => {
               }
               
               console.log(`Removing product: ${productId}, color: ${itemColor}`);
-              const removeResponse = await apiRemoveCart(productId, itemColor);
-              
-              if (!removeResponse?.data?.success) {
-                console.warn(`Failed to remove product ${productId} with color ${itemColor}:`, removeResponse?.data);
+              try {
+                const removeResponse = await apiRemoveCart(productId, itemColor);
+                if (removeResponse.success) {
+                  successCount++;
+                } else {
+                  console.warn(`Failed to remove product ${productId} with color ${itemColor}:`, removeResponse.mes);
+                }
+              } catch (err) {
+                console.error(`Error removing product ${productId} with color ${itemColor}:`, err);
               }
             }
             
-            toast.success(
-              `Đã xóa ${cartItemsToRemove.length} sản phẩm khỏi giỏ hàng.`
-            );
+            if (successCount > 0) {
+              toast.success(
+                `Đã xóa ${successCount} sản phẩm khỏi giỏ hàng.`
+              );
+            }
           } catch (removeErr) {
             console.error("Error removing cart items:", removeErr);
-            console.error("Error details:", removeErr.response?.data || removeErr.message);
-            
-            // Vẫn tiếp tục cập nhật Redux và localStorage ngay cả khi xóa cart API thất bại
             toast.error("Có lỗi khi xóa sản phẩm khỏi giỏ hàng, nhưng đơn hàng đã được lưu thành công.");
+          } finally {
+            // B) Refresh lại Redux store bất kể có lỗi hay không
+            dispatch(getCurrent());
+            
+            // C) Xóa flag đã chọn
+            localStorage.removeItem("selected_cart_items");
           }
-
-          // B) Refresh lại Redux store
-          dispatch(getCurrent());
-          
-          // C) Xóa flag đã chọn
-          localStorage.removeItem("selected_cart_items");
-
-          // D) (Tuỳ) Xóa cart guest trong localStorage
-          const GUEST_CART_KEY = "cart";
-          const guestCart = JSON.parse(
-            localStorage.getItem(GUEST_CART_KEY) || "[]"
-          );
-          const purchasedIds = cartItemsToRemove.map((i) => i.product?._id).filter(Boolean);
-          const remaining = guestCart.filter(
-            (i) => !purchasedIds.includes(i.product._id)
-          );
-          localStorage.setItem(GUEST_CART_KEY, JSON.stringify(remaining));
         } else {
-          console.error("Failed to save payment:", res.data);
-          toast.error(`Lưu đơn hàng thất bại: ${res.data.message || "Vui lòng kiểm tra lại."}`);
+          console.error("Failed to save payment:", res);
+          toast.error(`Lưu đơn hàng thất bại: ${res.mes || "Vui lòng kiểm tra lại."}`);
         }
       })
       .catch((saveErr) => {
         console.error("Error saving payment:", saveErr);
-        console.error("Error details:", saveErr.response?.data || saveErr.message);
         
         // Hiển thị thông báo lỗi chi tiết hơn
-        const errorMessage = saveErr.response?.data?.message || "Không thể kết nối tới máy chủ";
+        const errorMessage = saveErr.response?.mes || "Không thể kết nối tới máy chủ";
         toast.error(`Có lỗi khi lưu hóa đơn: ${errorMessage}`);
       });
   }, [checkoutData, responseCode, dispatch, navigate]);

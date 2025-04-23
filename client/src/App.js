@@ -37,7 +37,7 @@ import { getCategories } from "store/app/asyncAction";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Cart, Modal } from "components";
+import { Cart, Modal, ChatButton } from "components";
 import { showCart } from "store/app/appSlice";
 // import { showChat } from "store/chat/chatSlice";
 
@@ -63,6 +63,7 @@ function App() {
         </div>
       )}
       {isShowModal && <Modal>{modalChildren}</Modal>}
+      <ChatButton />
       <Routes>
         <Route path={path.CHATBOT_DETAILS} element={<ChatbotDetails />} />
         <Route path={path.CHATBOT_MESS} element={<ChatbotDetails />} />

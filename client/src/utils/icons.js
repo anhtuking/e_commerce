@@ -29,8 +29,8 @@ import {
 } from "react-icons/fa6";
 import { GiPositionMarker } from "react-icons/gi";
 import { RxDashboard } from "react-icons/rx";
-import { RiGroupLine, RiProductHuntLine, RiBillLine, RiAccountCircleFill, RiShoppingCartFill, RiBillFill } from "react-icons/ri";
-import { BsArrowRight, BsChatDots } from 'react-icons/bs';
+import { RiGroupLine, RiProductHuntLine, RiBillLine, RiAccountCircleFill, RiShoppingCartFill, RiBillFill, RiRobot3Line  } from "react-icons/ri";
+import { BsArrowRight } from 'react-icons/bs';
 import { FaPercentage, FaShippingFast, FaMapMarkerAlt } from 'react-icons/fa';
 import { FaCreditCard } from 'react-icons/fa';
 import { HiArrowSmLeft, HiArrowSmRight } from 'react-icons/hi';
@@ -99,7 +99,7 @@ const icons = {
   RiBillFill,
   FaHeartCircleCheck,
   SiProbot,
-  BsChatDots,
+  RiRobot3Line,
   BiMessageRoundedDetail
 };
 

@@ -7,11 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout, clearMessage } from "store/user/userSlice";
 import Swal from "sweetalert2";
 
-const { 
-  FaFacebook, 
-  FaTwitter, 
-  FaInstagramSquare, 
-  FaGoogle, 
+const {  
   IoLogOutOutline,
   FaPhoneAlt,
   FaChevronDown,
@@ -154,22 +150,6 @@ const TopHeader = () => {
               Đăng nhập / Đăng ký
             </Link>
           )}
-          
-          {/* Social Media Icons */}
-          <div className="flex items-center gap-4">
-            <a href="https://www.facebook.com/duongvan.anhtu.7" className="hover:text-yellow-300 transition-all transform hover:-translate-y-1 duration-300">
-              <FaFacebook size={16} />
-            </a>
-            <a href="https://x.com/marcuslouiss012" className="hover:text-yellow-300 transition-all transform hover:-translate-y-1 duration-300">
-              <FaTwitter size={16} />
-            </a>
-            <span className="hover:text-yellow-300 transition-all transform hover:-translate-y-1 duration-300 cursor-pointer hidden md:inline-block">
-              <FaInstagramSquare size={16} />
-            </span>
-            <span className="hover:text-yellow-300 transition-all transform hover:-translate-y-1 duration-300 cursor-pointer hidden md:inline-block">
-              <FaGoogle size={16} />
-            </span>
-          </div>
         </div>
       </div>
     </div>
