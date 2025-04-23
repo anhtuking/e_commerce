@@ -56,7 +56,7 @@ const QuickView = ({ data, dispatch, navigate }) => {
     setIsAddingToCart(true)
     
     // Lấy thông tin biến thể được chọn (nếu có)
-    const selectedVariant = selectedColor ? data?.varriants?.find(el => el.sku === selectedColor) : null
+    const selectedVariant = selectedColor ? data?.variants?.find(el => el.sku === selectedColor) : null
     
     // Sử dụng hàm addToCartUtil để tạo dữ liệu giỏ hàng
     const cartData = addToCartUtil(data, quantity, selectedVariant)
@@ -138,7 +138,7 @@ const QuickView = ({ data, dispatch, navigate }) => {
             </div>
 
             {/* Colors */}
-            {(data?.varriants?.length > 0 || data?.color) && (
+            {(data?.variants?.length > 0 || data?.color) && (
               <div className="mb-6">
                 <h3 className="font-medium mb-2">Color:</h3>
                 <div className="flex gap-2">
@@ -154,7 +154,7 @@ const QuickView = ({ data, dispatch, navigate }) => {
                     </div>
                   )}
 
-                  {data?.varriants?.map((variant) => (
+                  {data?.variants?.map((variant) => (
                     <div
                       key={variant.sku}
                       className={`border p-1 cursor-pointer ${selectedColor === variant.sku ? 'border-red-500' : ''}`}

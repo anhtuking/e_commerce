@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Button, InputForm, Select, MarkdownEditor, Loading } from "components";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
-import { getBase64, validate } from "utils/helpers";
+import { getBase64 } from "utils/helpers";
 import { toast } from "react-toastify";
 import { FaTrash, FaPlusCircle } from "react-icons/fa";
 import { apiCreateProduct } from "api";
@@ -10,7 +10,7 @@ import { showModal } from "store/app/appSlice";
 
 const CreateProduct = () => {
   const { categories } = useSelector((state) => state.app);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const {
     register,
     formState: { errors },
@@ -18,98 +18,115 @@ const CreateProduct = () => {
     handleSubmit,
     watch,
   } = useForm();
-  const [payload, setPayload] = useState({
-    description: "",
-  });
-  const [hoverEl, setHoverEl] = useState(null);
-  const [invalidFields, setInvalidFields] = useState([]);
-  const [preview, setPreview] = useState({
-    thumb: null,
-    images: [],
-  });
-  const [isFocusDescription, setIsFocusDescription] = useState(false);
 
-  const changValue = useCallback(
-    (e) => {
-      setPayload(e);
-    },
-    [payload]
-  );
+  // Holds markdown values
+  const [payload, setPayload] = useState({ description: "", infomations: "" });
+  const [preview, setPreview] = useState({ thumb: null, images: [] });
+  const [hoverEl, setHoverEl] = useState(null);
+  const [isFocusDescription, setIsFocusDescription] = useState(false);
+  const [isFocusInfomations, setIsFocusInfomations] = useState(false);
+
+  // MarkdownEditor change handlers
+  const changeDescription = (value) => {
+    console.log("💬 Nội dung mô tả (description):", value);
+    setPayload((prev) => ({ ...prev, description: value }));
+  };
+
+  const changeInfomations = (value) => {
+    console.log("📘 Nội dung chi tiết (infomations):", value);
+    setPayload((prev) => ({ ...prev, infomations: value }));
+  };
 
   const handlePreviewThumb = async (file) => {
-    const base64Thumb = await getBase64(file);
-    setPreview((prev) => ({ ...prev, thumb: base64Thumb }));
+    const base64 = await getBase64(file);
+    setPreview((prev) => ({ ...prev, thumb: base64 }));
   };
 
   const handlePreviewImages = async (files) => {
-    const imagesPreview = [];
+    const list = [];
     for (let file of files) {
-      console.log(file.type);
-      if (file.type !== "image/png" && file.type !== "image/jpeg") {
+      if (!["image/png", "image/jpeg"].includes(file.type)) {
         toast.warning("File not supported!");
         return;
       }
       const base64 = await getBase64(file);
-      imagesPreview.push({ name: file.name, path: base64 });
+      list.push({ name: file.name, path: base64 });
     }
-    setPreview((prev) => ({ ...prev, images: imagesPreview }));
+    setPreview((prev) => ({ ...prev, images: list }));
   };
 
   useEffect(() => {
     const thumbFile = watch("thumb")?.[0];
-    if (thumbFile) {
-      handlePreviewThumb(thumbFile);
-    } else {
-      setPreview((prev) => ({ ...prev, thumb: null }));
-    }
+    if (thumbFile) handlePreviewThumb(thumbFile);
+    else setPreview((prev) => ({ ...prev, thumb: null }));
   }, [watch("thumb")]);
 
   useEffect(() => {
-    const images = watch("images");
-    if (images && images.length > 0) {
-      handlePreviewImages(images);
-    } else {
-      setPreview((prev) => ({ ...prev, images: [] }));
-    }
+    const imgs = watch("images");
+    if (imgs && imgs.length) handlePreviewImages(imgs);
+    else setPreview((prev) => ({ ...prev, images: [] }));
   }, [watch("images")]);
 
   const handleCreateProduct = async (data) => {
-    const invalid = validate(payload, setInvalidFields);
-    if (invalid === 0) {
-      if (data.category)
-        data.category = categories?.find( el => el._id === data.category )?.title;
-      const finalPayload = { ...data, ...payload };
-      console.log(finalPayload);
-      const formData = new FormData();
-      for (let i of Object.entries(finalPayload)) formData.append(i[0], i[1]);
-      if (finalPayload.thumb) formData.append('thumb', finalPayload.thumb[0])
-      if (finalPayload.images){
-        for (let image of finalPayload.images) formData.append('images', image)
+    if (!payload.description) {
+      toast.warning("Vui lòng điền mô tả sản phẩm");
+      return;
+    }
+    if (!payload.infomations) {
+      toast.warning("Vui lòng điền thông tin chi tiết sản phẩm");
+      return;
+    }
+
+    if (data.category) {
+      data.category = categories.find((c) => c._id === data.category)?.title;
+    }
+
+    const finalPayload = {
+      ...data,
+      description: [payload.description],
+      infomations: { describe: payload.infomations },
+    };
+
+    console.log("📦 Payload gửi đi:", finalPayload);
+
+    const formData = new FormData();
+    Object.entries(finalPayload).forEach(([key, value]) => {
+      if (key === "description" || key === "infomations") {
+        formData.append(key, JSON.stringify(value));
+      } else {
+        formData.append(key, value);
       }
-      dispatch(showModal({isShowModal: true, modalChildren: <Loading />}))
-      const response = await apiCreateProduct(formData)
-      dispatch(showModal({isShowModal: false, modalChildren: null}))
+    });
+
+    const thumbFile = watch("thumb")?.[0];
+    if (thumbFile) formData.append("thumb", thumbFile);
+    const imageFiles = watch("images");
+    if (imageFiles && imageFiles.length) {
+      Array.from(imageFiles).forEach((file) => formData.append("images", file));
+    }
+
+    dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }));
+    try {
+      const response = await apiCreateProduct(formData);
+      dispatch(showModal({ isShowModal: false, modalChildren: null }));
       if (response.success) {
-        toast.success(response.mes)
-        reset()
-        setPayload({
-          thumb: '',
-          image: []
-        })
-      } else toast.error(response.mes)
+        toast.success(response.mes);
+        reset();
+        setPayload({ description: "", infomations: "" });
+        setPreview({ thumb: null, images: [] });
+      } else {
+        toast.error(response.mes);
+      }
+    } catch (err) {
+      dispatch(showModal({ isShowModal: false, modalChildren: null }));
+      toast.error("Lỗi khi tạo sản phẩm: " + err.message);
     }
   };
 
   const handleRemoveImages = (name) => {
-    const files = [...watch('images')]
-    reset ({
-      images: files?.filter(el => el.name !== name)
-    })
-    if (preview.images?.some((el) => el.name === name))
-      setPreview((prev) => ({
-        ...prev,
-        images: prev.images?.filter((el) => el.name !== name),
-      }));
+    const list = watch("images") || [];
+    reset({ images: list.filter((f) => f.name !== name) });
+    setPreview((prev) => ({ ...prev, images: prev.images.filter((e) => e.name !== name) }));
   };
 
   return (
@@ -126,157 +143,52 @@ const CreateProduct = () => {
         </div>
         <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
       </div>
-      <div className="overflow-x-auto bg-white shadow-lg rounded-lg px-4">
+
+      <div className="overflow-x-auto bg-white shadow-lg rounded-lg px-4 py-6">
         <form onSubmit={handleSubmit(handleCreateProduct)}>
-          <InputForm
-            label={"Tên sản phẩm"}
-            register={register}
-            errors={errors}
-            id="title"
-            validate={{
-              required: "Need fill this field",
-            }}
-            fullWidth
-            placeholder="Tên sản phẩm mới"
-          />
+          <InputForm label="Tên sản phẩm" register={register} errors={errors} id="title" validate={{ required: true }} fullWidth placeholder="Tên sản phẩm mới" />
           <div className="w-full flex gap-4 my-6">
-            <InputForm
-              label={"Giá"}
-              register={register}
-              errors={errors}
-              id="price"
-              validate={{
-                required: "Need fill this field",
-              }}
-              styleClass="flex-auto"
-              placeholder="Giá của sản phẩm mới"
-              type="number"
-              fullWidth
-            />
-            <InputForm
-              label={"Số lượng"}
-              register={register}
-              errors={errors}
-              id="quantity"
-              validate={{
-                required: "Need fill this field",
-              }}
-              styleClass="flex-auto"
-              placeholder="Số lượng của sản phẩm mới"
-              type="number"
-              fullWidth
-            />
-            <InputForm
-              label={"Màu sắc"}
-              register={register}
-              errors={errors}
-              id="color"
-              validate={{
-                required: "Need fill this field",
-              }}
-              styleClass="flex-auto"
-              placeholder="Màu sắc của sản phẩm mới"
-            />
+            <InputForm label="Giá" register={register} errors={errors} id="price" validate={{ required: true }} type="number" placeholder="Giá" fullWidth />
+            <InputForm label="Số lượng" register={register} errors={errors} id="quantity" validate={{ required: true }} type="number" placeholder="Số lượng" fullWidth />
+            <InputForm label="Màu sắc" register={register} errors={errors} id="color" validate={{ required: true }} placeholder="Màu sắc" fullWidth />
           </div>
           <div className="w-full flex gap-4 my-6">
-            <Select
-              label="Danh mục"
-              options={categories?.map((el) => ({
-                code: el._id,
-                value: el.title,
-              }))}
-              register={register}
-              id="category"
-              validate={{
-                required: "Need fill this field",
-              }}
-              errors={errors}
-              styleClass="flex-auto"
-            />
-            <Select
-              label="Thương hiệu"
-              options={categories
-                ?.find((el) => el._id === watch("category"))
-                ?.brand?.map((el) => ({
-                  code: el,
-                  value: el,
-                }))}
-              register={register}
-              id="brand"
-              validate={{
-                required: "Need fill this field",
-              }}
-              errors={errors}
-              styleClass="flex-auto"
-            />
+            <Select label="Danh mục" id="category" register={register} errors={errors} validate={{ required: true }} options={categories.map((c) => ({ code: c._id, value: c.title }))} />
+            <Select label="Thương hiệu" id="brand" register={register} errors={errors} validate={{ required: true }} options={categories.find((c) => c._id === watch("category"))?.brand.map((b) => ({ code: b, value: b })) || []} />
           </div>
-          <MarkdownEditor
-            name="description"
-            changValue={changValue}
-            label="Mô tả"
-            invalidFields={invalidFields}
-            setInvalidFields={setInvalidFields}
-            setIsFocusDescription={setIsFocusDescription}
-          />
-          <div className="flex flex-col gap-2 mt-8">
-            <label className="font-semibold" htmlFor="thumb">
-              Tải lên ảnh chính
-            </label>
-            <input
-              type="file"
-              id="thumb"
-              {...register("thumb", { required: "Need fill this field" })}
-            />
-            {errors?.["thumb"] && (
-              <small className="text-xs text-red-500">
-                {errors["thumb"]?.message}
-              </small>
-            )}
+
+          <MarkdownEditor 
+            name="description" 
+            changValue={changeDescription} 
+            label="Thông số sản phẩm" 
+            setIsFocusDescription={setIsFocusDescription} />
+          <div className="mt-6">
+            <MarkdownEditor 
+              name="infomations" 
+              changValue={changeInfomations} 
+              label="Thông tin chi tiết sản phẩm" 
+              setIsFocusDescription={setIsFocusInfomations} />
           </div>
-          {preview.thumb && (
-            <div className="my-4">
-              <img
-                src={preview.thumb}
-                alt="thumbnail"
-                className="w-[200px] object-contain"
-              />
-            </div>
-          )}
+
           <div className="flex flex-col gap-2 mt-8">
-            <label className="font-semibold" htmlFor="images">
-              Tải lên ảnh sản phẩm
-            </label>
-            <input
-              multiple
-              type="file"
-              id="images"
-              {...register("images", { required: "Need fill this field" })}
-            />
-            {errors?.["images"] && (
-              <small className="text-xs text-red-500">
-                {errors["images"]?.message}
-              </small>
-            )}
+            <label className="font-semibold" htmlFor="thumb">Tải lên ảnh chính</label>
+            <input type="file" id="thumb" {...register("thumb", { required: true })} />
+            {errors.thumb && <small className="text-xs text-red-500">{errors.thumb.message}</small>}
+          </div>
+          {preview.thumb && <img src={preview.thumb} alt="thumb" className="w-[200px] object-contain mt-4" />}
+
+          <div className="flex flex-col gap-2 mt-8">
+            <label className="font-semibold" htmlFor="images">Tải lên ảnh phụ</label>
+            <input multiple type="file" id="images" {...register("images", { required: true })} />
+            {errors.images && <small className="text-xs text-red-500">{errors.images.message}</small>}
           </div>
           {preview.images.length > 0 && (
-            <div className="my-4 flex w-full gap-3 flex-wrap">
-              {preview.images?.map((el, index) => (
-                <div
-                  className="w-fit relative"
-                  key={index}
-                  onMouseEnter={() => setHoverEl(el.name)}
-                  onMouseLeave={() => setHoverEl(null)}
-                >
-                  <img
-                    src={el.path}
-                    alt="images"
-                    className="w-[200px] object-contain"
-                  />
+            <div className="my-4 flex gap-3 flex-wrap">
+              {preview.images.map((el, idx) => (
+                <div key={idx} className="w-fit relative" onMouseEnter={() => setHoverEl(el.name)} onMouseLeave={() => setHoverEl(null)}>
+                  <img src={el.path} alt={el.name} className="w-[200px] object-contain" />
                   {hoverEl === el.name && (
-                    <div
-                      className="absolute inset-0 bg-overlay flex items-center justify-center cursor-pointer"
-                      onClick={() => handleRemoveImages(el.name)}
-                    >
+                    <div className="absolute inset-0 bg-overlay flex items-center justify-center cursor-pointer" onClick={() => handleRemoveImages(el.name)}>
                       <FaTrash size={25} color="red" />
                     </div>
                   )}
@@ -284,7 +196,7 @@ const CreateProduct = () => {
               ))}
             </div>
           )}
-          <div className="mt-8 flex justify-end ">
+          <div className="mt-8 flex justify-end">
             <Button type="submit">Lưu</Button>
           </div>
         </form>

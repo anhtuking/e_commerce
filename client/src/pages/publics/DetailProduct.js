@@ -45,9 +45,6 @@ const DetailProduct = ({ navigate, dispatch }) => {
     const { pid } = params;
     const category = params.category;
     const location = useLocation();
-    console.log('URL Params:', params);
-    console.log('Product ID:', pid);
-    
     const [product, setProduct] = useState(null)
     const { current } = useSelector(state => state.user)
     const [currentImage, setCurrentImage] = useState(null)
@@ -66,6 +63,7 @@ const DetailProduct = ({ navigate, dispatch }) => {
         color: ''
     })
     const [isAddingToWishlist, setIsAddingToWishlist] = useState(false)
+    const maxStock = product?.quantity || 0;
 
     const fetchProductData = async () => {
         try {
@@ -135,7 +133,26 @@ const DetailProduct = ({ navigate, dispatch }) => {
         if (!Number(number) || Number(number) < 1) {
             return
         } else setQuantity(number)
-    }, [quantity])
+    }, [quantity]);
+    
+    const handleChangeQuantity = useCallback((flag, maxQuantity) => {
+        // Kiểm tra nếu số lượng hiện tại bằng 1, không cho giảm
+        if (flag === 'minus' && quantity === 1) return;
+        // Nếu là dấu trừ, giảm số lượng
+        if (flag === 'minus') {
+            setQuantity(prev => +prev - 1);
+        }
+        // Nếu là dấu cộng, kiểm tra số lượng có vượt quá maxQuantity không
+        if (flag === 'plus' && quantity >= maxQuantity) {
+            // Notify user of max stock when trying to exceed
+            toast.info(`Không thể thêm quá số lượng sản phẩm có sẵn.`);
+            return;
+        }
+        // Nếu không vượt quá maxQuantity, tăng số lượng
+        if (flag === 'plus') {
+            setQuantity(prev => +prev + 1);
+        }
+    }, [quantity, toast]);
 
     const handleClickImages = (e, el) => {
         e.stopPropagation();
@@ -145,12 +162,6 @@ const DetailProduct = ({ navigate, dispatch }) => {
             thumb: el
         }));
     }
-
-    const handleChangeQuantity = useCallback((flag) => {
-        if (flag === 'minus' && quantity === 1) return
-        if (flag === 'minus') setQuantity(prev => +prev - 1)
-        if (flag === 'plus') setQuantity(prev => +prev + 1)
-    }, [quantity])
 
     const handleAddToCart = async () => {
         if (!current) return Swal.fire({
@@ -204,12 +215,12 @@ const DetailProduct = ({ navigate, dispatch }) => {
         })
 
         setIsAddingToWishlist(true);
-        
+
         try {
             const response = await apiUpdateWishlist(pid);
-            
+
             setIsAddingToWishlist(false);
-            
+
             if (response.success) {
                 toast.success(response.mes);
                 dispatch(getCurrent());
@@ -263,22 +274,22 @@ const DetailProduct = ({ navigate, dispatch }) => {
                                     <FaEye className='mr-1' /> {Math.floor(Math.random() * 20) + 5} watching
                                 </div>
                                 <div className="overflow-hidden">
-                                <ReactImageMagnify {...{
-                                    smallImage: {
-                                        alt: currentProduct?.title || product?.title,
-                                        isFluidWidth: true,
-                                        src: currentProduct?.thumb || currentImage
-                                    },
-                                    largeImage: {
-                                        src: currentProduct?.thumb || currentImage,
-                                        width: 1800,
-                                        height: 1500
-                                    },
-                                    enlargedImagePosition: 'over',
-                                    isHintEnabled: true,
-                                    shouldHideHintAfterFirstActivation: false,
-                                    hintTextMouse: 'Hover to zoom'
-                                }} />
+                                    <ReactImageMagnify {...{
+                                        smallImage: {
+                                            alt: currentProduct?.title || product?.title,
+                                            isFluidWidth: true,
+                                            src: currentProduct?.thumb || currentImage
+                                        },
+                                        largeImage: {
+                                            src: currentProduct?.thumb || currentImage,
+                                            width: 1800,
+                                            height: 1500
+                                        },
+                                        enlargedImagePosition: 'over',
+                                        isHintEnabled: true,
+                                        shouldHideHintAfterFirstActivation: false,
+                                        hintTextMouse: 'Hover to zoom'
+                                    }} />
                                 </div>
                             </div>
                         </div>
@@ -339,7 +350,6 @@ const DetailProduct = ({ navigate, dispatch }) => {
                                         }
                                     </div>
                                 )}
-
                                 {activeTab === 'features' && (
                                     <div className='space-y-4'>
                                         <div className='flex items-start space-x-3'>
@@ -396,8 +406,8 @@ const DetailProduct = ({ navigate, dispatch }) => {
                             <div className='flex justify-between items-center mb-4'>
                                 <div>
                                     <h2 className='text-2xl md:text-3xl font-bold text-main'>
-                                        {Number(currentProduct.price || product?.price) 
-                                            ? `${formatPrice(Number(currentProduct.price || product?.price))} VND` 
+                                        {Number(currentProduct.price || product?.price)
+                                            ? `${formatPrice(Number(currentProduct.price || product?.price))} VND`
                                             : "Đang cập nhật"}
                                     </h2>
                                     {product?.originalPrice && Number(product?.originalPrice) > 0 && (
@@ -425,7 +435,7 @@ const DetailProduct = ({ navigate, dispatch }) => {
                                             {`Đã bán: ${product?.sold || 0}`}
                                         </span>
                                         <span className='text-sm text-gray-500'>
-                                            {`Kho: ${product?.quantity || 0}`}
+                                            {`Tồn kho: ${product?.quantity || 0}`}
                                         </span>
                                     </div>
                                 </div>
@@ -433,7 +443,7 @@ const DetailProduct = ({ navigate, dispatch }) => {
 
                             {/* Status */}
                             <div className='flex items-center gap-2 mb-4'>
-                                <span className='text-sm font-medium text-gray-600'>Status:</span>
+                                <span className='text-sm font-medium text-gray-600'>Trạng thái:</span>
                                 <span className='flex items-center gap-1 text-green-600'>
                                     <FaRegCheckCircle size={14} />
                                     <span className='text-sm font-medium'>In Stock</span>
@@ -462,8 +472,8 @@ const DetailProduct = ({ navigate, dispatch }) => {
                                     <div className='flex flex-col'>
                                         <span className='text-sm font-medium'>{product?.color}</span>
                                         <span className='text-xs text-gray-500'>
-                                            {Number(product?.price) 
-                                                ? formatPrice(Number(product?.price)) 
+                                            {Number(product?.price)
+                                                ? formatPrice(Number(product?.price))
                                                 : "Đang cập nhật"} VND
                                         </span>
                                     </div>
@@ -487,8 +497,8 @@ const DetailProduct = ({ navigate, dispatch }) => {
                                         <div className='flex flex-col'>
                                             <span className='text-sm font-medium'>{el.color}</span>
                                             <span className='text-xs text-gray-500'>
-                                                {Number(el.price) 
-                                                    ? formatPrice(Number(el.price)) 
+                                                {Number(el.price)
+                                                    ? formatPrice(Number(el.price))
                                                     : "Đang cập nhật"} VND
                                             </span>
                                         </div>
@@ -500,26 +510,48 @@ const DetailProduct = ({ navigate, dispatch }) => {
                         {/* Quantity & Add to Cart */}
                         <div className='bg-white rounded-lg shadow-sm p-6 mb-6 sticky top-4'>
                             <div className='mb-4'>
-                                <h3 className='text-lg font-semibold mb-2 text-gray-800'>Quantity</h3>
-                                <div className='flex items-center jc'>
-                                    <SelectQuantity
-                                        quantity={quantity}
-                                        handleQuantity={handleQuantity}
-                                        handleChangeQuantity={handleChangeQuantity}
-                                    />
+                                <h3 className='text-lg font-semibold mb-2 text-gray-800'>Số lượng</h3>
+                                <div className='flex flex-col'>
+                                    <div className='flex items-center mb-2'>
+                                        <SelectQuantity
+                                            quantity={quantity}
+                                            handleQuantity={handleQuantity}
+                                            handleChangeQuantity={handleChangeQuantity}
+                                            maxQuantity={maxStock}
+                                        />
+                                        <span className='ml-3 text-sm text-gray-500'>
+                                            {maxStock > 0 ? `${maxStock} sản phẩm có sẵn` : 'Hết hàng'}
+                                        </span>
+                                    </div>
+                                    {maxStock < 10 && maxStock > 0 && (
+                                        <p className='text-xs text-orange-500 font-medium mt-1'>
+                                            <span className='inline-block w-2 h-2 bg-orange-500 rounded-full mr-1'></span>
+                                            Chỉ còn {maxStock} sản phẩm có sẵn
+                                        </p>
+                                    )}
+                                    {maxStock === 0 && (
+                                        <p className='text-xs text-red-500 font-medium mt-1'>
+                                            <span className='inline-block w-2 h-2 bg-red-500 rounded-full mr-1'></span>
+                                            Sản phẩm tạm thời hết hàng
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 
                             <div className='flex flex-col space-y-3'>
                                 <button
                                     onClick={handleAddToCart}
-                                    className={`w-full ${isAddingToCart ? 'bg-gray-500' : 'bg-main hover:bg-red-700'} text-white py-4 rounded-lg flex items-center justify-center gap-2 transition-all transform hover:shadow-lg hover:scale-105`}
-                                    disabled={isAddingToCart}
+                                    className={`w-full ${isAddingToCart || maxStock === 0 ? 'bg-gray-500' : 'bg-main hover:bg-red-700'} text-white py-4 rounded-lg flex items-center justify-center gap-2 transition-all transform ${maxStock === 0 ? '' : 'hover:shadow-lg hover:scale-105'}`}
+                                    disabled={isAddingToCart || maxStock === 0}
                                 >
                                     {isAddingToCart ? (
                                         <>
                                             <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
                                             <span>Adding...</span>
+                                        </>
+                                    ) : maxStock === 0 ? (
+                                        <>
+                                            <span>Hết hàng</span>
                                         </>
                                     ) : (
                                         <>

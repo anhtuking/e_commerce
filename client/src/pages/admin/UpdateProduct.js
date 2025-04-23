@@ -1,16 +1,16 @@
 import React, { memo, useEffect, useState, useCallback } from "react";
 import { Button, InputForm, Select, MarkdownEditor, Loading } from "components";
 import { useForm } from "react-hook-form";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { getBase64, validate } from "utils/helpers";
 import { toast } from "react-toastify";
 import { FaTrash } from "react-icons/fa";
 import { showModal } from "store/app/appSlice";
 import { apiUpdateProduct } from "api";
+import withBase from "hocs/withBase";
 
-const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
+const UpdateProduct = ({ editProduct, setEditProduct, dispatch }) => {
   const { categories } = useSelector((state) => state.app);
-  const dispatch = useDispatch();
   const {
     register,
     formState: { errors },
@@ -18,10 +18,7 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
     reset,
     watch,
   } = useForm();
-  const [payload, setPayload] = useState({
-    description: "",
-  });
-  const [hoverEl, setHoverEl] = useState(null);
+  const [payload, setPayload] = useState({ description: "", infomations: "" });
   const [invalidFields, setInvalidFields] = useState([]);
   const [preview, setPreview] = useState({
     thumb: null,
@@ -38,79 +35,74 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
       brand: editProduct?.brand?.toLowerCase() || "",
     });
     setPayload({
-      description:
-        typeof editProduct?.description === "object"
-          ? editProduct?.description?.join(", ")
-          : editProduct?.description,
+      description: Array.isArray(editProduct?.description)
+        ? editProduct.description.join("\n")
+        : editProduct?.description || "",
+      infomations:
+        editProduct?.infomations?.describe ||
+        (typeof editProduct?.infomations === "string"
+          ? editProduct.infomations
+          : ""),
     });
+    const existingImages = Array.isArray(editProduct?.images)
+    ? editProduct.images.map((url, idx) => ({ name: `existing-${idx}`, path: url }))
+    : [];
     setPreview({
-      thumb: editProduct?.thumb || "",
-      images: editProduct?.images || [],
+      thumb: editProduct?.thumb || null,
+      images: existingImages,
     });
   }, [editProduct, reset]);
-  
-  const [isFocusDescription, setIsFocusDescription] = useState(false);
 
-  const changValue = useCallback(
-    (e) => {
-      setPayload(e);
-    },
-    [payload]
+  const [isFocusDescription, setIsFocusDescription] = useState(false);
+  const [isFocusInfomations, setIsFocusInfomations] = useState(false);
+  const changeDescription = useCallback(
+    (value) => setPayload((p) => ({ ...p, description: value })),
+    []
+  );
+  const changeInfomations = useCallback(
+    (value) => setPayload((p) => ({ ...p, infomations: value })),
+    []
   );
 
+  // preview new thumb file
   const handlePreviewThumb = async (file) => {
-    const base64Thumb = await getBase64(file);
-    setPreview((prev) => ({ ...prev, thumb: base64Thumb }));
+    const base64 = await getBase64(file);
+    setPreview((prev) => ({ ...prev, thumb: base64 }));
   };
 
+  // preview new image files
   const handlePreviewImages = async (files) => {
-    const imagesPreview = [];
+    const list = [];
     for (let file of files) {
-      if (file.type !== "image/png" && file.type !== "image/jpeg") {
+      if (!["image/png", "image/jpeg"].includes(file.type)) {
         toast.warning("File not supported!");
         return;
       }
       const base64 = await getBase64(file);
-      imagesPreview.push(base64);
+      list.push({ name: file.name, path: base64 });
     }
-    setPreview((prev) => ({ ...prev, images: imagesPreview }));
+    setPreview((prev) => ({ ...prev, images: list }));
   };
 
+  // watch thumb input
   useEffect(() => {
-    const thumbFile = watch("thumb")?.[0];
-    if (thumbFile) {
-      handlePreviewThumb(thumbFile);
-    } else {
-      setPreview((prev) => ({ ...prev, thumb: null }));
-    }
+    const file = watch("thumb")?.[0];
+    if (file) handlePreviewThumb(file);
   }, [watch("thumb")]);
 
+  // watch images input
   useEffect(() => {
-    const images = watch("images");
-    if (images && images.length > 0) {
-      handlePreviewImages(images);
-    } else {
-      setPreview((prev) => ({ ...prev, images: [] }));
-    }
+    const files = watch("images");
+    if (files && files.length) handlePreviewImages(files);
   }, [watch("images")]);
-
-//   useEffect(() => {
-//     if (watch("thumb") instanceof FileList && watch('thumb').length > 0)
-//         handlePreviewThumb(watch("thumb")[0])
-//   }, [watch("thumb")]);
-
-//   useEffect(() => {
-//     if (watch("images") instanceof FileList && watch('images').length > 0) 
-//         handlePreviewImages(watch("images"))
-//   }, [watch("images")]);
 
   const handleUpdateProduct = async (data) => {
     const invalid = validate(payload, setInvalidFields);
     if (invalid === 0) {
-      if (data.category) data.category = categories?.find( (el) => el.title === data.category )?.title;
-      const finalPayload = { ...data, ...payload};
+      if (data.category) data.category = categories?.find((el) => el.title === data.category)?.title;
+      const finalPayload = { ...data, ...payload };
       console.log(finalPayload);
-      const formData = new FormData(); 
+      const formData = new FormData();
       for (let i of Object.entries(finalPayload)) formData.append(i[0], i[1]);
       if (finalPayload.thumb) formData.append("thumb", finalPayload?.thumb?.length === 0 ? preview.thumb : finalPayload.thumb[0]);
       if (finalPayload.images) {
@@ -120,34 +112,28 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
       dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }));
       const response = await apiUpdateProduct(formData);
       dispatch(showModal({ isShowModal: false, modalChildren: null }));
-      console.log(response);
-    //   if (response.success) {
-    //     toast.success(response.mes);
-    //     reset();
-    //     setPayload({
-    //       thumb: "",
-    //       image: [],
-    //     });
-    //   } else toast.error(response.mes);
+      // console.log(response);
+      if (response.success) {
+        toast.success(response.mes);
+        reset();
+        setPayload({
+          thumb: "",
+          image: [],
+        });
+      } else toast.error(response.mes);
     }
   };
 
   const handleRemoveImages = (name) => {
-    const files = [...watch("images")];
-    reset({
-      images: files?.filter((el) => el.name !== name),
-    });
-    if (preview.images?.some((el) => el.name === name))
-      setPreview((prev) => ({
-        ...prev,
-        images: prev.images?.filter((el) => el.name !== name),
-      }));
+    setPreview((prev) => ({ ...prev, images: prev.images.filter((img) => img.name !== name) }));
+    const files = Array.from(watch("images") || []).filter((f) => f.name !== name);
+    reset({ images: files });
   };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen relative">
       <div className="p-4 flex justify-between items-center right-0 left-[327px]">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Chỉnh sửa sản phẩm</h1>  
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">Chỉnh sửa sản phẩm</h1>
         <span className="text-main hover:underline cursor-pointer text-bold border-item hover:bg-gray-200" onClick={() => setEditProduct(null)}>Hủy</span>
       </div>
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg px-4">
@@ -236,81 +222,53 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
           </div>
           <MarkdownEditor
             name="description"
-            changValue={changValue}
-            label="Mô tả"
+            changValue={changeDescription}
+            label="Thông số sản phẩm"
             invalidFields={invalidFields}
             setInvalidFields={setInvalidFields}
             value={payload.description}
             setIsFocusDescription={setIsFocusDescription}
           />
-          <div className="flex flex-col gap-2 mt-8">
-            <label className="font-semibold" htmlFor="thumb">
-              Tải ảnh sản phẩm
-            </label>
-            <input
-              type="file"
-              id="thumb"
-              {...register("thumb")}
+          <div className="mt-6">
+            <MarkdownEditor
+              name="infomations"
+              changValue={changeInfomations}
+              label="Thông tin chi tiết sản phẩm"
+              invalidFields={invalidFields}
+              setInvalidFields={setInvalidFields}
+              value={payload.infomations}
+              setIsFocusDescription={setIsFocusInfomations}
             />
-            {errors?.["thumb"] && (
-              <small className="text-xs text-red-500">
-                {errors["thumb"]?.message}
-              </small>
-            )}
           </div>
-          {preview.thumb && (
-            <div className="my-4">
-              <img
-                src={preview.thumb}
-                alt="thumbnail"
-                className="w-[200px] object-contain"
-              />
-            </div>
-          )}
-          <div className="flex flex-col gap-2 mt-8">
-            <label className="font-semibold" htmlFor="images">
-              Tải ảnh sản phẩm
-            </label>
-            <input
-              multiple
-              type="file"
-              id="images"
-              {...register("images")}
-            />
-            {errors?.["images"] && (
-              <small className="text-xs text-red-500">
-                {errors["images"]?.message}
-              </small>
-            )}
+
+          {/* thumbnail upload & preview */}
+          <div className="mt-8">
+            <label className="font-semibold">Ảnh đại diện</label>
+            <input type="file" {...register("thumb")} />
+            {preview.thumb && <img src={preview.thumb} alt="thumb" className="w-48 mt-2" />}
           </div>
-          {preview.images.length > 0 && (
-            <div className="my-4 flex w-full gap-3 flex-wrap">
-              {preview.images?.map((el, index) => (
-                <div
-                  className="w-fit relative"
-                  key={index}
-                  onMouseEnter={() => setHoverEl(el.name)}
-                  onMouseLeave={() => setHoverEl(null)}
-                >
-                  <img
-                    src={el.path}
-                    alt="images"
-                    className="w-[200px] object-contain"
-                  />
-                  {hoverEl === el.name && (
+
+          {/* images upload & preview */}
+          <div className="mt-6">
+            <label className="font-semibold">Ảnh chi tiết</label>
+            <input type="file" multiple {...register("images")} />
+            {preview.images.length > 0 && (
+              <div className="flex flex-wrap gap-3 mt-2">
+                {preview.images.map((el) => (
+                  <div key={el.name} className="relative">
+                    <img src={el.path} alt={el.name} className="w-48" />
                     <div
-                      className="absolute inset-0 bg-overlay flex items-center justify-center cursor-pointer"
-                      onClick={() => handleRemoveImages(el.name)}
-                    >
-                      <FaTrash size={25} color="red" />
+                      className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-25 opacity-0 hover:opacity-100 cursor-pointer"
+                      onClick={() => handleRemoveImages(el.name)}>
+                      <FaTrash size={20} color="white" />
                     </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           <div className="mt-8 flex justify-end">
-            <Button type="submit">Lưu sản phẩm</Button>
+            <Button type="submit">Lưu</Button>
           </div>
         </form>
       </div>
@@ -318,4 +276,4 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
   );
 };
 
-export default memo(UpdateProduct);
+export default withBase(memo(UpdateProduct));

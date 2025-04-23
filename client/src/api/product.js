@@ -30,12 +30,12 @@ export const apiUpdateProduct = (data, pid) => axios({
 })
 
 export const apiDeleteProduct = (pid) => axios({
-    url: "/user/" + pid,
+    url: "/product/" + pid,
     method: 'delete',
 })
 
-export const apiAddVarriant = (data, pid) => axios({
-    url: "/product/varriant/" + pid,
+export const apiAddVariant = (data, pid) => axios({
+    url: "/product/variant/" + pid,
     method: 'put',
     data
 })

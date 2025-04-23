@@ -1,4 +1,4 @@
-import { apiAddVarriant } from "api";
+import { apiAddVariant } from "api";
 import Button from "components/common/Button";
 import Loading from "components/common/Loading";
 import InputForm from "components/input/InputForm";
@@ -10,7 +10,7 @@ import { showModal } from "store/app/appSlice";
 import Swal from "sweetalert2";
 import { getBase64 } from "utils/helpers";
 
-const CustomVarriant = ({ customVarriant, setCustomVarriant }) => {
+const CustomVariant = ({ customVariant, setCustomVariant }) => {
   const dispatch = useDispatch();
   const {
     register,
@@ -24,13 +24,13 @@ const CustomVarriant = ({ customVarriant, setCustomVarriant }) => {
   });
   useEffect(() => {
     reset({
-      title: customVarriant?.title,
-      price: customVarriant?.price,
-      color: customVarriant?.color,
+      title: customVariant?.title,
+      price: customVariant?.price,
+      color: customVariant?.color,
     });
-  }, [customVarriant]);
-  const handleAddVarriant = async (data) => {
-    if (data.color === customVarriant.color)
+  }, [customVariant]);
+  const handleAddVariant = async (data) => {
+    if (data.color === customVariant.color)
       Swal.fire("Oops!", "Color not change", "info");
     else {
       const formData = new FormData();
@@ -38,13 +38,13 @@ const CustomVarriant = ({ customVarriant, setCustomVarriant }) => {
       if (data.thumb) formData.append("thumb", data.thumb[0]);
       
       dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }));
-      const response = await apiAddVarriant(formData, customVarriant._id);
+      const response = await apiAddVariant(formData, customVariant._id);
       dispatch(showModal({ isShowModal: false, modalChildren: null }));
       if (response.success){
         toast.success(response.mes)
         reset()
         setPreview({thumb: ''})
-        setCustomVarriant(null)
+        setCustomVariant(null)
       } else toast.error(response.mes)
     }
     
@@ -67,7 +67,7 @@ const CustomVarriant = ({ customVarriant, setCustomVarriant }) => {
             Biến thể sản phẩm
           </h1>
           <button
-            onClick={() => setCustomVarriant(null)}
+            onClick={() => setCustomVariant(null)}
             className="text-gray-500 hover:text-gray-700 focus:outline-none"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -75,7 +75,7 @@ const CustomVarriant = ({ customVarriant, setCustomVarriant }) => {
             </svg>
           </button>
         </div>
-        <form className="p-4" onSubmit={handleSubmit(handleAddVarriant)}>
+        <form className="p-4" onSubmit={handleSubmit(handleAddVariant)}>
           <div className="flex gap-4 items-center mt-2">
             <InputForm
               label="Original name"
@@ -99,7 +99,7 @@ const CustomVarriant = ({ customVarriant, setCustomVarriant }) => {
                 required: "Need fill this field",
               }}
               styleClass="flex-auto"
-              placeholder="Price of varriant"
+              placeholder="Price of variant"
               type="number"
               fullWidth
             />
@@ -112,7 +112,7 @@ const CustomVarriant = ({ customVarriant, setCustomVarriant }) => {
                 required: "Need fill this field",
               }}
               styleClass="flex-auto"
-              placeholder="Color of varriant"
+              placeholder="Color of variant"
             />
           </div>
           <div className="flex flex-col gap-2 mt-6">
@@ -143,7 +143,7 @@ const CustomVarriant = ({ customVarriant, setCustomVarriant }) => {
           <div className="flex items-center gap-2 justify-end mt-6 pt-4 border-t">
             <button
               type="button"
-              onClick={() => setCustomVarriant(null)}
+              onClick={() => setCustomVariant(null)}
               className="px-4 py-2 text-gray-700 bg-gray-200 rounded hover:bg-gray-300"
             >
               Cancel
@@ -158,4 +158,4 @@ const CustomVarriant = ({ customVarriant, setCustomVarriant }) => {
   );
 };
 
-export default memo(CustomVarriant);
+export default memo(CustomVariant); 

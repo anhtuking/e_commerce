@@ -465,8 +465,8 @@ const Dashboard = () => {
               columns={[
                 { title: 'Mã đơn', dataIndex: 'id', key: 'id', width: '25%' },
                 { title: 'Khách hàng', dataIndex: 'customer', key: 'customer', width: '20%' },
-                { title: 'Ngày đặt', dataIndex: 'date', key: 'date', width: '15%' },
-                { title: 'Tổng tiền', dataIndex: 'amount', key: 'amount', width: '15%' },
+                { title: 'Ngày đặt', dataIndex: 'date', key: 'date', width: '12%' },
+                { title: 'Tổng tiền', dataIndex: 'amount', key: 'amount', width: '12%' },
                 { title: 'Phương thức', dataIndex: 'typePayment', key: 'typePayment', width: '15%' },
                 {
                   title: 'Trạng thái',

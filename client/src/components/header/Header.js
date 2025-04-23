@@ -94,7 +94,7 @@ const Header = ({ dispatch, navigate }) => {
   };
 
   const handleProductClick = (product) => {
-    navigate(`/${product.category?.toLowerCase()}/${product._id}/${product.title}`);
+    navigate(`/${product?.category?.toLowerCase()}/${product?._id}/${product?.title}`);
     setShowSearchResults(false);
     setSearchValue("");
   };
@@ -122,19 +122,33 @@ const Header = ({ dispatch, navigate }) => {
             onChange={handleSearchChange}
             onFocus={handleSearchFocus}
             onBlur={handleSearchBlur}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter' && searchValue.trim()) {
+                navigate(`/products?q=${encodeURIComponent(searchValue)}`);
+                setShowSearchResults(false);
+              }
+            }}
           />
-          <button className="absolute right-1 top-1/2 transform -translate-y-1/2 text-white w-8 h-8 flex items-center justify-center bg-red-600 rounded-full hover:bg-red-700 transition-colors">
+          <button 
+            className="absolute right-1 top-1/2 transform -translate-y-1/2 text-white w-8 h-8 flex items-center justify-center bg-red-600 rounded-full hover:bg-red-700 transition-colors"
+            onClick={() => {
+              if (searchValue.trim()) {
+                navigate(`/products?q=${encodeURIComponent(searchValue)}`);
+                setShowSearchResults(false);
+              }
+            }}
+          >
             <FaSearch size={14} />
           </button>
 
           {/* Search Results Dropdown */}
-          {showSearchResults && searchResults.length > 0 && (
-            <div className="absolute w-full top-full left-0 mt-1 bg-white border border-gray-300 rounded-2xl shadow-xl z-50 overflow-hidden">
+          {showSearchResults && searchResults?.length > 0 && (
+            <div className="absolute w-full top-full left-0 mt-1 bg-white border border-gray-300 rounded-2xl shadow-xl z-50 overflow-hidden" onMouseDown={e => e.preventDefault()}>
               <div className="p-3 border-b">
                 <h3 className="text-sm font-semibold text-gray-700">
                   Sản phẩm gợi ý
                   <span className="ml-1 text-xs font-normal text-gray-500">
-                    (Tìm thấy {searchResults.length} sản phẩm)
+                    (Tìm thấy {searchResults?.length} sản phẩm)
                   </span>
                 </h3>
               </div>

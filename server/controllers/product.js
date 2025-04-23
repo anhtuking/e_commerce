@@ -4,10 +4,16 @@ const slugify = require("slugify");
 const makeSKU = require("uniqid")
 
 const createProduct = asyncHandler(async (req, res) => {
-  const {title, price, description, brand, category, color} = req.body
+  if (req.body.description && typeof req.body.description === 'string') {
+    req.body.description = JSON.parse(req.body.description);
+  }
+  if (req.body.infomations && typeof req.body.infomations === 'string') {
+    req.body.infomations = JSON.parse(req.body.infomations);
+  }
+  const {title, price, description, brand, category, color, infomations} = req.body
   const thumb = req?.files?.thumb[0]?.path
   const images = req.files?.images?.map(el => el.path)
-  if (!(title && price && description && brand && category && color)) throw new Error("Missing inputs");
+  if (!(title && price && description && brand && category && color && infomations)) throw new Error("Missing inputs");
   req.body.slug = slugify(title);
   if (thumb) req.body.thumb = thumb
   if (images) req.body.images = images
@@ -108,6 +114,12 @@ const getAllProducts = asyncHandler(async (req, res) => {
 
 const updateProduct = asyncHandler(async (req, res) => {
   const { pid } = req.params;
+  if (req.body.description && typeof req.body.description === 'string') {
+    req.body.description = JSON.parse(req.body.description);
+  }
+  if (req.body.infomations && typeof req.body.infomations === 'string') {
+    req.body.infomations = JSON.parse(req.body.infomations);
+  }
   const files = req?.files
   if (files?.thumb) req.body.thumb = files?.thumb[0]?.path 
   if (files?.images) req.body.images = files?.images?.map(el => el.path) 
@@ -121,12 +133,16 @@ const updateProduct = asyncHandler(async (req, res) => {
 
 const deleteProduct = asyncHandler(async (req, res) => {
   const { pid } = req.params;
-  const deletedProduct = await Product.findByIdAndDelete(pid);
+  const deleted = await Product.findByIdAndDelete(pid);
+  if (!deleted) {
+    return res.status(404).json({
+      success: false,
+      mes: "Không thể xóa sản phẩm.",
+    });
+  }
   return res.status(200).json({
-    success: deletedProduct ? true : false,
-    mes: response
-      ? `Product with name ${response.name} deleted`
-      : `Cannot product delete.`,
+    success: true,
+    mes: `Đã xóa sản phẩm "${deleted.title}" thành công.`,
   });
 });
 
@@ -197,9 +213,9 @@ const uploadImagesProduct = asyncHandler(async(req, res) => {
 })
 
 // thêm biến thể sản phẩm 
-const addVarriantProduct = asyncHandler(async(req, res) => {
+const addVariantProduct = asyncHandler(async(req, res) => {
   const {pid} = req.params
-  const {title, price, color} = req.body
+  const {title, price, color, quantity} = req.body
   let thumb, images;
   if (req.files?.thumb) {
     thumb = req.files.thumb[0].path;
@@ -207,11 +223,11 @@ const addVarriantProduct = asyncHandler(async(req, res) => {
   if (req.files?.images) {
     images = req.files.images.map(el => el.path);
   }
-  if (!(title && price && color)) throw new Error("Missing inputs");
-  const response = await Product.findByIdAndUpdate(pid, {$push: {varriants: {color, price, title, thumb, images, sku: makeSKU().toUpperCase()}}}, {new: true})
+  if (!(title && price && color && quantity)) throw new Error("Missing inputs");
+  const response = await Product.findByIdAndUpdate(pid, {$push: {variants: {color, price, title, thumb, images, quantity, sku: makeSKU().toUpperCase()}}}, {new: true})
   return res.status(200).json({
     success: response ? true : false,
-    mes: response ? "Add varriant success" : 'Cannot add varriants'
+    mes: response ? "Add variant success" : 'Cannot add variants'
   });
 })
 
@@ -223,5 +239,5 @@ module.exports = {
   deleteProduct,
   ratingProduct,
   uploadImagesProduct,
-  addVarriantProduct
+  addVariantProduct
 };

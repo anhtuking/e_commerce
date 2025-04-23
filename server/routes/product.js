@@ -11,10 +11,10 @@ router.get("/", ctrls.getAllProducts);
 router.put("/ratings", verifyAccessToken, ctrls.ratingProduct);
 
 router.put('/uploadImage/:pid', [verifyAccessToken, isAdmin], uploader.array('images', 10), ctrls.uploadImagesProduct)
-router.put('/varriant/:pid', [verifyAccessToken, isAdmin], uploader.fields([
+router.put('/variant/:pid', [verifyAccessToken, isAdmin], uploader.fields([
     {name: 'images', maxCount: 10},
     {name: 'thumb', maxCount: 1},
-]), ctrls.addVarriantProduct)
+]), ctrls.addVariantProduct)
 router.put('/:pid', [verifyAccessToken, isAdmin], uploader.fields([
     {name: 'images', maxCount: 10},
     {name: 'thumb', maxCount: 1},

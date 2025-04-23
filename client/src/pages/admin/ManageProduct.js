@@ -1,13 +1,9 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
-import { CustomVarriant, InputForm, Pagination } from "components";
+import { CustomVariant, InputForm, Pagination } from "components";
 import { useForm } from "react-hook-form";
 import { apiDeleteProduct, apiGetProducts } from "api";
 import moment from "moment";
-import {
-  useSearchParams,
-  createSearchParams,
-  useLocation,
-} from "react-router-dom";
+import { useSearchParams, createSearchParams, useLocation} from "react-router-dom";
 import useDebounce from "hooks/useDebounce";
 import { FaTrash, FaEdit} from "react-icons/fa";
 import { BiSolidCustomize } from "react-icons/bi";
@@ -29,7 +25,7 @@ const ManageProduct = ({dispatch, navigate}) => {
   const location = useLocation();
   const [editProduct, setEditProduct] = useState(null)
   const [update, setUpdate] = useState(false)
-  const [customVarriant, setCustomVarriant] = useState(null)
+  const [customVariant, setCustomVariant] = useState(null)
   const [isLoading, setIsLoading] = useState(false);
   const cacheRef = useRef({});
   const fetchInProgressRef = useRef(false);
@@ -103,27 +99,32 @@ const ManageProduct = ({dispatch, navigate}) => {
     fetchProducts(searchParams);
   }, [params, update, fetchProducts]);
 
-  const handleDeleteProduct = (pid) => { 
-    Swal.fire({
-      title: "Delete Product",
-      text: "Are you sure you want to delete this line?",
-      icon: 'warning',
-      showCancelButton: true
-    }).then(async (result) => { 
-      if (result.isConfirmed){
-        const response = await apiDeleteProduct(pid)
-        if (response.success) {
-          toast.success(response.mes);
-          // Xóa cache khi xóa sản phẩm
-          cacheRef.current = {};
-          // Tải lại dữ liệu
-          render();
-        } else {
-          toast.error(response.mes)
-        }
+  const handleDeleteProduct = async (pid) => {
+    const result = await Swal.fire({
+      title: "Xóa sản phẩm",
+      text: "Bạn có chắc muốn xóa sản phẩm này?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: 'Xóa',
+      cancelButtonText: 'Hủy'
+    });
+    if (!result.isConfirmed) return;
+  
+    try {
+      const response = await apiDeleteProduct(pid);
+      const { data } = response;
+      if (data.success) {
+        toast.success(data.mes);
+        cacheRef.current = {};
+        render();
+      } else {
+        toast.error(data.mes);
       }
-     })
-   }
+    } catch (error) {
+      const msg = error.response?.data?.mes || error.response?.data?.message || error.message || "Đã có lỗi xảy ra";
+      toast.error(msg);
+    }
+  };
 
    return (
     <div className="p-6 bg-gray-100 min-h-screen relative">
@@ -142,12 +143,12 @@ const ManageProduct = ({dispatch, navigate}) => {
       )}
 
       {/* Custom Variant Overlay */}
-      {customVarriant && (
+      {customVariant && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <CustomVarriant
-            customVarriant={customVarriant}
+          <CustomVariant
+            customVariant={customVariant}
             render={render}
-            setCustomVarriant={setCustomVarriant}
+            setCustomVariant={setCustomVariant}
             onSuccess={() => {
               cacheRef.current = {};
             }}
@@ -236,7 +237,7 @@ const ManageProduct = ({dispatch, navigate}) => {
                 <td className="p-3 text-center border">{el.sold}</td>
                 <td className="p-3 text-center border">{el.color}</td>
                 <td className="p-3 text-center border">{el.totalRatings}</td>
-                <td className="p-3 text-center border">{el.varriants?.length || 0}</td>
+                <td className="p-3 text-center border">{el.variants?.length || 0}</td>
                 <td className="p-3 text-center border">
                   {moment(el.createdAt).format("DD/MM/YYYY")}
                 </td>
@@ -256,11 +257,11 @@ const ManageProduct = ({dispatch, navigate}) => {
                     <FaTrash size={18} />
                   </button>
                   <button
-                    className="text-gray-600 hover:text-gray-800 transition"
+                    className="text-indigo-600 hover:text-indigo-800 transition p-1"
                     type="button"
-                    onClick={() => setCustomVarriant(el)}
+                    onClick={() => setCustomVariant(el)}
                   >
-                    <BiSolidCustomize size={20} />
+                    <BiSolidCustomize size={18} />
                   </button>
                 </td>
               </tr>
