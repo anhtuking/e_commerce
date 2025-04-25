@@ -339,9 +339,9 @@ input {
 }
 
 .animate-slide-out-up {
-  animation: slideOutUp 0.4s forwards;
+  animation: slideOutUp 0.5s forwards;
 }
 
 .animate-slide-in-down {
-  animation: slideInDown 0.4s forwards;
+  animation: slideInDown 0.5s forwards;
 }

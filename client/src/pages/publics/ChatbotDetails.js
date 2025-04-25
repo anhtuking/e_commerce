@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ImgTemp from "assets/temp.jpeg";
 import IconMenu from "assets/menu.png";
 import ChatBotSidebar from "components/sidebar/ChatBotSidebar";

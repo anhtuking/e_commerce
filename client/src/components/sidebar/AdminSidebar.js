@@ -57,16 +57,16 @@ const AdminSidebar = () => {
       </button>
 
       {/* Header */}
-      <div className="flex flex-col items-center pt-8 pb-6 border-b border-white/10 relative z-10">
-        <Link className={`flex items-center justify-center mt-4 transition-all duration-300 ${collapsed ? 'scale-75' : ''}`} to={'/'}>
+      <div className="flex flex-col items-center pt-6 pb-4 border-b border-white/10 relative z-10">
+        <Link className={`flex items-center justify-center transition-all duration-300 ${collapsed ? 'scale-75' : ''}`} to={'/'}>
           <img
             src={logo2}
             alt="Admin Logo"
-            className={`${collapsed ? 'w-10' : 'w-33'} transition-all duration-300 drop-shadow-lg hover:scale-105`}
+            className={`${collapsed ? 'w-12 h-12 object-contain' : 'w-44 h-auto object-contain'} transition-all duration-300 drop-shadow-lg hover:scale-105`}
           />
         </Link>
         
-        <div className={`flex items-center justify-center mt-3 overflow-hidden transition-all duration-300 ${collapsed ? 'opacity-0 w-0' : 'opacity-100 w-full'}`}>
+        <div className={`flex items-center justify-center mt-2 overflow-hidden transition-all duration-300 ${collapsed ? 'opacity-0 w-0' : 'opacity-100 w-full'}`}>
           <h2 className="text-white font-bold text-center whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-300 text-xl px-4">
             ADMIN WORKSPACE
           </h2>

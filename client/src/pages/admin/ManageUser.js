@@ -1,14 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { apiDeleteUsers, apiGetUsers, apiUpdateUsers } from "api";
-import { FaTrash, FaEdit, FaUserAlt, FaTimes } from "react-icons/fa";
-import { TiTick } from "react-icons/ti";
+import { FaTrash, FaEdit, FaUserAlt } from "react-icons/fa";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { RiGroupLine } from "react-icons/ri";
 import moment from "moment";
-import { InputField, Pagination, InputForm, Select } from "components";
+import { InputField, Pagination } from "components";
+import UserEditModal from "./UserEditModal";
 import useDebounce from "hooks/useDebounce";
 import { useSearchParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { blockStatus, roles } from "utils/contants";
@@ -19,30 +18,27 @@ const ManageUser = () => {
     search: "",
   });
   const [update, setUpdate] = useState(false);
-  const [editEl, setEditEl] = useState(null);
-
-  const {
-    handleSubmit,
-    register,
-    reset,
-    formState: { errors },
-  } = useForm({
-    email: "",
-    firstname: "",
-    lastname: "",
-    role: "",
-    phone: "",
-    isBlocked: "",
-  });
+  const [editUser, setEditUser] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const [params] = useSearchParams();
-
   const fetchUsers = async (params) => {
-    const response = await apiGetUsers({
-      ...params,
-      limit: +process.env.REACT_APP_LIMIT,
-    });
-    if (response.success) setUsers(response);
+    try {
+      const response = await apiGetUsers({
+        ...params,
+        limit: +process.env.REACT_APP_LIMIT,
+      });
+      if (response.success) {
+        setUsers(response);
+      } else {
+        // Show server-provided message on failure
+        toast.error(response.mes || 'Failed to load users');
+      }
+    } catch (error) {
+      // Handle network or unexpected errors
+      console.error('Failed fetching users:', error);
+      toast.error(error.mes || 'Error fetching users. Please try again.');
+    }
   };
 
   const renderRoleBadge = (role) => {
@@ -69,14 +65,29 @@ const ManageUser = () => {
   }, [update]);
   const queriesDebounce = useDebounce(queries.search, 1000);
 
-  const handleUpdate = async (data) => {
-    const response = await apiUpdateUsers(data, editEl?._id);
-    if (response.success) {
-      setEditEl(null);
-      render();
-      toast.success(response.mes);
-    } else {
-      toast.error(response.mes);
+  const handleOpenEditModal = (user) => {
+    setEditUser(user);
+    setShowEditModal(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setEditUser(null);
+    setShowEditModal(false);
+  };
+
+  const handleUpdateUser = async (data) => {
+    try {
+      const response = await apiUpdateUsers(data, editUser?._id);
+      if (response.success) {
+        handleCloseEditModal();
+        render();
+        toast.success(response.mes || 'User updated successfully');
+      } else {
+        toast.error(response.mes || 'Failed to update user');
+      }
+    } catch (error) {
+      console.error('Error updating user:', error);
+      toast.error(error.mes || 'Error updating user. Please try again.');
     }
   };
 
@@ -86,21 +97,10 @@ const ManageUser = () => {
     fetchUsers(queries);
   }, [queriesDebounce, params, update]);
 
-  useEffect(() => {
-    if (editEl) {
-      reset({
-        email: editEl.email,
-        firstname: editEl.firstname,
-        lastname: editEl.lastname,
-        mobile: editEl.mobile,
-      });
-    }
-  }, [editEl, reset]);
-
   const handleDeleteUser = (uid) => {
     Swal.fire({
       title: "Delete User",
-      text: "Are you sure you want to delete this line?",
+      text: "Are you sure you want to delete this user?",
       icon: 'warning',
       showCancelButton: true,
     }).then(async (result) => {
@@ -143,180 +143,82 @@ const ManageUser = () => {
       </div>
       
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
-        <form onSubmit={handleSubmit(handleUpdate)}>
-          <table className="w-full table-auto text-left border-collapse">
-            <thead className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm uppercase">
-              <tr>
-                <th className="px-4 py-3 text-center border">#</th>
-                <th className="px-4 py-3 w-[365px] border">Email</th>
-                <th className="px-4 py-3 border">First Name</th>
-                <th className="px-4 py-3 border">Last Name</th>
-                <th className="px-4 py-3 border">Role</th>
-                <th className="px-4 py-3 border">Phone</th>
-                <th className="px-4 py-3 border">Status</th>
-                <th className="px-4 py-3 border">Created At</th>
-                <th className="px-4 py-3 border text-center">Actions</th>
+        <table className="w-full table-auto text-left border-collapse">
+          <thead className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm uppercase">
+            <tr>
+              <th className="px-4 py-3 text-center border">#</th>
+              <th className="px-4 py-3 border">Email</th>
+              <th className="px-4 py-3 border text-center">Họ</th>
+              <th className="px-4 py-3 border text-center">Tên</th>
+              <th className="px-4 py-3 border text-center">Vai trò</th>
+              <th className="px-4 py-3 border text-center">Số điện thoại</th>
+              <th className="px-4 py-3 border text-center">Trạng thái</th>
+              <th className="px-4 py-3 border text-center">Ngày tạo</th>
+              <th className="px-4 py-3 border text-center">Hành động</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-700">
+            {users?.users?.map((el, index) => (
+              <tr
+                key={el._id}
+                className="border-b hover:bg-gray-50 transition"
+              >
+                <td className="px-4 py-3 text-center">{index + 1}</td>
+                <td className="px-4 py-3">{el.email}</td>
+                <td className="px-4 py-3 text-center">{el.firstname}</td>
+                <td className="px-4 py-3 text-center">{el.lastname}</td>
+                <td className="px-4 py-3 text-center">{renderRoleBadge(el.role)}</td>
+                <td className="px-4 py-3 text-center">{el.mobile}</td>
+                <td className="px-4 py-3 text-center">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-semibold 
+                  ${
+                    el.isBlocked
+                      ? "bg-red-500 text-white"
+                      : "bg-green-500 text-white"
+                  }
+                `}
+                  >
+                    {el.isBlocked ? "Đã khóa" : "Hoạt động"}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-center">
+                  {moment(el.createdAt).format("DD/MM/YYYY")}
+                </td>
+                <td className="px-4 py-3 flex items-center justify-center gap-3 my-auto">
+                  <button
+                    className="text-blue-600 hover:text-blue-800 transition"
+                    onClick={() => handleOpenEditModal(el)}
+                    type="button"
+                  >
+                    <FaEdit size={18} />
+                  </button>
+                  <button
+                    className="text-red-600 hover:text-red-800 transition"
+                    onClick={() => handleDeleteUser(el._id)}
+                  >
+                    <FaTrash size={18} />
+                  </button>
+                </td>
               </tr>
-            </thead>
-            <tbody className="text-gray-700">
-              {users?.users?.map((el, index) => (
-                <tr
-                  key={el._id}
-                  className="border-b hover:bg-gray-50 transition"
-                >
-                  <td className="px-4 py-3 text-center">{index + 1}</td>
-                  <td className="px-4 py-3">
-                    {editEl?._id === el._id ? (
-                      <InputForm
-                        register={register}
-                        errors={errors}
-                        id={"email"}
-                        validate={{
-                          required: "This field is required.",
-                          pattern: {
-                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                            message: "Invalid email address.",
-                          },
-                        }}
-                        defaultValue={editEl.email}
-                      />
-                    ) : (
-                      <span>{el.email}</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    {editEl?._id === el._id ? (
-                      <InputForm
-                        register={register}
-                        errors={errors}
-                        id={"firstname"}
-                        validate={{ required: "This field is required." }}
-                        styleClass="w-[180px]"
-                        defaultValue={editEl.firstname}
-                      />
-                    ) : (
-                      <span>{el.firstname}</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    {editEl?._id === el._id ? (
-                      <InputForm
-                        register={register}
-                        fullWidth
-                        errors={errors}
-                        id={"lastname"}
-                        validate={{ required: "This field is required." }}
-                        defaultValue={editEl.lastname}
-                      />
-                    ) : (
-                      <span>{el.lastname}</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    {editEl?._id === el._id ? (
-                      <Select
-                        register={register}
-                        fullWidth
-                        errors={errors}
-                        id={"role"}
-                        validate={{ required: "This field is required." }}
-                        defaultValue={el.role}
-                        options={roles}
-                      />
-                    ) : (
-                      <span>{renderRoleBadge(el.role)}</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    {editEl?._id === el._id ? (
-                      <InputForm
-                        register={register}
-                        errors={errors}
-                        id={"mobile"}
-                        styleClass="w-[150px]"
-                        validate={{
-                          required: "This field is required.",
-                          pattern: {
-                            value: /^[62|0]+\d{9}/gi,
-                            message: "Invalid phone number.",
-                          },
-                        }}
-                        defaultValue={editEl.mobile}
-                      />
-                    ) : (
-                      <span>{el.mobile}</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    {editEl?._id === el._id ? (
-                      <Select
-                        register={register}
-                        fullWidth
-                        errors={errors}
-                        id={"isBlocked"}
-                        validate={{ required: "This field is required." }}
-                        defaultValue={el.isBlocked}
-                        options={blockStatus}
-                      />
-                    ) : (
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold 
-                    ${
-                      el.isBlocked
-                        ? "bg-red-500 text-white"
-                        : "bg-green-500 text-white"
-                    }
-                  `}
-                      >
-                        {el.isBlocked ? "Blocked" : "Active"}
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    {moment(el.createdAt).format("DD/MM/YYYY")}
-                  </td>
-                  <td className="px-4 py-3 flex items-center justify-center gap-3 my-auto">
-                    {editEl?._id === el._id ? (
-                      <>
-                        <button
-                          className="text-gray-500 hover:text-gray-800 transition"
-                          onClick={() => setEditEl(null)}
-                          type="button"
-                        >
-                          <FaTimes size={24} />
-                        </button>
-                        <button
-                          className="text-green-600 hover:text-green-800 transition"
-                          type="submit"
-                        >
-                          <TiTick size={33} />
-                        </button>
-                      </>
-                    ) : (
-                      <button
-                        className="text-blue-600 hover:text-blue-800 transition"
-                        onClick={() => setEditEl(el)}
-                        type="button"
-                      >
-                        <FaEdit size={18} />
-                      </button>
-                    )}
-                    <button
-                      className="text-red-600 hover:text-red-800 transition"
-                      onClick={() => handleDeleteUser(el._id)}
-                    >
-                      <FaTrash size={18} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="w-full text-right justify-end my-4">
-            <Pagination totalCount={users?.counts} />
-          </div>
-        </form>
+            ))}
+          </tbody>
+        </table>
+        <div className="w-full text-right justify-end my-4">
+          {users && users.counts !== undefined && (
+            <Pagination totalCount={users.counts} />
+          )}
+        </div>
       </div>
+      
+      {/* User Edit Modal */}
+      {showEditModal && (
+        <UserEditModal 
+          user={editUser}
+          onClose={handleCloseEditModal}
+          onSubmit={handleUpdateUser}
+        />
+      )}
     </div>
   );
 };

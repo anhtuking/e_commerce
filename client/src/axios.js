@@ -51,14 +51,16 @@ instance.interceptors.response.use(function (response) {
       // The request was made but no response was received
       return Promise.reject({
         success: false,
-        mes: 'No response from server. Please check your connection',
+        mes: 'Lỗi kết nối',
+        details: 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối internet và thử lại.',
         status: 503
       });
     } else {
       // Something happened in setting up the request that triggered an Error
       return Promise.reject({
         success: false,
-        mes: error.message || 'Unknown error occurred',
+        mes: 'Lỗi kết nối',
+        details: error.message || 'Đã xảy ra lỗi không xác định',
         status: 500
       });
     }

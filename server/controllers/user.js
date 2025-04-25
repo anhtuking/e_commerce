@@ -10,7 +10,7 @@ const jwt = require("jsonwebtoken");
 const sendMail = require("../ultils/sendMail");
 const crypto = require("crypto");
 const makeToken = require("uniqid");
-// const {users} = require('../ultils/constant')
+const {users} = require('../ultils/constant')
 
 // const register = asyncHandler(async (req, res) => {
 //   const { email, password, firstname, lastname } = req.body;
@@ -100,7 +100,15 @@ const login = asyncHandler(async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        mes: "Invalid email or password",
+        mes: "Email không tồn tại trong hệ thống. Vui lòng kiểm tra lại hoặc đăng ký tài khoản mới.",
+      });
+    }
+
+    // Check if user is blocked
+    if (user.isBlocked) {
+      return res.status(403).json({
+        success: false,
+        mes: "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để được hỗ trợ.",
       });
     }
 
@@ -110,7 +118,7 @@ const login = asyncHandler(async (req, res) => {
     if (!isPasswordCorrect) {
       return res.status(401).json({
         success: false,
-        mes: "Invalid email or password",
+        mes: "Mật khẩu không chính xác. Vui lòng kiểm tra lại.",
       });
     }
 
@@ -451,14 +459,6 @@ const removeCart = asyncHandler(async (req, res) => {
   });
 });
 
-// createUsers = asyncHandler(async (req,res) => { 
-//   const response = await User.create(users)
-//   return res.status(200).json({
-//     success: response ? true : false,
-//     users: response ? response : 'some thing went wrong'
-//   })
-//  })
-
 const updateWishlist = asyncHandler(async (req, res) => {
   const { pid } = req.params
   const { id } = req.user
@@ -602,6 +602,14 @@ const updateStatusOrder = asyncHandler(async (req, res) => {
   });
 });
 
+// const createUsers = asyncHandler(async (req,res) => { 
+//   const response = await User.create(users)
+//   return res.status(200).json({
+//     success: response ? true : false,
+//     users: response ? response : 'some thing went wrong'
+//   })
+//  })
+
 
 module.exports = {
   register,
@@ -619,10 +627,10 @@ module.exports = {
   updateUserAddress,
   updateCart,
   removeCart,
-  // createUsers
   updateWishlist,
   getCart,
   getUserOrder,
   getAllOrders,
-  updateStatusOrder
+  updateStatusOrder,
+  // createUsers
 };
