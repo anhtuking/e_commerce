@@ -16,7 +16,7 @@ import {
 } from "react-icons/fa";
 import { MdEmail, MdOutlineStar, MdOutlineStarHalf, MdOutlineStarBorder, MdMenu } from "react-icons/md";
 import { IoBagHandle, IoLogOutOutline } from "react-icons/io5";
-import { IoMdArrowDropright, IoIosArrowForward, IoMdClose } from "react-icons/io";
+import { IoMdArrowDropright, IoIosArrowForward, IoMdClose, IoIosArrowUp } from "react-icons/io";
 import { AiFillHome } from "react-icons/ai";
 import {
   FaHeart,
@@ -66,6 +66,7 @@ const icons = {
   GiPositionMarker,
   IoLogOutOutline,
   IoIosArrowForward,
+  IoIosArrowUp,
   FaTruck,
   FaGift,
   FaReply,

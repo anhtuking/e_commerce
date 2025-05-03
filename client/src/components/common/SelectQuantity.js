@@ -1,8 +1,6 @@
 import React, { memo } from 'react'
 
 const SelectQuantity = ({quantity, handleQuantity, handleChangeQuantity, maxQuantity}) => {
-    console.log(quantity);
-  // Check if max quantity is reached
   const isMaxReached = maxQuantity !== undefined && quantity >= maxQuantity;
   
   return (

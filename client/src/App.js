@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation, matchPath } from "react-router-dom";
 import {
   Login,
   PublicLayout,
@@ -37,23 +37,37 @@ import { getCategories } from "store/app/asyncAction";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Cart, Modal, ChatButton } from "components";
+import { Cart, Modal, ChatButton, BackToTop, AdBanners } from "components";
 import { showCart } from "store/app/appSlice";
-// import { showChat } from "store/chat/chatSlice";
 
 
 function App() {
   const dispatch = useDispatch();
+  const location = useLocation();
   const { isShowModal, modalChildren, isShowCart } = useSelector(
     (state) => state.app
   );
-  // const { isShowChat } = useSelector((state) => state.chat);
 
   useEffect(() => {
     dispatch(getCategories());
   }, [dispatch]);
+
+  const pagesShowControls = [
+    `/${path.HOME}`,
+    `/${path.BLOGS}`,
+    `/${path.OUR_SERVICES}`,
+    `/${path.PRODUCTS__CATEGORY}`,
+    `/${path.PRODUCTS}`,
+    `/${path.FAQ}`,
+    `/${path.DETAIL_PRODUCT__CATEGORY__PID__TITLE}`,
+  ];
+  
+  const showControls = pagesShowControls.some(pattern =>
+    matchPath({ path: pattern, end: true }, location.pathname)
+  );
+
   return (
-    <div className="font-main h-screen relative">
+    <div className="font-main min-h-screen relative">
       {isShowCart && (
         <div
           onClick={() => dispatch(showCart({ signal: false }))}
@@ -62,8 +76,18 @@ function App() {
           <Cart />
         </div>
       )}
+      
       {isShowModal && <Modal>{modalChildren}</Modal>}
+
+      {/* show chat button, back to top button, and ad banners */}
+      {showControls && 
+      <>
       <ChatButton />
+      <AdBanners />
+      <BackToTop />
+      </>
+      }
+      
       <Routes>
         <Route path={path.CHATBOT_DETAILS} element={<ChatbotDetails />} />
         <Route path={path.CHATBOT_MESS} element={<ChatbotDetails />} />

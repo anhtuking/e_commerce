@@ -5,7 +5,6 @@ const {
   FaPhoneAlt,
   GiPositionMarker,
   FaFacebook,
-  FaFacebookMessenger,
   FaTwitter,
   FaInstagramSquare,
   FaGoogle,
@@ -48,7 +47,7 @@ const Footer = () => {
           {/* About Us Section */}
           <div className="flex flex-col gap-4">
             <h3 className="text-lg font-bold border-l-4 border-red-500 pl-3 mb-5">
-              ABOUT US
+              GIỚI THIỆU
             </h3>
             <p className="flex items-center gap-3 text-gray-300 hover:text-white transition duration-300">
               <GiPositionMarker className="text-red-500 flex-shrink-0" />

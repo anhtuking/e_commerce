@@ -343,5 +343,141 @@ input {
 }
 
 .animate-slide-in-down {
-  animation: slideInDown 0.5s forwards;
+  animation: slideInDown 0.3s ease-in-out forwards;
+}
+
+/* Banner ads animations */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes pulse-border {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes pulse-border-slow {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes bounce-subtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-border {
+  animation: pulse-border 2s ease-in-out infinite;
+}
+
+.animate-pulse-border-slow {
+  animation: pulse-border-slow 3s ease-in-out infinite;
+}
+
+.animate-bounce-subtle {
+  animation: bounce-subtle 2s ease-in-out infinite;
+}
+
+.Back__To__Top{
+  position: relative;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.Back__To__Top h1{
+  font-size: 57px;
+    color: #0fa8ff;
+}
+.Back__To__Top p{
+  font-size: 37px;
+  margin-bottom: 37px;
+}
+.scrolls {
+  position: fixed;
+  bottom: 2rem;    /* cách đáy 32px */
+  right: 2rem;     /* cách phải 32px */
+  width: 3rem;     /* 48px */
+  height: 3rem;    /* 48px */
+  background-color: #07a8ff;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 9999;
+  transition: transform 0.2s ease;
+}
+.scrolls svg {
+  width: 47px;
+  margin: 6px auto;
+  display: block;
+  vertical-align: middle;
+  line-height: 27px;
+  height: 47px;
+}
+.scrolls:hover {
+  background-color: #00bf6f;
+}
+
+/* ScrollToTop Button Styles */
+.scroll-to-top-button {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  z-index: 999;
+  cursor: pointer;
+}
+
+.scroll-to-top-circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 64px;
+  height: 64px;
+  background-color: #b91c1c; /* bg-red-700 equivalent */
+  border-radius: 50%;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+}
+
+.scroll-to-top-circle:hover {
+  background-color: #dc2626; /* bg-red-600 equivalent */
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
