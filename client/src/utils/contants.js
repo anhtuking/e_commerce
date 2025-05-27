@@ -148,7 +148,7 @@ export const ratingOptions = [
   },
 ];
 
-const { RxDashboard, RiGroupLine, RiProductHuntLine, RiBillLine, FaPercentage, MdEmail } = icons;
+const { RxDashboard, RiGroupLine, RiProductHuntLine, RiBillLine, FaPercentage, MdEmail, RiRobot2Line } = icons;
 export const adminSidebar = [
   {
     id: 1,
@@ -177,6 +177,10 @@ export const adminSidebar = [
       {
         text: "Tạo mới sản phẩm",
         path: `/${path.ADMIN}/${path.CREATE_PRODUCT}`,
+      },
+      {
+        text: "Quản lý embeddings",
+        path: `/${path.ADMIN}/embeddings`,
       },
     ],
   },

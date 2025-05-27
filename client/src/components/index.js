@@ -42,6 +42,7 @@ export {default as CategoryGrid} from './category/CategoryGrid'
 export {default as ChatButton} from './common/ChatButton'
 export {default as BackToTop} from './common/BackToTop'
 export {default as AdBanners} from './common/AdBanners'
+export {default as ChatbotModal} from './common/ChatbotModal'
 
 // Checkout components
 export { default as OrderSummary } from "./checkout/OrderSummary";

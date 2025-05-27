@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getBase64 } from "utils/helpers";
 import { toast } from "react-toastify";
 import { FaTrash, FaPlusCircle } from "react-icons/fa";
-import { apiCreateProduct } from "api";
+import { apiCreateProduct, apiSyncProductEmbedding } from "api";
 import { showModal } from "store/app/appSlice";
 
 const CreateProduct = () => {
@@ -108,8 +108,17 @@ const CreateProduct = () => {
     dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }));
     try {
       const response = await apiCreateProduct(formData);
-      dispatch(showModal({ isShowModal: false, modalChildren: null }));
+      
       if (response.success) {
+        // Tự động đồng bộ embedding cho sản phẩm mới
+        try {
+          await apiSyncProductEmbedding(response.createdProduct._id);
+          toast.success("Đã tạo và đồng bộ embedding cho sản phẩm mới");
+        } catch (embeddingError) {
+          console.error("Lỗi khi đồng bộ embedding:", embeddingError);
+          // Không hiển thị lỗi này cho người dùng vì sản phẩm đã được tạo thành công
+        }
+        
         toast.success(response.mes);
         reset();
         setPayload({ description: "", infomations: "" });
@@ -118,8 +127,9 @@ const CreateProduct = () => {
         toast.error(response.mes);
       }
     } catch (err) {
-      dispatch(showModal({ isShowModal: false, modalChildren: null }));
       toast.error("Lỗi khi tạo sản phẩm: " + err.message);
+    } finally {
+      dispatch(showModal({ isShowModal: false, modalChildren: null }));
     }
   };
 
@@ -148,13 +158,23 @@ const CreateProduct = () => {
         <form onSubmit={handleSubmit(handleCreateProduct)}>
           <InputForm label="Tên sản phẩm" register={register} errors={errors} id="title" validate={{ required: true }} fullWidth placeholder="Tên sản phẩm mới" />
           <div className="w-full flex gap-4 my-6">
-            <InputForm label="Giá" register={register} errors={errors} id="price" validate={{ required: true }} type="number" placeholder="Giá" fullWidth />
-            <InputForm label="Số lượng" register={register} errors={errors} id="quantity" validate={{ required: true }} type="number" placeholder="Số lượng" fullWidth />
-            <InputForm label="Màu sắc" register={register} errors={errors} id="color" validate={{ required: true }} placeholder="Màu sắc" fullWidth />
+            <div className="w-1/3">
+              <InputForm label="Giá" register={register} errors={errors} id="price" validate={{ required: true }} type="number" placeholder="Giá" fullWidth />
+            </div>
+            <div className="w-1/3">
+              <InputForm label="Số lượng" register={register} errors={errors} id="quantity" validate={{ required: true }} type="number" placeholder="Số lượng" fullWidth />
+            </div>
+            <div className="w-1/3">
+              <InputForm label="Màu sắc" register={register} errors={errors} id="color" validate={{ required: true }} placeholder="Màu sắc" fullWidth />
+            </div>
           </div>
           <div className="w-full flex gap-4 my-6">
-            <Select label="Danh mục" id="category" register={register} errors={errors} validate={{ required: true }} options={categories.map((c) => ({ code: c._id, value: c.title }))} />
-            <Select label="Thương hiệu" id="brand" register={register} errors={errors} validate={{ required: true }} options={categories.find((c) => c._id === watch("category"))?.brand.map((b) => ({ code: b, value: b })) || []} />
+            <div className="w-1/2">
+              <Select label="Danh mục" id="category" register={register} errors={errors} validate={{ required: true }} options={categories.map((c) => ({ code: c._id, value: c.title }))} />
+            </div>
+            <div className="w-1/2">
+              <Select label="Thương hiệu" id="brand" register={register} errors={errors} validate={{ required: true }} options={categories.find((c) => c._id === watch("category"))?.brand.map((b) => ({ code: b, value: b })) || []} />
+            </div>
           </div>
 
           <MarkdownEditor 

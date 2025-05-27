@@ -79,5 +79,5 @@ var productSchema = new mongoose.Schema(
   }
 );
 
-//Export the model
-module.exports = mongoose.model("Product", productSchema);
+// Check if the model exists before creating a new one
+module.exports = mongoose.models.Product || mongoose.model("Product", productSchema);

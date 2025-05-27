@@ -3,12 +3,15 @@ import axios from 'axios'
 const instance = axios.create({
     baseURL: process.env.REACT_APP_API_URI,
     withCredentials: true,
-    timeout: 15000
+    timeout: 30000 // Increase timeout for vector search operations
   });
   
 // Add a request interceptor
 instance.interceptors.request.use(function (config) {
+    // Logging API requests in development
+    if (process.env.NODE_ENV === 'development') {
     console.log('API request to:', config.url);
+    }
     
     // Do something before request is sent
     let localStorageData = window.localStorage.getItem('persist:shop/user')
@@ -33,18 +36,42 @@ instance.interceptors.request.use(function (config) {
 // Add a response interceptor
 instance.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
+    if (process.env.NODE_ENV === 'development') {
     console.log('API response from:', response.config.url, response.status);
+    }
+    
+    // Check if response data is valid
+    if (response.data === undefined) {
+      console.error('Empty response data from:', response.config.url);
+      return Promise.reject({
+        success: false,
+        mes: 'Empty response data',
+        status: response.status
+      });
+    }
+    
     return response.data;
   }, function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     console.error('Response error:', error.config?.url, error.response?.status);
+    
+    // Log detailed error info for debugging
+    if (process.env.NODE_ENV === 'development') {
+      if (error.response) {
+        console.error('Error response data:', error.response.data);
+      } else if (error.request) {
+        console.error('No response received:', error.request);
+      } else {
+        console.error('Error setting up request:', error.message);
+      }
+    }
     
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
       return Promise.reject({
         success: false,
-        mes: error.response.data?.mes || 'Server error',
+        mes: error.response.data?.mes || error.response.data?.message || 'Server error',
         status: error.response.status
       });
     } else if (error.request) {
@@ -66,4 +93,4 @@ instance.interceptors.response.use(function (response) {
     }
   });
 
-  export default instance
+export default instance;

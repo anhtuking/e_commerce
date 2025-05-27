@@ -4,12 +4,13 @@ import { useForm } from "react-hook-form";
 import moment from "moment";
 import { useSearchParams, createSearchParams, useLocation } from "react-router-dom";
 import useDebounce from "hooks/useDebounce";
-import { FaTrash, FaEdit, FaEye } from "react-icons/fa";
+import { FaTrash, FaEdit, FaEye, FaDatabase } from "react-icons/fa";
 import { RiArticleLine } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import withBase from "hocs/withBase";
 import { apiGetAllBlogs, apiDeleteBlog } from "api/blog";
+import { apiGenerateAllBlogEmbeddings, apiGenerateBlogEmbedding } from "api/embedding";
 
 const ManageBlog = ({ dispatch, navigate }) => {
   const { register, formState: { errors }, watch } = useForm();
@@ -21,6 +22,7 @@ const ManageBlog = ({ dispatch, navigate }) => {
   const [isCreating, setIsCreating] = useState(false);
   const [update, setUpdate] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [embeddingLoading, setEmbeddingLoading] = useState(false);
   const fetchInProgressRef = useRef(false);
 
   const render = useCallback(() => {
@@ -138,6 +140,47 @@ const ManageBlog = ({ dispatch, navigate }) => {
     setIsCreating(false);
   };
 
+  const handleGenerateAllEmbeddings = async () => {
+    try {
+      setEmbeddingLoading(true);
+      toast.info("Đang tạo embeddings cho tất cả bài viết...", {
+        autoClose: 2000
+      });
+      
+      const response = await apiGenerateAllBlogEmbeddings();
+      
+      if (response.success) {
+        toast.success(`Đã tạo ${response.results?.length || 0} embeddings cho bài viết`);
+      } else {
+        toast.error("Không thể tạo embeddings cho bài viết");
+      }
+    } catch (error) {
+      console.error("Error generating blog embeddings:", error);
+      toast.error("Không thể tạo embeddings cho bài viết");
+    } finally {
+      setEmbeddingLoading(false);
+    }
+  };
+
+  const handleGenerateBlogEmbedding = async (blogId) => {
+    try {
+      toast.info("Đang tạo embedding cho bài viết...", { 
+        autoClose: 1000 
+      });
+      
+      const response = await apiGenerateBlogEmbedding(blogId);
+      
+      if (response.success) {
+        toast.success("Đã tạo embedding cho bài viết thành công");
+      } else {
+        toast.error("Không thể tạo embedding cho bài viết");
+      }
+    } catch (error) {
+      console.error("Error generating blog embedding:", error);
+      toast.error("Không thể tạo embedding cho bài viết");
+    }
+  };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen relative">
       {(editBlog || isCreating) && (
@@ -160,12 +203,22 @@ const ManageBlog = ({ dispatch, navigate }) => {
         <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
       </div>
       <div className="flex justify-between items-center px-4 mb-6">
-        <button
-          className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow-sm flex items-center"
-          onClick={() => setIsCreating(true)}
-        >
-          <span className="mr-2">+</span> Tạo bài viết mới
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow-sm flex items-center"
+            onClick={() => setIsCreating(true)}
+          >
+            <span className="mr-2">+</span> Tạo bài viết mới
+          </button>
+          <button
+            className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg shadow-sm flex items-center"
+            onClick={handleGenerateAllEmbeddings}
+            disabled={embeddingLoading}
+          >
+            <FaDatabase className="mr-2" /> 
+            {embeddingLoading ? "Đang tạo embeddings..." : "Tạo embeddings cho tất cả bài viết"}
+          </button>
+        </div>
         <form className="w-[45%]">
           <InputForm id="q" register={register} errors={errors} fullWidth placeholder="Tìm kiếm bài viết..." />
         </form>
@@ -215,6 +268,9 @@ const ManageBlog = ({ dispatch, navigate }) => {
                     </button>
                     <button className="text-red-600 hover:text-red-800 transition" type="button" onClick={() => handleDeleteBlog(blog._id)} title="Xóa">
                       <FaTrash size={18} />
+                    </button>
+                    <button className="text-green-600 hover:text-green-800 transition" type="button" onClick={() => handleGenerateBlogEmbedding(blog._id)} title="Tạo Embedding">
+                      <FaDatabase size={18} />
                     </button>
                   </div>
                 </td>

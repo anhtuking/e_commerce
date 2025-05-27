@@ -22,6 +22,7 @@ import {
   ManageUser,
   ManageBlog,
   ManageCoupon,
+  EmbeddingsManagement
 } from "pages/admin";
 import {
   MemberLayout,
@@ -37,7 +38,7 @@ import { getCategories } from "store/app/asyncAction";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Cart, Modal, ChatButton, BackToTop, AdBanners } from "components";
+import { Cart, Modal, ChatButton, BackToTop, AdBanners, ChatbotModal } from "components";
 import { showCart } from "store/app/appSlice";
 
 
@@ -66,6 +67,8 @@ function App() {
     matchPath({ path: pattern, end: true }, location.pathname)
   );
 
+  const isChatbotPage = location.pathname.includes('/chatbot/');
+
   return (
     <div className="font-main min-h-screen relative">
       {isShowCart && (
@@ -80,7 +83,7 @@ function App() {
       {isShowModal && <Modal>{modalChildren}</Modal>}
 
       {/* show chat button, back to top button, and ad banners */}
-      {showControls && 
+      {showControls && !isChatbotPage && 
       <>
       <ChatButton />
       <AdBanners />
@@ -110,6 +113,7 @@ function App() {
           <Route path={path.CREATE_PRODUCT} element={<CreateProduct />} />
           <Route path={path.MANAGE_BLOG} element={<ManageBlog />} />
           <Route path={path.MANAGE_COUPON} element={<ManageCoupon />} />
+          <Route path="embeddings" element={<EmbeddingsManagement />} />
         </Route>
         <Route path={path.MEMBER} element={<MemberLayout />}>
           <Route path={path.PERSONAL} element={<Personal />} />
@@ -133,6 +137,9 @@ function App() {
         pauseOnHover // hover vao se dung dem gio
         theme="colored"
       />
+
+      {/* Always render ChatbotModal to handle Redux state */}
+      <ChatbotModal />
     </div>
   );
 }

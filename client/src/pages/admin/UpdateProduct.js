@@ -6,8 +6,9 @@ import { getBase64, validate } from "utils/helpers";
 import { toast } from "react-toastify";
 import { FaTrash } from "react-icons/fa";
 import { showModal } from "store/app/appSlice";
-import { apiUpdateProduct } from "api";
+import { apiUpdateProduct, apiSyncProductEmbedding } from "api";
 import withBase from "hocs/withBase";
+import { useNavigate } from "react-router-dom";
 
 const UpdateProduct = ({ editProduct, setEditProduct, dispatch }) => {
   const { categories } = useSelector((state) => state.app);
@@ -24,6 +25,7 @@ const UpdateProduct = ({ editProduct, setEditProduct, dispatch }) => {
     thumb: null,
     images: [],
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     reset({
@@ -110,17 +112,29 @@ const UpdateProduct = ({ editProduct, setEditProduct, dispatch }) => {
         for (let image of images) formData.append("images", image);
       }
       dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }));
-      const response = await apiUpdateProduct(formData);
-      dispatch(showModal({ isShowModal: false, modalChildren: null }));
-      // console.log(response);
-      if (response.success) {
-        toast.success(response.mes);
-        reset();
-        setPayload({
-          thumb: "",
-          image: [],
-        });
-      } else toast.error(response.mes);
+      try {
+        const response = await apiUpdateProduct(formData);
+        
+        if (response.success) {
+          // Tự động đồng bộ embedding sau khi cập nhật sản phẩm
+          try {
+            await apiSyncProductEmbedding(editProduct?._id);
+            toast.success("Đã cập nhật và đồng bộ embedding cho sản phẩm");
+          } catch (embeddingError) {
+            console.error("Lỗi khi đồng bộ embedding:", embeddingError);
+            // Không hiển thị lỗi này cho người dùng vì sản phẩm đã được cập nhật thành công
+          }
+          
+          toast.success(response.mes);
+          navigate('/admin/products');
+        } else {
+          toast.error(response.mes);
+        }
+      } catch (err) {
+        toast.error("Lỗi khi cập nhật sản phẩm: " + err.message);
+      } finally {
+        dispatch(showModal({ isShowModal: false, modalChildren: null }));
+      }
     }
   };
 

@@ -48,5 +48,5 @@ var blogSchema = new mongoose.Schema(
   }
 );
 
-//Export the model
-module.exports = mongoose.model("Blog", blogSchema);
+// Check if the model exists before creating a new one
+module.exports = mongoose.models.Blog || mongoose.model("Blog", blogSchema);

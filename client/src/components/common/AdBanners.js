@@ -22,15 +22,15 @@ const AdBanners = () => {
           {/* Pulsating border */}
           <div className="absolute -inset-1 bg-gradient-to-r from-red-600 via-yellow-500 to-red-600 rounded-lg opacity-70 animate-pulse-border blur-sm"></div>
           
-          {/* Sale tag */}
-          <div className={`absolute -top-3 -right-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full z-20 transform rotate-12 ${blink ? 'opacity-100' : 'opacity-70'}`}>
-            SALE!
+          {/* New tag */}
+          <div className={`absolute -top-3 -left-3 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full z-20 transform -rotate-12 ${!blink ? 'opacity-100' : 'opacity-70'}`}>
+            NEW!
           </div>
           
           <img 
-            src="https://image.useinsider.com/fptshop/defaultImageLibrary/item%20%286%29-1720447573.png" 
+            src="https://web-image.useinsider.com/fptshop/defaultImageLibrary/icon%20%283%29-1745909269.png" 
             alt="Banner 1" 
-            className="h-16 rounded shadow-lg hover:shadow-xl transition-all duration-300 animate-pulse-slow relative z-10"
+            className="h-16 rounded shadow-lg hover:shadow-xl transition-all duration-300 relative z-10"
           />
         </div>
 
@@ -41,15 +41,15 @@ const AdBanners = () => {
           {/* Pulsating border */}
           <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-500 to-blue-600 rounded-lg opacity-70 animate-pulse-border-slow blur-sm"></div>
           
-          {/* New tag */}
-          <div className={`absolute -top-3 -left-3 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full z-20 transform -rotate-12 ${!blink ? 'opacity-100' : 'opacity-70'}`}>
-            NEW!
+          {/* Sale tag */}
+          <div className={`absolute -top-3 -right-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full z-20 transform rotate-12 ${blink ? 'opacity-100' : 'opacity-70'}`}>
+            SALE!
           </div>
           
           <img 
-            src="https://image.useinsider.com/fptshop/defaultImageLibrary/item%20%285%29-1720447610.png" 
+            src="https://web-image.useinsider.com/fptshop/defaultImageLibrary/icon%20%284%29-1745909277.png" 
             alt="Banner 2" 
-            className="h-16 rounded shadow-lg hover:shadow-xl transition-all duration-300 relative z-10"
+            className="h-16 rounded shadow-lg hover:shadow-xl transition-all duration-300 animate-pulse-slow relative z-10"
           />
         </div>
       </div>

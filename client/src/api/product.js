@@ -39,3 +39,9 @@ export const apiAddVariant = (data, pid) => axios({
     method: 'put',
     data
 })
+
+// API đồng bộ embedding sau khi tạo hoặc cập nhật sản phẩm
+export const apiSyncProductEmbedding = (pid) => axios({
+    url: "/embedding/generate/" + pid,
+    method: 'post',
+})

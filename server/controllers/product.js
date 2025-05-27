@@ -2,6 +2,7 @@ const Product = require("../models/product");
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
 const makeSKU = require("uniqid")
+const { generateProductEmbedding } = require("../controllers/embedding");
 
 const createProduct = asyncHandler(async (req, res) => {
   if (req.body.description && typeof req.body.description === 'string') {
@@ -18,6 +19,16 @@ const createProduct = asyncHandler(async (req, res) => {
   if (thumb) req.body.thumb = thumb
   if (images) req.body.images = images
   const newProduct = await Product.create(req.body);
+  
+  try {
+    // Tạo embedding cho sản phẩm mới
+    await generateProductEmbedding(newProduct);
+    console.log(`Generated embedding for new product: ${newProduct.title}`);
+  } catch (error) {
+    console.log("Error generating embedding for new product:", error);
+    // Không ảnh hưởng đến việc tạo sản phẩm nếu tạo embedding thất bại
+  }
+  
   return res.status(200).json({
     success: newProduct ? true : false,
     mes: newProduct ? "Create success!" : "Create fail!",
@@ -125,6 +136,16 @@ const updateProduct = asyncHandler(async (req, res) => {
   if (files?.images) req.body.images = files?.images?.map(el => el.path) 
   if (req.body && req.body.title) req.body.slug = slugify(req.body.title);
   const updatedProduct = await Product.findByIdAndUpdate(pid, req.body, {new:true});
+  
+  try {
+    // Cập nhật embedding cho sản phẩm đã cập nhật
+    await generateProductEmbedding(updatedProduct);
+    console.log(`Updated embedding for product: ${updatedProduct.title}`);
+  } catch (error) {
+    console.log("Error updating embedding for product:", error);
+    // Không ảnh hưởng đến việc cập nhật sản phẩm nếu cập nhật embedding thất bại
+  }
+  
   return res.status(200).json({
     success: updatedProduct ? true : false,
     updatedProduct: updatedProduct ? updatedProduct : "Cannot update product",
@@ -140,6 +161,17 @@ const deleteProduct = asyncHandler(async (req, res) => {
       mes: "Không thể xóa sản phẩm.",
     });
   }
+  
+  try {
+    // Xóa embedding khi xóa sản phẩm
+    const Embedding = require("../models/embedding");
+    await Embedding.deleteOne({ "metadata.sourceId": pid });
+    console.log(`Deleted embedding for product: ${deleted.title}`);
+  } catch (error) {
+    console.log("Error deleting embedding for product:", error);
+    // Không ảnh hưởng đến việc xóa sản phẩm nếu xóa embedding thất bại
+  }
+  
   return res.status(200).json({
     success: true,
     mes: `Đã xóa sản phẩm "${deleted.title}" thành công.`,

@@ -2,16 +2,12 @@
 // const t = 'hello'
 
 const function_1 = (param) => {
-    console.log(param + t)
 }
 
 const function_2 = (param2) => {
-    console.log(param2 + t)
 }
 
 const function_hoc = (callback) => (x) => {
-    const t = 'abc'
-    callback(x + t)
 }
 
 // function_1('abc')
@@ -22,12 +18,9 @@ const function_hoc = (callback) => (x) => {
 // A: function () => A("")
 
 const Components = (props) => {
-    return console.log('JSX' + props)
 }
 
 const hoc = (Component) => (props) => {
-    const t = 'abc'
-    return <Component {...props} t={t} />
 }
 
 

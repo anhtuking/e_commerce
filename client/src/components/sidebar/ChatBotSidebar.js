@@ -1,25 +1,28 @@
 import PropType from "prop-types";
 import logo2 from '../../assets/logo2.png';
 import { useDispatch, useSelector } from "react-redux";
-import { addChat, removeChat } from "store/chat/chatSlice";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { addChat, removeChat, setActiveChatId } from "store/chat/chatSlice";
+import { Link } from "react-router-dom";
 import { BsPlusLg, BsTrash, BsX } from "react-icons/bs";
 import { BiMessageRoundedDetail } from "react-icons/bi";
 import { TiArrowBack } from "react-icons/ti";
 import withBase from "hocs/withBase";
+
 const ChatBotSidebar = ({ onToggle }) => {
   const dispatch = useDispatch();
-  const { data } = useSelector((state) => state.chat);
-  const navigate = useNavigate();
-  const { id } = useParams();
+  const { data, activeChatId } = useSelector((state) => state.chat);
 
   const handleNewChat = () => {
     dispatch(addChat());
   };
 
-  const handleRemoveChat = (id) => {
-    dispatch(removeChat(id));
-    navigate('/chatbot/info')
+  const handleRemoveChat = (chatId) => {
+    dispatch(removeChat(chatId));
+  };
+
+  const handleSelectChat = (chatId) => {
+    dispatch(setActiveChatId(chatId));
+    onToggle && onToggle();
   };
 
   return (
@@ -57,29 +60,29 @@ const ChatBotSidebar = ({ onToggle }) => {
         </div>
         <div className="space-y-1">
           {data?.map((chat) => (
-            <Link
-              to={`/chatbot/${chat.id}`}
+            <div
               key={chat?.id}
               className={`flex items-center justify-between p-3 rounded-lg group ${
-                chat.id === id 
+                chat.id === activeChatId 
                   ? 'bg-gray-500 hover:bg-gray-400' 
                   : 'bg-gray-700 hover:bg-gray-600'
-              } transition-colors`}
+              } transition-colors cursor-pointer`}
+              onClick={() => handleSelectChat(chat.id)}
             >
               <div className="flex items-center gap-3 truncate">
-                <BiMessageRoundedDetail className={`${chat.id === id ? 'text-white' : 'text-gray-400'} flex-shrink-0`} />
+                <BiMessageRoundedDetail className={`${chat.id === activeChatId ? 'text-white' : 'text-gray-400'} flex-shrink-0`} />
                 <span className="truncate">{chat.title}</span>
               </div>
               <button
                 className="opacity-0 group-hover:opacity-100 p-1.5 rounded-full hover:bg-gray-600 transition-all duration-200"
                 onClick={(e) => {
-                  e.preventDefault();
+                  e.stopPropagation();
                   handleRemoveChat(chat.id);
                 }}
               >
                 <BsTrash className="color-white" />
               </button>
-            </Link>
+            </div>
           ))}
 
           {data?.length === 0 && (

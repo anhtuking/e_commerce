@@ -23,5 +23,5 @@ var couponSchema = new mongoose.Schema(
   }
 );
 
-//Export the model
-module.exports = mongoose.model("Coupon", couponSchema);
+// Check if the model exists before creating a new one
+module.exports = mongoose.models.Coupon || mongoose.model("Coupon", couponSchema);

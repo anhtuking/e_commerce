@@ -8,11 +8,12 @@ import {
   useLocation,
 } from "react-router-dom";
 import useDebounce from "hooks/useDebounce";
-import { FaTrash, FaEdit, FaTag, FaCalendarAlt, FaPercentage } from "react-icons/fa";
+import { FaTrash, FaEdit, FaTag, FaCalendarAlt, FaPercentage, FaDatabase } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import withBase from "hocs/withBase";
 import { apiGetAllCoupons, apiDeleteCoupon } from "api/coupon";
+import { apiGenerateAllCouponEmbeddings, apiGenerateCouponEmbedding } from "api/embedding";
 
 const ManageCoupon = ({ dispatch, navigate }) => {
   const {
@@ -27,6 +28,7 @@ const ManageCoupon = ({ dispatch, navigate }) => {
   const [editCoupon, setEditCoupon] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [embeddingLoading, setEmbeddingLoading] = useState(false);
   const cacheRef = useRef({});
   const fetchInProgressRef = useRef(false);
 
@@ -135,6 +137,47 @@ const ManageCoupon = ({ dispatch, navigate }) => {
     return expiry > now;
   };
 
+  const handleGenerateAllEmbeddings = async () => {
+    try {
+      setEmbeddingLoading(true);
+      toast.info("Đang tạo embeddings cho tất cả mã giảm giá...", {
+        autoClose: 2000
+      });
+      
+      const response = await apiGenerateAllCouponEmbeddings();
+      
+      if (response.success) {
+        toast.success(`Đã tạo ${response.results?.length || 0} embeddings cho mã giảm giá`);
+      } else {
+        toast.error("Không thể tạo embeddings cho mã giảm giá");
+      }
+    } catch (error) {
+      console.error("Error generating coupon embeddings:", error);
+      toast.error("Không thể tạo embeddings cho mã giảm giá");
+    } finally {
+      setEmbeddingLoading(false);
+    }
+  };
+
+  const handleGenerateCouponEmbedding = async (couponId) => {
+    try {
+      toast.info("Đang tạo embedding cho mã giảm giá...", { 
+        autoClose: 1000 
+      });
+      
+      const response = await apiGenerateCouponEmbedding(couponId);
+      
+      if (response.success) {
+        toast.success("Đã tạo embedding cho mã giảm giá thành công");
+      } else {
+        toast.error("Không thể tạo embedding cho mã giảm giá");
+      }
+    } catch (error) {
+      console.error("Error generating coupon embedding:", error);
+      toast.error("Không thể tạo embedding cho mã giảm giá");
+    }
+  };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen relative">
       {/* Form chỉnh sửa hoặc tạo mới */}
@@ -165,12 +208,22 @@ const ManageCoupon = ({ dispatch, navigate }) => {
       </div>
 
       <div className="flex justify-between items-center px-4 mb-6">
-        <button
-          className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow-sm flex items-center"
-          onClick={() => setShowForm(true)}
-        >
-          <span className="mr-2">+</span> Tạo mã giảm giá mới
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow-sm flex items-center"
+            onClick={() => setShowForm(true)}
+          >
+            <span className="mr-2">+</span> Tạo mã giảm giá mới
+          </button>
+          <button
+            className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg shadow-sm flex items-center"
+            onClick={handleGenerateAllEmbeddings}
+            disabled={embeddingLoading}
+          >
+            <FaDatabase className="mr-2" /> 
+            {embeddingLoading ? "Đang tạo embeddings..." : "Tạo embeddings cho tất cả mã giảm giá"}
+          </button>
+        </div>
         <form className="w-[45%]">
           <InputForm
             id="q"
@@ -247,6 +300,14 @@ const ManageCoupon = ({ dispatch, navigate }) => {
                     title="Xóa"
                   >
                     <FaTrash size={18} />
+                  </button>
+                  <button
+                    className="text-green-600 hover:text-green-800 transition"
+                    type="button"
+                    onClick={() => handleGenerateCouponEmbedding(coupon._id)}
+                    title="Tạo Embedding"
+                  >
+                    <FaDatabase size={18} />
                   </button>
                 </td>
               </tr>
